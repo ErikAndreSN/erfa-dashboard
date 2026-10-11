@@ -82,6 +82,16 @@ type Candidate = {
   bio: string;
   quote: string;
 };
+type Task = {
+  key: string;
+  kind: "new" | "avtale" | "levert" | "attest";
+  label: string;
+  title: string;
+  detail: string;
+  cta: string;
+  people: (Candidate | undefined)[];
+  open: () => void;
+};
 type Application = {
   id: number;
   jobId: number;
@@ -243,6 +253,17 @@ const candidates: Candidate[] = [
     quote: "Emil var selvstendig, kreativ og fulgte briefen godt.",
   },
 ];
+function StatusChip({ job, label }: { job: Job; label?: string }) {
+  const [tone, text] =
+    job.stage === "Publisert"
+      ? ["open", "Publisert"]
+      : job.stage === "Avtale"
+        ? ["waiting", "Avtale gjenstår"]
+        : job.stage === "Pågår"
+          ? ["live", "Pågår"]
+          : ["done", "Fullført"];
+  return <span className={"biz-status is-" + tone}>{label || text}</span>;
+}
 function CandidatePhoto({
   candidate,
   small = false,
@@ -444,6 +465,63 @@ export function BusinessDashboard() {
     setActiveJobId(application.jobId);
     setSheet("candidate");
   };
+  const tasks: Task[] = [
+    ...(newApplications.length
+      ? [
+          {
+            key: "new",
+            kind: "new",
+            label: "Nye søkere",
+            title:
+              newApplications.length +
+              (newApplications.length === 1 ? " ny søker" : " nye søkere"),
+            detail:
+              "Søkt på " +
+              new Set(newApplications.map((a) => a.jobId)).size +
+              " oppdrag",
+            cta: "Se søkere",
+            people: [...new Set(newApplications.map((a) => a.candidateId))].map(
+              (id) => candidates.find((c) => c.id === id),
+            ),
+            open: () => navigate("Søknader"),
+          } as Task,
+        ]
+      : []),
+    ...followUps.map((j): Task => {
+      const person = candidates.find((c) => c.id === j.selected),
+        first = person?.name.split(" ")[0],
+        base = {
+          key: "job-" + j.id,
+          detail: j.title,
+          people: [person],
+          open: () => openJob(j.id),
+        };
+      return j.stage === "Fullført"
+        ? {
+            ...base,
+            kind: "attest",
+            label: "Attest",
+            title: "Skriv attest til " + first,
+            cta: "Skriv attest",
+          }
+        : j.stage === "Avtale"
+          ? {
+              ...base,
+              kind: "avtale",
+              label: "Avtale",
+              title: "Avklar avtalen med " + first,
+              cta: "Avklar avtale",
+            }
+          : {
+              ...base,
+              kind: "levert",
+              label: "Levert",
+              title: first + " har levert",
+              cta: "Se gjennom",
+            };
+    }),
+  ];
+  const [focusTask, ...otherTasks] = tasks;
   const updateJob = (id: number, changes: Partial<Job>) =>
     setJobs((list) =>
       list.map((j) => (j.id === id ? { ...j, ...changes } : j)),
@@ -539,26 +617,12 @@ export function BusinessDashboard() {
     );
   };
   const jobCard = (j: Job) => {
-    const person = candidates.find((c) => c.id === j.selected),
-      applicants = applications
-        .filter((a) => a.jobId === j.id)
-        .map((a) => candidates.find((c) => c.id === a.candidateId)!);
+    const person = candidates.find((c) => c.id === j.selected);
     return (
-      <button
-        className="biz-job"
-        key={j.id}
-        onClick={() => {
-          if (j.stage === "Publisert") {
-            setPipelineJob(j.id);
-            navigate("Søknader");
-          } else openJob(j.id);
-        }}
-      >
+      <button className="biz-job" key={j.id} onClick={() => openJob(j.id)}>
         <span className="biz-job-top">
           <span className="biz-tag">{j.category}</span>
-          <span className="biz-badge">
-            {j.stage === "Avtale" ? "Avtale gjenstår" : j.stage}
-          </span>
+          <StatusChip job={j} />
         </span>
         <h3>{j.title}</h3>
         <span className="biz-job-meta">
@@ -573,24 +637,10 @@ export function BusinessDashboard() {
           Frist {date(j.deadline)}
         </span>
         <span className="biz-job-foot">
-          {j.stage === "Publisert" ? (
-            <span className="biz-assignee">
-              <span className="biz-avatar-stack">
-                {applicants.slice(0, 3).map((c) => (
-                  <CandidatePhoto key={c.id} candidate={c} small />
-                ))}
-              </span>
-              {applicants.length
-                ? applicants.length +
-                  (applicants.length === 1 ? " søker" : " søkere")
-                : "Ingen søkere ennå"}
-            </span>
-          ) : (
-            <span className="biz-assignee">
-              <CandidatePhoto candidate={person} small />
-              {person?.name || "Student ikke valgt"}
-            </span>
-          )}
+          <span className="biz-assignee">
+            <CandidatePhoto candidate={person} small />
+            {person?.name || "Student ikke valgt"}
+          </span>
           <ChevronRight size={16} />
         </span>
       </button>
@@ -1336,106 +1386,52 @@ export function BusinessDashboard() {
           </div>
           {page === "Oversikt" && (
             <>
-              <section className="biz-overview-section">
-                <div className="biz-section-head">
-                  <h2>Gjør nå</h2>
-                </div>
-                <div className="biz-overview-grid">
-                  {newApplications.length > 0 && (
-                    <button
-                      className="biz-todo-card is-primary"
-                      onClick={() => navigate("Søknader")}
-                    >
-                      <span className="biz-todo-card-top">
-                        <span className="biz-avatar-stack">
-                          {[
-                            ...new Set(
-                              newApplications.map((a) => a.candidateId),
-                            ),
-                          ]
-                            .slice(0, 3)
-                            .map((id) => (
-                              <CandidatePhoto
-                                key={id}
-                                candidate={candidates.find((c) => c.id === id)}
-                              />
-                            ))}
-                        </span>
-                        <span className="biz-todo-kind kind-new">
-                          Nye søkere
-                        </span>
+              <section className="biz-overview-top">
+                {focusTask ? (
+                  <button className="biz-focus-card" onClick={focusTask.open}>
+                    <span className="biz-todo-card-top">
+                      <span className="biz-avatar-stack">
+                        {focusTask.people.slice(0, 3).map((c, i) => (
+                          <CandidatePhoto key={c?.id ?? i} candidate={c} />
+                        ))}
                       </span>
-                      <strong>
-                        {newApplications.length}{" "}
-                        {newApplications.length === 1
-                          ? "ny søker"
-                          : "nye søkere"}
-                      </strong>
-                      <small>
-                        Søkt på{" "}
-                        {new Set(newApplications.map((a) => a.jobId)).size}{" "}
-                        oppdrag
-                      </small>
-                      <span className="biz-todo-cta">
-                        Se søkere <ArrowRight size={14} />
+                      <span className={"biz-todo-kind kind-" + focusTask.kind}>
+                        {focusTask.label}
                       </span>
-                    </button>
-                  )}
-                  {followUps.map((j) => {
-                    const person = candidates.find((c) => c.id === j.selected),
-                      first = person?.name.split(" ")[0],
-                      kind =
-                        j.stage === "Fullført"
-                          ? "attest"
-                          : j.stage === "Avtale"
-                            ? "avtale"
-                            : "levert";
-                    return (
+                    </span>
+                    <strong>{focusTask.title}</strong>
+                    <small>{focusTask.detail}</small>
+                    <span className="biz-todo-cta">
+                      {focusTask.cta} <ArrowRight size={16} />
+                    </span>
+                  </button>
+                ) : (
+                  <div className="biz-focus-card is-empty">
+                    <strong>Alt er à jour</strong>
+                    <small>
+                      Vi gir beskjed her når noe trenger oppfølging.
+                    </small>
+                  </div>
+                )}
+                {otherTasks.length > 0 && (
+                  <div className="biz-list-card">
+                    <h2>Også å gjøre</h2>
+                    {otherTasks.map((t) => (
                       <button
-                        key={j.id}
-                        className="biz-todo-card"
-                        onClick={() => openJob(j.id)}
+                        key={t.key}
+                        className="biz-list-row"
+                        onClick={t.open}
                       >
-                        <span className="biz-todo-card-top">
-                          <span className="biz-avatar-stack">
-                            <CandidatePhoto candidate={person} />
-                          </span>
-                          <span className={"biz-todo-kind kind-" + kind}>
-                            {kind === "attest"
-                              ? "Attest"
-                              : kind === "avtale"
-                                ? "Avtale"
-                                : "Levert"}
-                          </span>
+                        <CandidatePhoto candidate={t.people[0]} />
+                        <span>
+                          <strong>{t.title}</strong>
+                          <small>{t.detail}</small>
                         </span>
-                        <strong>
-                          {kind === "attest"
-                            ? "Skriv attest til " + first
-                            : kind === "avtale"
-                              ? "Avklar avtalen med " + first
-                              : first + " har levert"}
-                        </strong>
-                        <small>{j.title}</small>
-                        <span className="biz-todo-cta">
-                          {kind === "attest"
-                            ? "Skriv attest"
-                            : kind === "avtale"
-                              ? "Avklar avtale"
-                              : "Se gjennom"}
-                          <ArrowRight size={14} />
-                        </span>
+                        <ChevronRight size={17} />
                       </button>
-                    );
-                  })}
-                  {todoCount === 0 && (
-                    <div className="biz-todo-card is-empty">
-                      <strong>Alt er à jour</strong>
-                      <small>
-                        Vi gir beskjed her når noe trenger oppfølging.
-                      </small>
-                    </div>
-                  )}
-                </div>
+                    ))}
+                  </div>
+                )}
               </section>
               <section className="biz-overview-section">
                 <div className="biz-section-head">
@@ -1447,8 +1443,64 @@ export function BusinessDashboard() {
                     Se alle <ArrowRight size={14} />
                   </button>
                 </div>
-                <div className="biz-overview-grid biz-overview-jobs">
-                  {activeJobs.map(jobCard)}
+                <div className="biz-list-card">
+                  {activeJobs.map((j) => {
+                    const people =
+                      j.stage === "Publisert"
+                        ? applications
+                            .filter((a) => a.jobId === j.id)
+                            .map((a) =>
+                              candidates.find((c) => c.id === a.candidateId),
+                            )
+                        : [candidates.find((c) => c.id === j.selected)];
+                    return (
+                      <button
+                        key={j.id}
+                        className="biz-list-row"
+                        onClick={() => {
+                          if (j.stage === "Publisert") {
+                            setPipelineJob(j.id);
+                            navigate("Søknader");
+                          } else openJob(j.id);
+                        }}
+                      >
+                        <span className="biz-avatar-stack">
+                          {people.length ? (
+                            people
+                              .slice(0, 3)
+                              .map((c, i) => (
+                                <CandidatePhoto
+                                  key={c?.id ?? i}
+                                  candidate={c}
+                                />
+                              ))
+                          ) : (
+                            <span className="biz-avatar">
+                              <BriefcaseBusiness size={16} />
+                            </span>
+                          )}
+                        </span>
+                        <span>
+                          <strong>{j.title}</strong>
+                          <small>
+                            {j.category} · frist {date(j.deadline)}
+                          </small>
+                        </span>
+                        <StatusChip
+                          job={j}
+                          label={
+                            j.stage === "Publisert"
+                              ? people.length
+                                ? people.length +
+                                  (people.length === 1 ? " søker" : " søkere")
+                                : "Ingen søkere ennå"
+                              : undefined
+                          }
+                        />
+                        <ChevronRight size={17} />
+                      </button>
+                    );
+                  })}
                 </div>
               </section>
             </>
@@ -2151,7 +2203,7 @@ export function BusinessDashboard() {
           {sheet === "job" && selectedJob && (
             <>
               <div className="biz-detail-heading">
-                <span className="biz-badge">{selectedJob.stage}</span>
+                <StatusChip job={selectedJob} />
                 <h2>{selectedJob.title}</h2>
                 <p>{selectedJob.description}</p>
                 <div className="biz-detail-meta">

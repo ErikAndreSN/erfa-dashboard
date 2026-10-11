@@ -42,3 +42,372 @@
 @media(max-width:1150px){.ongoing-panel>div{padding:22px!important}.ongoing-panel .panel-counter{top:30px;right:22px}.ongoing-panel .next-delivery-task>strong{font-size:27px}}
 @media(max-width:950px){.ongoing-panel>div{padding:25px!important}.ongoing-panel .panel-counter{top:32px;right:25px}}
 @media(max-width:550px){.ongoing-panel>div{padding:23px!important}.ongoing-panel .panel-counter{top:30px;right:23px}.ongoing-panel .next-delivery-task>strong{font-size:26px}.ongoing-panel .ongoing-list{grid-template-rows:minmax(320px,auto)}}
+
+/* Studentoversikt: fokuskortet først, deretter rolige lister. */
+.reference-look .sh-overview .overview-content-grid {
+  grid-template-rows: none;
+  grid-auto-rows: auto;
+}
+.reference-look .sh-focus-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+  min-height: 420px;
+  padding: 28px;
+  border-radius: 30px;
+  background: #f5f5f6;
+  text-align: left;
+  transition: background 0.2s;
+}
+.reference-look .sh-focus-card:hover {
+  background: #efeff1;
+}
+.reference-look .sh-focus-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 22px;
+}
+.reference-look .sh-focus-top .company-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+}
+.reference-look .sh-focus-top .company-logo img {
+  width: 38px;
+  height: 22px;
+}
+.reference-look .sh-focus-top .status-badge {
+  gap: 7px;
+  padding: 7px 13px;
+  font-size: 12px;
+}
+.reference-look .sh-focus-top .status-badge i {
+  width: 7px;
+  height: 7px;
+}
+.reference-look .sh-focus-eyebrow {
+  font-size: 13px;
+  color: #737478;
+}
+.reference-look .sh-focus-card > strong {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.8px;
+  color: #242426;
+}
+.reference-look .sh-focus-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.reference-look .sh-focus-meta > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px;
+  border-radius: 100px;
+  background: #fff;
+  font-size: 12px;
+  color: #4a4b50;
+}
+.reference-look .sh-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 100%;
+  margin: 26px 0 28px;
+  padding: 0;
+  list-style: none;
+}
+.reference-look .sh-steps li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 11px;
+  color: #8a8b91;
+}
+.reference-look .sh-steps li::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 22px;
+  right: 2px;
+  height: 2px;
+  border-radius: 2px;
+  background: #e2e2e5;
+}
+.reference-look .sh-steps li:last-child::before {
+  display: none;
+}
+.reference-look .sh-steps li.is-done::before {
+  background: #ff6a3d;
+}
+.reference-look .sh-steps li > span {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: inset 0 0 0 2px #e2e2e5;
+  color: #fff;
+}
+.reference-look .sh-steps li.is-done > span {
+  background: #ff6a3d;
+  box-shadow: none;
+}
+.reference-look .sh-steps li.is-current > span {
+  box-shadow: inset 0 0 0 2px #ff6a3d;
+}
+.reference-look .sh-steps li.is-current > span::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff6a3d;
+}
+.reference-look .sh-steps li.is-done,
+.reference-look .sh-steps li.is-current {
+  color: #242426;
+  font-weight: 500;
+}
+.reference-look .sh-focus-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  padding: 13px 22px;
+  border-radius: 100px;
+  background: #ff6a3d;
+  font-size: 14px;
+  color: #fff;
+}
+.reference-look .sh-income-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  flex: 1;
+  min-height: 70px;
+  max-height: 120px;
+  margin-top: 20px;
+}
+.reference-look .sh-income-bars > span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  flex: 1;
+  height: 100%;
+}
+.reference-look .sh-income-bars b {
+  display: flex;
+  align-items: flex-end;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+}
+.reference-look .sh-income-bars i {
+  width: 100%;
+  min-height: 6px;
+  border-radius: 8px;
+  background: #f8c9b6;
+}
+.reference-look .sh-income-bars .is-current i {
+  background: #ff6a3d;
+}
+.reference-look .sh-income-bars small {
+  font-size: 10px;
+  color: #8a8b91;
+}
+.reference-look .sh-income-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #e7e7ea;
+}
+.reference-look .sh-income-links button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #3a3b40;
+}
+.reference-look .sh-list-card {
+  min-width: 0;
+  padding: 24px 24px 10px;
+  border-radius: 30px;
+  background: #f5f5f6;
+}
+.reference-look .sh-list-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+.reference-look .sh-list-head h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.4px;
+}
+.reference-look .sh-list-head p {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #737478;
+}
+.reference-look .sh-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 4px;
+  font-size: 12px;
+  color: #242426;
+  white-space: nowrap;
+}
+.reference-look .sh-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  column-gap: 14px;
+  width: 100%;
+  padding: 14px 0;
+  text-align: left;
+}
+.reference-look .sh-row + .sh-row {
+  border-top: 1px solid #e7e7ea;
+}
+.reference-look .sh-row-stacked {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+.reference-look .sh-row .company-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+}
+.reference-look .sh-row .company-logo img {
+  width: 30px;
+  height: 18px;
+}
+.reference-look .sh-row .company-logo-fallback {
+  background: #fff;
+  font-size: 18px;
+}
+.reference-look .sh-row > span:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.reference-look .sh-row strong {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #242426;
+}
+.reference-look .sh-row small {
+  font-size: 12px;
+  line-height: 1.4;
+  color: #737478;
+}
+.reference-look .sh-row > svg {
+  color: #9999a0;
+  transition: transform 0.2s;
+}
+.reference-look .sh-row:hover > svg {
+  transform: translateX(2px);
+}
+.reference-look .sh-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: fit-content;
+  padding: 6px 11px;
+  border-radius: 100px;
+  background: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.reference-look .sh-chip::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.reference-look .sh-chip-match {
+  color: #d6542d;
+}
+.reference-look .sh-chip-waiting {
+  margin-top: 6px;
+  color: #9a52d6;
+}
+.reference-look .sh-empty {
+  padding: 14px 0;
+  font-size: 12px;
+  color: #737478;
+}
+@media (max-width: 700px) {
+  .reference-look .sh-list-card {
+    padding: 20px 18px 6px;
+    border-radius: 24px;
+  }
+  .reference-look .sh-row:not(.sh-row-stacked) {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    row-gap: 8px;
+  }
+  .reference-look .sh-row:not(.sh-row-stacked) > .sh-chip {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .reference-look .sh-row:not(.sh-row-stacked) > svg {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+  }
+  .reference-look .sh-row:not(.sh-row-stacked) > .company-logo {
+    grid-row: 1 / span 2;
+  }
+}
+/* «Pågår» ser lik ut for student og bedrift: grønn prikk som pulserer. */
+.reference-look .status-progress {
+  background: #e5f5ea;
+  color: #23834b;
+}
+.reference-look .status-progress i {
+  animation: sh-live-pulse 1.8s ease-out infinite;
+}
+@keyframes sh-live-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgb(35 131 75 / 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgb(35 131 75 / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgb(35 131 75 / 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reference-look .status-progress i {
+    animation: none;
+  }
+}

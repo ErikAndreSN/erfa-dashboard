@@ -2446,43 +2446,86 @@
   color: #c4532c;
 }
 
-/* Oversikt: gjøremål som kort med studentene, deretter oppdragene. */
-.biz-overview-section + .biz-overview-section {
-  margin-top: 44px;
-}
-.biz-overview-grid {
+/* Oversikt: ett fokuskort øverst, resten som rolige lister. */
+.biz-overview-top {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(228px, 1fr));
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
   gap: 16px;
 }
-.biz-todo-card {
+.biz-overview-top > :only-child {
+  grid-column: 1 / -1;
+}
+.biz-overview-section {
+  margin-top: 44px;
+}
+.biz-section-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--biz-ink);
+}
+.biz-focus-card {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 6px;
-  min-height: 228px;
-  padding: 20px;
-  border-radius: 24px;
+  gap: 8px;
+  min-height: 280px;
+  padding: 28px;
+  border-radius: 28px;
   background: var(--biz-surface);
   text-align: left;
-  transition:
-    background 0.2s,
-    transform 0.2s;
+  transition: background 0.2s;
 }
-button.biz-todo-card:hover {
+button.biz-focus-card:hover {
   background: #efeff1;
-  transform: translateY(-2px);
 }
 .biz-todo-card-top {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
   width: 100%;
-  margin-bottom: 18px;
+  margin-bottom: 26px;
+}
+.biz-focus-card .biz-avatar {
+  width: 54px;
+  height: 54px;
+}
+.biz-focus-card strong {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.8px;
+  color: var(--biz-ink);
+}
+.biz-focus-card small {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--biz-muted);
+  margin-bottom: 26px;
+}
+.biz-focus-card.is-empty {
+  min-height: 0;
+}
+.biz-focus-card.is-empty small {
+  margin-bottom: 0;
+}
+.biz-todo-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding: 13px 22px;
+  border-radius: 100px;
+  background: var(--biz-orange);
+  color: #fff;
+  font-size: 14px;
 }
 .biz-avatar-stack {
   display: flex;
+  flex-shrink: 0;
 }
 .biz-avatar-stack .biz-avatar {
   box-shadow: 0 0 0 3px var(--biz-surface);
@@ -2490,20 +2533,14 @@ button.biz-todo-card:hover {
 .biz-avatar-stack .biz-avatar + .biz-avatar {
   margin-left: -12px;
 }
-.biz-job-foot .biz-avatar-stack .biz-avatar {
-  box-shadow: 0 0 0 2px #f5f5f6;
-}
-.biz-job-foot .biz-avatar-stack .biz-avatar + .biz-avatar {
-  margin-left: -7px;
-}
 .biz-todo-kind {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 10px;
+  gap: 7px;
+  padding: 6px 11px;
   border-radius: 100px;
   background: #fff;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 500;
   white-space: nowrap;
 }
@@ -2514,11 +2551,15 @@ button.biz-todo-card:hover {
   border-radius: 50%;
   background: currentColor;
 }
+.biz-focus-card .biz-todo-kind {
+  font-size: 12px;
+  padding: 7px 13px;
+}
 .biz-todo-kind.kind-new {
   color: #d6542d;
 }
 .biz-todo-kind.kind-avtale {
-  color: #9a52d6;
+  color: #a8650a;
 }
 .biz-todo-kind.kind-levert {
   color: #3478f6;
@@ -2526,100 +2567,183 @@ button.biz-todo-card:hover {
 .biz-todo-kind.kind-attest {
   color: #3f8d68;
 }
-.biz-todo-card strong {
-  font-family: var(--font-display);
-  font-size: 20px;
+.biz-list-card {
+  border-radius: 28px;
+  background: var(--biz-surface);
+  padding: 8px 24px;
+  min-width: 0;
+}
+.biz-overview-top .biz-list-card {
+  padding-top: 24px;
+}
+.biz-list-card h2 {
+  font-size: 16px;
+  line-height: 1.3;
+  letter-spacing: -0.2px;
+  margin-bottom: 4px;
+}
+.biz-list-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  column-gap: 14px;
+  width: 100%;
+  padding: 14px 0;
+  text-align: left;
+}
+.biz-list-row + .biz-list-row {
+  border-top: 1px solid #e7e7ea;
+}
+.biz-list-row .biz-avatar {
+  width: 40px;
+  height: 40px;
+  color: var(--biz-muted);
+  background: #fff;
+}
+.biz-list-row > .biz-avatar-stack {
+  width: 68px;
+}
+.biz-list-row > span:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.biz-list-row strong {
+  font-size: 14px;
   font-weight: 500;
-  line-height: 1.22;
-  letter-spacing: -0.4px;
+  line-height: 1.4;
   color: var(--biz-ink);
 }
-.biz-todo-card small {
+.biz-list-row small {
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 1.4;
   color: var(--biz-muted);
-  margin-bottom: 18px;
 }
-.biz-todo-cta {
+.biz-list-row > svg {
+  color: #9999a0;
+  transition: transform 0.2s;
+}
+.biz-list-row:hover > svg {
+  transform: translateX(2px);
+}
+@media (max-width: 950px) {
+  .biz-overview-top {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 700px) {
+  .biz-overview-section {
+    margin-top: 34px;
+  }
+  .biz-focus-card {
+    min-height: 0;
+    padding: 22px;
+    border-radius: 24px;
+  }
+  .biz-focus-card strong {
+    font-size: 26px;
+  }
+  .biz-list-card {
+    padding: 4px 18px;
+    border-radius: 24px;
+  }
+  .biz-overview-top .biz-list-card {
+    padding-top: 18px;
+  }
+  .biz-list-row {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    row-gap: 8px;
+  }
+  .biz-list-row > .biz-todo-kind {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+  }
+  .biz-list-row > svg {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+  }
+  .biz-list-row > .biz-avatar-stack,
+  .biz-list-row > .biz-avatar {
+    grid-row: 1 / span 2;
+  }
+}
+
+/* Status på oppdrag: fargen skal kunne leses uten å lese teksten. */
+.biz-status {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  margin-top: auto;
-  padding: 9px 14px;
+  width: fit-content;
+  padding: 6px 11px 6px 10px;
   border-radius: 100px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.biz-status::before {
+  content: "";
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.biz-status.is-open {
+  background: #fff1ea;
+  color: #d6542d;
+}
+.biz-status.is-waiting {
+  background: #fff4dc;
+  color: #a8650a;
+}
+.biz-status.is-live {
+  background: #e5f5ea;
+  color: #23834b;
+}
+.biz-status.is-live::before {
+  animation: biz-live-pulse 1.8s ease-out infinite;
+}
+.biz-status.is-done {
   background: #fff;
-  border: 1px solid var(--biz-border);
+  color: #6f7076;
+}
+.biz-status.is-done::before {
+  content: "✓";
+  width: auto;
+  height: auto;
+  background: none;
+  font-size: 11px;
+}
+.biz-work-grid .biz-status {
+  gap: 8px;
+  padding: 8px 14px 8px 12px;
   font-size: 12px;
-  color: var(--biz-ink);
 }
-.biz-todo-card.is-primary .biz-todo-cta {
-  background: var(--biz-orange);
-  border-color: transparent;
-  color: #fff;
+.biz-work-grid .biz-status::before {
+  width: 8px;
+  height: 8px;
 }
-.biz-todo-card.is-empty {
-  min-height: 0;
-  grid-column: 1 / -1;
-}
-.biz-section-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+.biz-work-grid .biz-status.is-done::before {
+  width: auto;
+  height: auto;
   font-size: 12px;
-  color: var(--biz-ink);
 }
-.biz-overview-jobs .biz-job {
-  min-height: 228px;
-  padding: 20px;
-  border-radius: 24px;
-  background: var(--biz-surface);
-  box-shadow: none;
-}
-.biz-overview-jobs .biz-job:hover {
-  background: #efeff1;
-  box-shadow: none;
-}
-.biz-overview-jobs .biz-tag {
-  background: #fff;
-}
-.biz-overview-jobs .biz-badge {
-  background: #fff;
-}
-.biz-overview-jobs .biz-job h3 {
-  font-size: 20px;
-  min-height: 0;
-}
-.biz-overview-jobs .biz-job-foot {
-  border-top-color: #e6e6e8;
-}
-@media (max-width: 700px) {
-  .biz-overview-section + .biz-overview-section {
-    margin-top: 34px;
+@keyframes biz-live-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgb(35 131 75 / 0.5);
   }
-  .biz-overview-grid {
-    grid-template-columns: none;
-    grid-auto-flow: column;
-    grid-auto-columns: 80%;
-    gap: 12px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-padding: 0 18px;
-    margin: 0 -18px;
-    padding: 0 18px 4px;
-    scrollbar-width: none;
+  70% {
+    box-shadow: 0 0 0 7px rgb(35 131 75 / 0);
   }
-  .biz-overview-grid::-webkit-scrollbar {
-    display: none;
+  100% {
+    box-shadow: 0 0 0 0 rgb(35 131 75 / 0);
   }
-  .biz-overview-grid > * {
-    scroll-snap-align: start;
-  }
-  .biz-todo-card,
-  .biz-overview-jobs .biz-job {
-    min-height: 210px;
-  }
-  .biz-todo-card.is-empty {
-    grid-column: auto;
-    min-height: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .biz-status.is-live::before {
+    animation: none;
   }
 }
