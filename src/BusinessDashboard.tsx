@@ -35,6 +35,7 @@ import "./business.css";
 import {
   BUSINESS_STORE,
   SchoolIdentity,
+  SchoolLogo,
   VerifiedSkills,
 } from "./VerifiedSkills";
 
@@ -1088,8 +1089,12 @@ export function BusinessDashboard() {
                 <CandidatePhoto candidate={c} />
                 <span className="biz-person">
                   <strong>{c.name}</strong>
-                  <span>
-                    {c.study} · {c.school}
+                  <span>{c.study}</span>
+                  <span className="biz-school-line">
+                    <SchoolLogo school={c.school} />
+                    <span>
+                      {c.school} · {c.semester}
+                    </span>
                   </span>
                   <small>{j.title}</small>
                 </span>

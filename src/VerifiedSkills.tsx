@@ -12,6 +12,26 @@ export type SkillAttest = {
   attestCompany?: string;
 };
 
+export function SchoolLogo({ school }: { school: string }) {
+  const name = school.toLowerCase();
+  const src = name.includes("kristiania")
+    ? "/logos/kristiania.webp"
+    : name.includes("ntnu")
+      ? "/logos/ntnu.svg"
+      : name === "bi" || name.includes("handelshøyskolen bi")
+        ? "/logos/bi.png"
+        : undefined;
+  return src ? (
+    <img
+      className={"school-logo" + (name === "bi" ? " square" : "")}
+      src={src}
+      alt={`${school} logo`}
+    />
+  ) : (
+    <GraduationCap size={18} aria-hidden="true" />
+  );
+}
+
 export function SchoolIdentity({
   school,
   study,
@@ -21,15 +41,10 @@ export function SchoolIdentity({
   study?: string;
   semester?: string;
 }) {
-  const kristiania = school.toLowerCase().includes("kristiania");
   const number = Number.parseInt(semester || "");
   return (
     <div className="school-identity">
-      {kristiania ? (
-        <img src="/logos/kristiania.webp" alt="Kristiania" />
-      ) : (
-        <GraduationCap size={18} aria-hidden="true" />
-      )}
+      <SchoolLogo school={school} />
       <div>
         <span>Fra {school}</span>
         {study && <strong>{study}</strong>}

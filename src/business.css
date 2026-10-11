@@ -2324,3 +2324,19 @@
   color: var(--biz-muted);
   font-size: 12px;
 }
+
+.biz-school-line {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+.biz-school-line .school-logo {
+  width: 58px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.biz-school-line .school-logo.square {
+  width: 24px;
+}
