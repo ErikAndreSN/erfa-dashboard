@@ -1328,18 +1328,17 @@ export function BusinessDashboard() {
               <section className="biz-next">
                 <div className="biz-next-copy">
                   <span className="biz-next-icon">
-                    <ClipboardList size={23} />
+                    <ClipboardList size={20} />
                   </span>
                   <div>
                     <h2>
                       {newApplications.length
-                        ? "Neste steg? Bli kjent med søkerne."
-                        : "Du er oppdatert."}
+                        ? `${newApplications.length} ${newApplications.length === 1 ? "ny søker" : "nye søkere"}`
+                        : "Du er oppdatert"}
                     </h2>
                     <p>
                       {newApplications.length
-                        ? newApplications.length +
-                          " studenter har søkt. Se studier, ferdigheter og tidligere attester."
+                        ? "Se kompetanse og attester før du velger student."
                         : "Vi gir beskjed her når noe trenger oppfølging."}
                     </p>
                   </div>

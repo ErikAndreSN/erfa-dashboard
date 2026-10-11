@@ -215,45 +215,47 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 24px 28px;
-  border-radius: 28px;
-  background: linear-gradient(115deg, #ffdac5 0%, #ffe7db 60%, #fff5ef 100%);
-  margin-bottom: 33px;
+  padding: 18px 20px;
+  border-radius: 22px;
+  background: var(--biz-surface);
+  margin-bottom: 28px;
 }
 .biz-next-copy {
   display: flex;
-  gap: 17px;
+  gap: 14px;
   align-items: center;
   min-width: 0;
 }
 .biz-next-icon {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  background: #ffffffa8;
-  border-radius: 50%;
-  color: #b64e2b;
+  background: #fff;
+  border-radius: 14px;
+  color: var(--biz-orange);
 }
 .biz-next h2 {
-  font-size: 24px;
-  line-height: 1.2;
-  letter-spacing: -0.55px;
+  font-size: 16px;
+  line-height: 1.4;
+  letter-spacing: -0.2px;
+  margin: 0;
 }
 .biz-next p {
   font-size: 12px;
   line-height: 1.6;
-  margin-top: 6px;
-  color: #815e50;
+  margin-top: 3px;
+  color: var(--biz-muted);
 }
 .biz-next > button {
-  background: #fff !important;
-  border: 0 !important;
-  min-height: 42px;
-  font-size: 12px !important;
+  background: #fff;
+  border: 1px solid var(--biz-border);
+  min-height: 40px;
+  font-size: 12px;
   white-space: nowrap;
-  color: #383339 !important;
+  flex-shrink: 0;
+  color: var(--biz-ink);
 }
 .biz-section-head {
   display: flex;
@@ -1274,17 +1276,11 @@
     width: 16px;
   }
   .biz-next {
-    padding: 22px;
+    padding: 18px 20px;
     gap: 18px;
-  }
-  .biz-next h2 {
-    font-size: 22px;
   }
   .biz-next-copy {
     gap: 12px;
-  }
-  .biz-next-icon {
-    display: none;
   }
   .biz-section-head {
     flex-wrap: wrap;
@@ -1405,22 +1401,18 @@
     width: 14px;
   }
   .biz-next {
-    padding: 22px;
-    border-radius: 25px;
+    padding: 18px;
+    border-radius: 22px;
     flex-direction: column;
-    align-items: flex-start;
-    margin-bottom: 27px;
-    gap: 17px;
-  }
-  .biz-next h2 {
-    font-size: 24px;
-    max-width: 280px;
+    align-items: stretch;
+    margin-bottom: 26px;
+    gap: 16px;
   }
   .biz-next p {
     font-size: 12px;
   }
   .biz-next > button {
-    align-self: flex-end;
+    align-self: stretch;
   }
   .biz-section-head {
     gap: 16px;
