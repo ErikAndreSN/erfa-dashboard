@@ -10,3 +10,5 @@ dist/
 
 # Lokale skjermbilder av tidligere designrunder
 preview*.png
+.vercel
+.env*

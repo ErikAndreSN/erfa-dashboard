@@ -3,3 +3,4 @@ dist
 .env*
 public/*-prompt.txt
 public/logos/SOURCES.md
+preview*.png
