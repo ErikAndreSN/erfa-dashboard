@@ -20,7 +20,6 @@ import {
   X,
   Download,
   CheckCheck,
-  ClipboardList,
   GripVertical,
   BarChart3,
   Heart,
@@ -413,6 +412,14 @@ export function BusinessDashboard() {
   const openJobs = jobs.filter((j) => j.stage === "Publisert"),
     newApplications = applications.filter((a) => a.stage === "Søkt"),
     pendingAttests = jobs.filter((j) => j.stage === "Fullført" && !j.attest);
+  const followUps = jobs.filter(
+      (j) =>
+        j.stage === "Avtale" ||
+        (j.stage === "Pågår" && j.studentApproved) ||
+        (j.stage === "Fullført" && !j.attest),
+    ),
+    todoCount = followUps.length + (newApplications.length ? 1 : 0),
+    activeJobs = jobs.filter((j) => j.stage !== "Fullført");
   const shownJobs = jobs.filter(
     (j) =>
       (filter === "Alle" || j.category === filter) &&
@@ -532,9 +539,21 @@ export function BusinessDashboard() {
     );
   };
   const jobCard = (j: Job) => {
-    const person = candidates.find((c) => c.id === j.selected);
+    const person = candidates.find((c) => c.id === j.selected),
+      applicants = applications
+        .filter((a) => a.jobId === j.id)
+        .map((a) => candidates.find((c) => c.id === a.candidateId)!);
     return (
-      <button className="biz-job" key={j.id} onClick={() => openJob(j.id)}>
+      <button
+        className="biz-job"
+        key={j.id}
+        onClick={() => {
+          if (j.stage === "Publisert") {
+            setPipelineJob(j.id);
+            navigate("Søknader");
+          } else openJob(j.id);
+        }}
+      >
         <span className="biz-job-top">
           <span className="biz-tag">{j.category}</span>
           <span className="biz-badge">
@@ -554,10 +573,24 @@ export function BusinessDashboard() {
           Frist {date(j.deadline)}
         </span>
         <span className="biz-job-foot">
-          <span className="biz-assignee">
-            <CandidatePhoto candidate={person} small />
-            {person?.name || "Student ikke valgt"}
-          </span>
+          {j.stage === "Publisert" ? (
+            <span className="biz-assignee">
+              <span className="biz-avatar-stack">
+                {applicants.slice(0, 3).map((c) => (
+                  <CandidatePhoto key={c.id} candidate={c} small />
+                ))}
+              </span>
+              {applicants.length
+                ? applicants.length +
+                  (applicants.length === 1 ? " søker" : " søkere")
+                : "Ingen søkere ennå"}
+            </span>
+          ) : (
+            <span className="biz-assignee">
+              <CandidatePhoto candidate={person} small />
+              {person?.name || "Student ikke valgt"}
+            </span>
+          )}
           <ChevronRight size={16} />
         </span>
       </button>
@@ -1262,7 +1295,9 @@ export function BusinessDashboard() {
               </h1>
               <p>
                 {page === "Oversikt"
-                  ? "Gode studenter. Konkrete oppgaver. Her har du oversikten."
+                  ? todoCount
+                    ? `Du har ${todoCount} ting å gjøre.`
+                    : "Alt er à jour."
                   : page === "Søknader"
                     ? "Flytt kandidatene etter hvor de er i søknadsprosessen. Dra kortet fra Søkt til Vurderes, videre til Tilbudt jobb og til slutt Fått jobben når kandidaten har takket ja."
                     : page === "Statistikk"
@@ -1301,133 +1336,121 @@ export function BusinessDashboard() {
           </div>
           {page === "Oversikt" && (
             <>
-              <div className="biz-stats">
-                <button onClick={() => navigate("Søknader")}>
-                  <span className="biz-stat-icon">
-                    <BriefcaseBusiness size={20} />
-                  </span>
-                  <span>
-                    <strong>{openJobs.length}</strong>
-                    <span>åpne oppdrag</span>
-                  </span>
-                  <ArrowUpRight size={16} />
-                </button>
-                <button onClick={() => navigate("Søknader")}>
-                  <span className="biz-stat-icon">
-                    <Users size={20} />
-                  </span>
-                  <span>
-                    <strong>{newApplications.length}</strong>
-                    <span>nye søkere</span>
-                  </span>
-                  <ArrowUpRight size={16} />
-                </button>
-                <button onClick={() => navigate("Attester")}>
-                  <span className="biz-stat-icon">
-                    <FileCheck2 size={20} />
-                  </span>
-                  <span>
-                    <strong>{pendingAttests.length}</strong>
-                    <span>
-                      {pendingAttests.length === 1
-                        ? "attest venter"
-                        : "attester venter"}
-                    </span>
-                  </span>
-                  <ArrowUpRight size={16} />
-                </button>
-              </div>
-              <section className="biz-next">
-                <div className="biz-next-copy">
-                  <span className="biz-next-icon">
-                    <ClipboardList size={20} />
-                  </span>
-                  <div>
-                    <h2>
-                      {newApplications.length
-                        ? `${newApplications.length} ${newApplications.length === 1 ? "ny søker" : "nye søkere"}`
-                        : "Du er oppdatert"}
-                    </h2>
-                    <p>
-                      {newApplications.length
-                        ? "Se kompetanse og attester før du velger student."
-                        : "Vi gir beskjed her når noe trenger oppfølging."}
-                    </p>
-                  </div>
+              <section className="biz-overview-section">
+                <div className="biz-section-head">
+                  <h2>Gjør nå</h2>
                 </div>
-                <Button
-                  variant="secondary"
-                  onClick={() =>
-                    navigate(newApplications.length ? "Søknader" : "Oppdrag")
-                  }
-                >
-                  {newApplications.length ? "Se nye søkere" : "Se oppdrag"}
-                  <ArrowRight size={16} />
-                </Button>
-              </section>
-              {pipeline()}
-              <div className="biz-bottom-grid">
-                <section className="biz-followup">
-                  <div className="biz-section-head">
-                    <h2>Trenger oppfølging</h2>
-                    <span>
-                      {
-                        jobs.filter(
-                          (j) =>
-                            j.stage === "Avtale" ||
-                            (j.stage === "Pågår" && j.studentApproved) ||
-                            (j.stage === "Fullført" && !j.attest),
-                        ).length
-                      }{" "}
-                      oppgaver
-                    </span>
-                  </div>
-                  {jobs
-                    .filter(
-                      (j) =>
-                        j.stage === "Avtale" ||
-                        (j.stage === "Pågår" && j.studentApproved) ||
-                        (j.stage === "Fullført" && !j.attest),
-                    )
-                    .map((j) => (
-                      <button key={j.id} onClick={() => openJob(j.id)}>
-                        <span className="biz-follow-icon">
-                          {j.stage === "Fullført" ? (
-                            <FileCheck2 size={19} />
-                          ) : j.stage === "Avtale" ? (
-                            <FileText size={19} />
-                          ) : (
-                            <CheckCheck size={19} />
-                          )}
+                <div className="biz-overview-grid">
+                  {newApplications.length > 0 && (
+                    <button
+                      className="biz-todo-card is-primary"
+                      onClick={() => navigate("Søknader")}
+                    >
+                      <span className="biz-todo-card-top">
+                        <span className="biz-avatar-stack">
+                          {[
+                            ...new Set(
+                              newApplications.map((a) => a.candidateId),
+                            ),
+                          ]
+                            .slice(0, 3)
+                            .map((id) => (
+                              <CandidatePhoto
+                                key={id}
+                                candidate={candidates.find((c) => c.id === id)}
+                              />
+                            ))}
                         </span>
-                        <span>
-                          <strong>
-                            {j.stage === "Fullført"
-                              ? "Skriv attest til " +
-                                candidates.find((c) => c.id === j.selected)
-                                  ?.name
-                              : j.stage === "Avtale"
-                                ? "Oppdragsavtalen gjenstår"
-                                : "Se gjennom levert arbeid"}
-                          </strong>
-                          <small>{j.title}</small>
+                        <span className="biz-todo-kind kind-new">
+                          Nye søkere
                         </span>
-                        <ChevronRight size={17} />
+                      </span>
+                      <strong>
+                        {newApplications.length}{" "}
+                        {newApplications.length === 1
+                          ? "ny søker"
+                          : "nye søkere"}
+                      </strong>
+                      <small>
+                        Søkt på{" "}
+                        {new Set(newApplications.map((a) => a.jobId)).size}{" "}
+                        oppdrag
+                      </small>
+                      <span className="biz-todo-cta">
+                        Se søkere <ArrowRight size={14} />
+                      </span>
+                    </button>
+                  )}
+                  {followUps.map((j) => {
+                    const person = candidates.find((c) => c.id === j.selected),
+                      first = person?.name.split(" ")[0],
+                      kind =
+                        j.stage === "Fullført"
+                          ? "attest"
+                          : j.stage === "Avtale"
+                            ? "avtale"
+                            : "levert";
+                    return (
+                      <button
+                        key={j.id}
+                        className="biz-todo-card"
+                        onClick={() => openJob(j.id)}
+                      >
+                        <span className="biz-todo-card-top">
+                          <span className="biz-avatar-stack">
+                            <CandidatePhoto candidate={person} />
+                          </span>
+                          <span className={"biz-todo-kind kind-" + kind}>
+                            {kind === "attest"
+                              ? "Attest"
+                              : kind === "avtale"
+                                ? "Avtale"
+                                : "Levert"}
+                          </span>
+                        </span>
+                        <strong>
+                          {kind === "attest"
+                            ? "Skriv attest til " + first
+                            : kind === "avtale"
+                              ? "Avklar avtalen med " + first
+                              : first + " har levert"}
+                        </strong>
+                        <small>{j.title}</small>
+                        <span className="biz-todo-cta">
+                          {kind === "attest"
+                            ? "Skriv attest"
+                            : kind === "avtale"
+                              ? "Avklar avtale"
+                              : "Se gjennom"}
+                          <ArrowRight size={14} />
+                        </span>
                       </button>
-                    ))}
-                </section>
-                <aside className="biz-good-to-know">
-                  <FileCheck2 size={23} />
-                  <h2>Trygghet starter med en tydelig avtale.</h2>
-                  <p>
-                    Avklar leveranse, frist og honorar med studenten før
-                    oppdraget starter.
-                  </p>
-                  <button onClick={() => setSheet("how")}>
-                    Slik fungerer det <ArrowUpRight size={16} />
+                    );
+                  })}
+                  {todoCount === 0 && (
+                    <div className="biz-todo-card is-empty">
+                      <strong>Alt er à jour</strong>
+                      <small>
+                        Vi gir beskjed her når noe trenger oppfølging.
+                      </small>
+                    </div>
+                  )}
+                </div>
+              </section>
+              <section className="biz-overview-section">
+                <div className="biz-section-head">
+                  <h2>Dine oppdrag</h2>
+                  <button
+                    className="biz-section-link"
+                    onClick={() => navigate("Oppdrag")}
+                  >
+                    Se alle <ArrowRight size={14} />
                   </button>
-                </aside>
-              </div>
+                </div>
+                <div className="biz-overview-grid biz-overview-jobs">
+                  {activeJobs.map(jobCard)}
+                </div>
+              </section>
             </>
           )}
           {page === "Oppdrag" && workOverview()}
