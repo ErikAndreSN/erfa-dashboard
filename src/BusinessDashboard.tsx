@@ -64,6 +64,7 @@ type Candidate = {
   id: number;
   name: string;
   initials: string;
+  photo: string;
   study: string;
   school: string;
   semester: string;
@@ -178,6 +179,7 @@ const candidates: Candidate[] = [
     id: 1,
     name: "Sara Johansen",
     initials: "SJ",
+    photo: "/people/sara.png",
     study: "Markedsføring og ledelse",
     school: "NTNU",
     semester: "5. semester",
@@ -192,6 +194,7 @@ const candidates: Candidate[] = [
     id: 2,
     name: "Jonas Berg",
     initials: "JB",
+    photo: "/people/jonas.png",
     study: "Økonomi og administrasjon",
     school: "BI",
     semester: "3. semester",
@@ -206,6 +209,7 @@ const candidates: Candidate[] = [
     id: 3,
     name: "Lina Holm",
     initials: "LH",
+    photo: "/people/lina.png",
     study: "Interaksjonsdesign",
     school: "NTNU",
     semester: "5. semester",
@@ -220,6 +224,7 @@ const candidates: Candidate[] = [
     id: 4,
     name: "Emil Andersen",
     initials: "EA",
+    photo: "/people/emil.png",
     study: "Film og medieproduksjon",
     school: "Høyskolen Kristiania",
     semester: "3. semester",
@@ -230,6 +235,30 @@ const candidates: Candidate[] = [
     quote: "Emil var selvstendig, kreativ og fulgte briefen godt.",
   },
 ];
+function CandidatePhoto({
+  candidate,
+  small = false,
+}: {
+  candidate?: Candidate;
+  small?: boolean;
+}) {
+  const [failed, setFailed] = useState(false);
+  return (
+    <span className={"biz-avatar" + (small ? " small" : "")}>
+      {candidate && !failed ? (
+        <img
+          src={candidate.photo}
+          alt={`Profilbilde av ${candidate.name}`}
+          draggable={false}
+          onError={() => setFailed(true)}
+        />
+      ) : (
+        candidate?.initials || "?"
+      )}
+    </span>
+  );
+}
+
 const initialApplications: Application[] = [
   { id: 1, jobId: 1, candidateId: 1, stage: "Søkt" },
   { id: 2, jobId: 1, candidateId: 3, stage: "Søkt" },
@@ -513,7 +542,7 @@ export function BusinessDashboard() {
         </span>
         <span className="biz-job-foot">
           <span className="biz-assignee">
-            <span className="biz-avatar small">{person?.initials}</span>
+            <CandidatePhoto candidate={person} small />
             {person?.name || "Student ikke valgt"}
           </span>
           <ChevronRight size={16} />
@@ -668,7 +697,7 @@ export function BusinessDashboard() {
                         }}
                       >
                         <div className="biz-student-card-top">
-                          <span className="biz-avatar">{c.initials}</span>
+                          <CandidatePhoto candidate={c} />
                           <button
                             aria-label={
                               (talent.includes(c.id) ? "Fjern " : "Lagre ") +
@@ -921,7 +950,7 @@ export function BusinessDashboard() {
           .map((c) => (
             <article className="biz-talent-card" key={c.id}>
               <div className="biz-student-card-top">
-                <span className="biz-avatar">{c.initials}</span>
+                <CandidatePhoto candidate={c} />
                 <button
                   aria-label={"Fjern " + c.name + " fra talentbase"}
                   onClick={() => toggleTalent(c.id)}
@@ -1045,7 +1074,7 @@ export function BusinessDashboard() {
                 key={a.id}
                 onClick={() => openApplicant(a.id)}
               >
-                <span className="biz-avatar">{c.initials}</span>
+                <CandidatePhoto candidate={c} />
                 <span className="biz-person">
                   <strong>{c.name}</strong>
                   <span>
@@ -1400,9 +1429,9 @@ export function BusinessDashboard() {
                       setSheet("attest");
                     }}
                   >
-                    <span className="biz-avatar">
-                      {candidates.find((c) => c.id === j.selected)?.initials}
-                    </span>
+                    <CandidatePhoto
+                      candidate={candidates.find((c) => c.id === j.selected)}
+                    />
                     <span className="biz-person">
                       <strong>
                         {candidates.find((c) => c.id === j.selected)?.name}
@@ -1485,9 +1514,7 @@ export function BusinessDashboard() {
           {page === "Meldinger" && (
             <section className="biz-messages">
               <div className="biz-conversation">
-                <span className="biz-avatar">
-                  {conversationStudent.initials}
-                </span>
+                <CandidatePhoto candidate={conversationStudent} />
                 <div>
                   <h2>{conversationStudent.name}</h2>
                   <p>{conversationJob.title}</p>
@@ -1664,9 +1691,9 @@ export function BusinessDashboard() {
               }}
             >
               <div className="biz-talent-recipient">
-                <span className="biz-avatar">
-                  {candidates.find((c) => c.id === talentCandidate)?.initials}
-                </span>
+                <CandidatePhoto
+                  candidate={candidates.find((c) => c.id === talentCandidate)}
+                />
                 <div>
                   <h2>
                     {candidates.find((c) => c.id === talentCandidate)?.name}
@@ -2188,12 +2215,11 @@ export function BusinessDashboard() {
                 </>
               ) : (
                 <div className="biz-chosen">
-                  <span className="biz-avatar">
-                    {
-                      candidates.find((c) => c.id === selectedJob.selected)
-                        ?.initials
-                    }
-                  </span>
+                  <CandidatePhoto
+                    candidate={candidates.find(
+                      (c) => c.id === selectedJob.selected,
+                    )}
+                  />
                   <div>
                     <strong>
                       {
@@ -2309,11 +2335,7 @@ export function BusinessDashboard() {
           {sheet === "candidate" && student && activeApplication && (
             <>
               <div className="biz-student-profile">
-                <Avatar
-                  src={student.id === 1 ? "/erfa-student-demo.png" : undefined}
-                  name={student.name}
-                  size="lg"
-                />
+                <Avatar src={student.photo} name={student.name} size="lg" />
                 <div>
                   <h2>{student.name}</h2>
                   <p>
