@@ -736,10 +736,16 @@ export function BusinessDashboard() {
                         >
                           <h3>{c.name}</h3>
                           <p>{c.study}</p>
-                          <small>
-                            {c.school} · {c.semester}
-                          </small>
                         </button>
+                        <div className="biz-student-school">
+                          <span className="biz-student-school-logo">
+                            <SchoolLogo school={c.school} />
+                          </span>
+                          <span>
+                            <strong>{c.school}</strong>
+                            <small>{c.semester}</small>
+                          </span>
+                        </div>
                         <div className="biz-skills">
                           {c.skills.slice(0, 2).map((skill) => (
                             <span key={skill}>{skill}</span>
@@ -750,7 +756,13 @@ export function BusinessDashboard() {
                             <FileCheck2 size={14} />
                             {c.attests} attester
                           </span>
-                          <b>{matchFor(a)} % samsvar</b>
+                          <b
+                            className={
+                              "biz-match" + (matchFor(a) >= 85 ? " high" : "")
+                            }
+                          >
+                            {matchFor(a)} % samsvar
+                          </b>
                         </div>
                         <label className="biz-status-control">
                           <span className="sr-only">Status for {c.name}</span>
