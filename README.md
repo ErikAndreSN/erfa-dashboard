@@ -55,7 +55,7 @@ Hver person har sine egne eksempeldata; endringer synkroniseres ikke mellom bruk
 Bedriften flytter studentkort per annonse gjennom Søkt → Vurderes → Tilbudt jobb → Fått jobben.
 Både dra-og-slipp, tastatur og statusvalg støttes. Tilbud og aksept er bare demoregistreringer.
 Valgte studenter følges opp under Oppdrag, med egne faner for Pågående og Fullførte.
-Bedriften kan skrive attest og lagre kandidater i en lokal talentpool.
+Bedriften kan skrive attest og lagre kandidater i en lokal talentbase.
 Oppdragsskjemaet har verktøynivå 1–5, kompetansekrav, arbeidshverdag, oppstart,
 arbeidssted, tilknytningsform og timepris/totalpris. Gebyr for timepris beregnes ikke
 uten bekreftet samlet honorar.
@@ -67,3 +67,6 @@ Demoen har ingen backend, ekte innlogging, betalingsfunksjon eller meldingssendi
 Honorar betales direkte mellom bedrift og student utenfor plattformen.
 Gebyroversikter er eksempler, ikke fakturaer.
 Demoen er satt til `noindex` i Vercel-konfigurasjonen.
+
+Talentbasen har lokale utkast for nytt samarbeid og tilbud om fast stilling.
+Ingen forespørsler sendes til kandidater fra demoen.

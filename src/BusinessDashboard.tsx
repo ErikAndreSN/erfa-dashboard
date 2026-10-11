@@ -321,6 +321,26 @@ export function BusinessDashboard() {
     [applicationTarget, setApplicationTarget] =
       useState<ApplicationStage | null>(null),
     [applicationKeyboard, setApplicationKeyboard] = useState(false);
+  const [talentDrafts, setTalentDrafts] = useState<
+    {
+      id: number;
+      candidateId: number;
+      kind: string;
+      title: string;
+      message: string;
+    }[]
+  >(seed.talentDrafts || []);
+  const [talentCandidate, setTalentCandidate] = useState(1),
+    [talentKind, setTalentKind] = useState("Nytt samarbeid"),
+    [talentTitle, setTalentTitle] = useState(""),
+    [talentMessage, setTalentMessage] = useState("");
+  const beginTalentRequest = (id: number, kind: string) => {
+    setTalentCandidate(id);
+    setTalentKind(kind);
+    setTalentTitle("");
+    setTalentMessage("");
+    setSheet("talent-request");
+  };
   const appDragRef = useRef<number | null>(null),
     appClickUntil = useRef(0);
   const [company, setCompany] = useState({
@@ -333,9 +353,9 @@ export function BusinessDashboard() {
     if (!qaMode)
       localStorage.setItem(
         storeKey,
-        JSON.stringify({ jobs, applications, talent }),
+        JSON.stringify({ jobs, applications, talent, talentDrafts }),
       );
-  }, [jobs, applications, talent]);
+  }, [jobs, applications, talent, talentDrafts]);
   useEffect(() => {
     if (!toast) return;
     const timeout = setTimeout(() => setToast(""), 3500);
@@ -386,8 +406,8 @@ export function BusinessDashboard() {
     );
     setToast(
       talent.includes(id)
-        ? "Studenten er fjernet fra talentpoolen"
-        : "Studenten er lagret i talentpoolen",
+        ? "Studenten er fjernet fra talentbasen"
+        : "Studenten er lagret i talentbasen",
     );
   };
   const choose = () => {
@@ -653,7 +673,7 @@ export function BusinessDashboard() {
                             aria-label={
                               (talent.includes(c.id) ? "Fjern " : "Lagre ") +
                               c.name +
-                              " i talentpool"
+                              " i talentbase"
                             }
                             aria-pressed={talent.includes(c.id)}
                             onClick={() => toggleTalent(c.id)}
@@ -888,9 +908,10 @@ export function BusinessDashboard() {
     <section className="biz-board-section">
       <div className="biz-section-head">
         <div>
-          <h2>Studenter du vil jobbe med igjen</h2>
+          <h2>Kandidater for neste samarbeid</h2>
           <p>
-            {talent.length} lagrede studenter. Bygg videre på gode samarbeid.
+            {talent.length} lagrede kandidater. Se profilene, start et nytt
+            samarbeid eller lag et tilbud om fast stilling.
           </p>
         </div>
       </div>
@@ -902,7 +923,7 @@ export function BusinessDashboard() {
               <div className="biz-student-card-top">
                 <span className="biz-avatar">{c.initials}</span>
                 <button
-                  aria-label={"Fjern " + c.name + " fra talentpool"}
+                  aria-label={"Fjern " + c.name + " fra talentbase"}
                   onClick={() => toggleTalent(c.id)}
                 >
                   <Heart size={19} fill="currentColor" />
@@ -930,6 +951,42 @@ export function BusinessDashboard() {
               >
                 Se studentprofil <ArrowUpRight size={16} />
               </Button>
+              <div className="biz-talent-actions">
+                <Button
+                  className="primary-cta"
+                  onClick={() => beginTalentRequest(c.id, "Nytt samarbeid")}
+                >
+                  Nytt samarbeid <ArrowUpRight size={15} />
+                </Button>
+                <Button
+                  variant="secondary"
+                  onClick={() => beginTalentRequest(c.id, "Fast stilling")}
+                >
+                  Tilby fast stilling <BriefcaseBusiness size={15} />
+                </Button>
+              </div>
+              {talentDrafts
+                .filter((d) => d.candidateId === c.id)
+                .map((d) => (
+                  <div className="biz-talent-draft" key={d.id}>
+                    <FileText size={15} />
+                    <span>
+                      <strong>{d.title}</strong>
+                      <small>{d.kind} · Utkast, ikke sendt</small>
+                    </span>
+                    <button
+                      onClick={() => {
+                        setTalentCandidate(c.id);
+                        setTalentKind(d.kind);
+                        setTalentTitle(d.title);
+                        setTalentMessage(d.message);
+                        setSheet("talent-request");
+                      }}
+                    >
+                      Se utkast <ChevronRight size={14} />
+                    </button>
+                  </div>
+                ))}
             </article>
           ))}
       </div>
@@ -1033,7 +1090,7 @@ export function BusinessDashboard() {
     { name: "Søknader", icon: Users },
     { name: "Meldinger", icon: MessageCircle },
     { name: "Statistikk", icon: BarChart3 },
-    { name: "Talentpool", icon: Heart },
+    { name: "Talentbase", icon: Heart },
     { name: "Attester", icon: FileCheck2 },
     { name: "Fakturaer", icon: FileText },
     { name: "Bedriftsprofil", icon: Building2 },
@@ -1140,8 +1197,8 @@ export function BusinessDashboard() {
                       ? "Finn den rette studenten"
                       : page === "Statistikk"
                         ? "Innsikt i annonsene"
-                        : page === "Talentpool"
-                          ? "Din talentpool"
+                        : page === "Talentbase"
+                          ? "Din talentbase"
                           : page === "Attester"
                             ? "Gi erfaringen verdi"
                             : page === "Fakturaer"
@@ -1154,11 +1211,11 @@ export function BusinessDashboard() {
                 {page === "Oversikt"
                   ? "Gode studenter. Konkrete oppgaver. Her har du oversikten."
                   : page === "Søknader"
-                    ? "Bli kjent med ferdighetene bak søknaden."
+                    ? "Flytt kandidatene etter hvor de er i søknadsprosessen. Dra kortet fra Søkt til Vurderes, videre til Tilbudt jobb og til slutt Fått jobben når kandidaten har takket ja."
                     : page === "Statistikk"
                       ? "Se hva som skaper interesse og gode søknader."
-                      : page === "Talentpool"
-                        ? "Gode mennesker er verdt å huske."
+                      : page === "Talentbase"
+                        ? "Lagre gode kandidater for et nytt samarbeid eller et tilbud om fast stilling."
                         : page === "Attester"
                           ? "En konkret attest hjelper studenten videre."
                           : page === "Fakturaer"
@@ -1174,7 +1231,7 @@ export function BusinessDashboard() {
               "Bedriftsprofil",
               "Fakturaer",
               "Meldinger",
-              "Talentpool",
+              "Talentbase",
               "Attester",
             ].includes(page) && (
               <Button
@@ -1324,7 +1381,7 @@ export function BusinessDashboard() {
           {page === "Oppdrag" && workOverview()}
           {page === "Søknader" && pipeline()}
           {page === "Statistikk" && statistics()}
-          {page === "Talentpool" && talentPool()}
+          {page === "Talentbase" && talentPool()}
           {page === "Attester" && (
             <section className="biz-page-panel">
               <div className="biz-section-head">
@@ -1550,15 +1607,19 @@ export function BusinessDashboard() {
           if (!open) setSheet("");
         }}
         title={
-          sheet === "publish"
-            ? "Hva trenger dere hjelp med?"
-            : sheet === "candidate"
-              ? "Bli kjent med studenten"
-              : sheet === "attest"
-                ? "Skriv en attest"
-                : sheet === "how"
-                  ? "Fra oppgave til erfaring"
-                  : "Oppdraget ditt"
+          sheet === "talent-request"
+            ? talentKind === "Fast stilling"
+              ? "Tilbud om fast stilling"
+              : "Et nytt samarbeid"
+            : sheet === "publish"
+              ? "Hva trenger dere hjelp med?"
+              : sheet === "candidate"
+                ? "Bli kjent med studenten"
+                : sheet === "attest"
+                  ? "Skriv en attest"
+                  : sheet === "how"
+                    ? "Fra oppgave til erfaring"
+                    : "Oppdraget ditt"
         }
         description={company.name + " · " + BRAND_NAME}
         closeLabel="Lukk"
@@ -1566,6 +1627,104 @@ export function BusinessDashboard() {
         className="biz-sheet"
       >
         <div className="biz-sheet-content">
+          {sheet === "talent-request" && (
+            <form
+              className="biz-publish"
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!talentTitle.trim() || !talentMessage.trim()) return;
+                setTalentDrafts((list) => {
+                  const existing = list.find(
+                    (d) =>
+                      d.candidateId === talentCandidate &&
+                      d.kind === talentKind &&
+                      d.title === talentTitle.trim(),
+                  );
+                  return existing
+                    ? list.map((d) =>
+                        d.id === existing.id
+                          ? { ...d, message: talentMessage.trim() }
+                          : d,
+                      )
+                    : [
+                        ...list,
+                        {
+                          id: Date.now(),
+                          candidateId: talentCandidate,
+                          kind: talentKind,
+                          title: talentTitle.trim(),
+                          message: talentMessage.trim(),
+                        },
+                      ];
+                });
+                setSheet("");
+                setToast(
+                  "Utkastet er lagret i talentbasen. Ingenting er sendt.",
+                );
+              }}
+            >
+              <div className="biz-talent-recipient">
+                <span className="biz-avatar">
+                  {candidates.find((c) => c.id === talentCandidate)?.initials}
+                </span>
+                <div>
+                  <h2>
+                    {candidates.find((c) => c.id === talentCandidate)?.name}
+                  </h2>
+                  <p>
+                    {candidates.find((c) => c.id === talentCandidate)?.study}
+                  </p>
+                </div>
+              </div>
+              <p>
+                {talentKind === "Fast stilling"
+                  ? "Beskriv stillingen og hvorfor dere ønsker kandidaten med på laget."
+                  : "Fortell hva dere ønsker hjelp til, og hvorfor dere vil samarbeide igjen."}
+              </p>
+              <label>
+                {talentKind === "Fast stilling"
+                  ? "Stillingstittel"
+                  : "Navn på samarbeidet"}
+                <input
+                  required
+                  maxLength={100}
+                  value={talentTitle}
+                  onChange={(e) => setTalentTitle(e.target.value)}
+                  placeholder={
+                    talentKind === "Fast stilling"
+                      ? "F.eks. markedskoordinator"
+                      : "F.eks. innhold til høstkampanjen"
+                  }
+                />
+              </label>
+              <label>
+                {talentKind === "Fast stilling"
+                  ? "Om stillingen og neste steg"
+                  : "Om samarbeidet og neste steg"}
+                <textarea
+                  required
+                  maxLength={2000}
+                  value={talentMessage}
+                  onChange={(e) => setTalentMessage(e.target.value)}
+                  placeholder="Beskriv oppgavene, rammene og hvordan dere ønsker å ta dialogen videre."
+                />
+              </label>
+              <div className="biz-hint">
+                Utkastet lagres bare i denne nettleseren. Kandidaten blir ikke
+                kontaktet, og ingen avtale inngås.{" "}
+                {talentKind === "Fast stilling"
+                  ? "Bedriften følger opp ansettelsen direkte."
+                  : ""}
+              </div>
+              <Button className="primary-cta" type="submit">
+                Lagre{" "}
+                {talentKind === "Fast stilling"
+                  ? "tilbudsutkast"
+                  : "forespørsel"}{" "}
+                <Check size={16} />
+              </Button>
+            </form>
+          )}
           {sheet === "publish" && (
             <form
               className="biz-publish"
@@ -2131,8 +2290,8 @@ export function BusinessDashboard() {
                   >
                     <Heart size={16} />
                     {talent.includes(selectedJob.selected!)
-                      ? "Lagret i talentpool"
-                      : "Lagre studenten i talentpool"}
+                      ? "Lagret i talentbase"
+                      : "Lagre studenten i talentbase"}
                   </Button>
                   <button
                     className="biz-inline-link"
@@ -2231,8 +2390,8 @@ export function BusinessDashboard() {
                 >
                   <Heart size={16} />
                   {talent.includes(student.id)
-                    ? "Fjern fra talentpool"
-                    : "Lagre i talentpool"}
+                    ? "Fjern fra talentbase"
+                    : "Lagre i talentbase"}
                 </Button>
                 <small>Tilbud og aksept registreres kun i demoen.</small>
               </div>

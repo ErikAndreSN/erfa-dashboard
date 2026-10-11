@@ -2172,3 +2172,59 @@
   white-space: nowrap;
   border: 0;
 }
+.business-app .biz-heading p {
+  max-width: 760px;
+  line-height: 1.8;
+}
+.biz-talent-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.biz-talent-actions > button {
+  width: 100%;
+  font-size: 12px;
+}
+.biz-talent-recipient {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.biz-talent-recipient h2 {
+  font-size: 26px;
+}
+.biz-talent-draft {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  border-top: 1px solid #e3e3e6;
+  padding-top: 15px;
+  font-size: 11px;
+}
+.biz-talent-draft > svg {
+  color: #ff6a3d;
+  flex-shrink: 0;
+}
+.biz-talent-draft > span {
+  flex: 1;
+  min-width: 0;
+}
+.biz-talent-draft strong {
+  display: block;
+  overflow-wrap: anywhere;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.biz-talent-draft small {
+  display: block;
+  font-size: 9px;
+  color: #737478;
+  margin-top: 5px;
+}
+.biz-talent-draft > button {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+  font-size: 10px;
+}
