@@ -8,14 +8,20 @@ export function Select({
   onValueChange,
   label,
   options,
+  disabled = false,
 }: {
   value: string;
   onValueChange: (value: string) => void;
   label: string;
+  disabled?: boolean;
   options: { value: string; label: string }[];
 }) {
   return (
-    <SelectPrimitive.Root value={value} onValueChange={onValueChange}>
+    <SelectPrimitive.Root
+      value={value}
+      onValueChange={onValueChange}
+      disabled={disabled}
+    >
       <SelectPrimitive.Trigger
         className="erfa-select-trigger"
         aria-label={label}

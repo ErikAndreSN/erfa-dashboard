@@ -754,21 +754,18 @@ export function BusinessDashboard() {
                         </div>
                         <label className="biz-status-control">
                           <span className="sr-only">Status for {c.name}</span>
-                          <select
-                            aria-label={"Status for " + c.name}
+                          <Select
+                            label={"Status for " + c.name}
                             value={stage}
                             disabled={stage === "Fått jobben"}
-                            onChange={(e) =>
-                              moveApplication(
-                                a.id,
-                                e.target.value as ApplicationStage,
-                              )
+                            onValueChange={(value) =>
+                              moveApplication(a.id, value as ApplicationStage)
                             }
-                          >
-                            {applicationStages.map((x) => (
-                              <option key={x}>{x}</option>
-                            ))}
-                          </select>
+                            options={applicationStages.map((value) => ({
+                              value,
+                              label: value,
+                            }))}
+                          />
                         </label>
                       </article>
                     );
