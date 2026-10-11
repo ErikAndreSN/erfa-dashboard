@@ -52,7 +52,15 @@ og resultatmappe **dist**. Ingen miljøvariabler trengs for demoen.
 
 Profil, erfaringer og oppdrag lagres i nettleserens localStorage.
 Hver person har sine egne eksempeldata; endringer synkroniseres ikke mellom brukere.
-Bedriftens oppdrag kan flyttes med dra-og-slipp eller tastatur.
+Bedriften flytter studentkort per annonse gjennom Søkt → Vurderes → Tilbudt jobb → Fått jobben.
+Både dra-og-slipp, tastatur og statusvalg støttes. Tilbud og aksept er bare demoregistreringer.
+Valgte studenter følges opp under Oppdrag, med egne faner for Pågående og Fullførte.
+Bedriften kan skrive attest og lagre kandidater i en lokal talentpool.
+Oppdragsskjemaet har verktøynivå 1–5, kompetansekrav, arbeidshverdag, oppstart,
+arbeidssted, tilknytningsform og timepris/totalpris. Gebyr for timepris beregnes ikke
+uten bekreftet samlet honorar.
+Statistikk viser uttrykkelig fiktive klikk og lagringer. Søkertall følger demoen;
+kvalifiserte søknader er eksempeldata med minst 85 % samsvar per søknad.
 `/bedrift?demo=qa` starter med eksempeldata og lagrer ikke endringer.
 
 Demoen har ingen backend, ekte innlogging, betalingsfunksjon eller meldingssending.
