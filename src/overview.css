@@ -295,17 +295,14 @@
 .reference-look .sh-row + .sh-row {
   border-top: 1px solid #e7e7ea;
 }
-.reference-look .sh-row-stacked {
-  grid-template-columns: auto minmax(0, 1fr) auto;
-}
 .reference-look .sh-row .company-logo {
   width: 44px;
   height: 44px;
   border-radius: 13px;
 }
 .reference-look .sh-row .company-logo img {
-  width: 30px;
-  height: 18px;
+  width: 36px;
+  height: 24px;
 }
 .reference-look .sh-row .company-logo-fallback {
   background: #fff;
@@ -355,11 +352,8 @@
   background: currentColor;
 }
 .reference-look .sh-chip-match {
-  color: #d6542d;
-}
-.reference-look .sh-chip-waiting {
-  margin-top: 6px;
-  color: #9a52d6;
+  background: #e5f5ea;
+  color: #23834b;
 }
 .reference-look .sh-empty {
   padding: 14px 0;
@@ -371,19 +365,19 @@
     padding: 20px 18px 6px;
     border-radius: 24px;
   }
-  .reference-look .sh-row:not(.sh-row-stacked) {
+  .reference-look .sh-row {
     grid-template-columns: auto minmax(0, 1fr) auto;
     row-gap: 8px;
   }
-  .reference-look .sh-row:not(.sh-row-stacked) > .sh-chip {
+  .reference-look .sh-row > .sh-chip {
     grid-column: 2;
     grid-row: 2;
   }
-  .reference-look .sh-row:not(.sh-row-stacked) > svg {
+  .reference-look .sh-row > svg {
     grid-column: 3;
     grid-row: 1 / span 2;
   }
-  .reference-look .sh-row:not(.sh-row-stacked) > .company-logo {
+  .reference-look .sh-row > .company-logo {
     grid-row: 1 / span 2;
   }
 }
@@ -409,5 +403,684 @@
 @media (prefers-reduced-motion: reduce) {
   .reference-look .status-progress i {
     animation: none;
+  }
+}
+/* Søknader: logo, tittel og en liten fremdriftslinje per søknad. */
+.reference-look .sh-app {
+  display: block;
+  width: 100%;
+  padding: 4px 0 18px;
+  text-align: left;
+}
+.reference-look .sh-app + .sh-app {
+  border-top: 1px solid #e7e7ea;
+}
+.reference-look .sh-app > .sh-row {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+.reference-look .sh-steps.sh-steps-mini {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 4px 0 0;
+  padding-left: 58px;
+}
+/* Logoer med egne merkefarger: hvit flate for TINE og DNB, oransje for Vipps. */
+.company-logo.tine,
+.company-logo.dnb {
+  background: #fff;
+}
+.company-logo.vipps {
+  background: #ff5b24;
+}
+.company-logo.vipps img {
+  filter: brightness(0) invert(1);
+}
+/* Tellere i menyen skal synes: oransje med hvit tekst. */
+.reference-look .nav-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  margin-left: auto;
+  padding: 0 6px;
+  border-radius: 100px;
+  background: #ff6a3d;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Undersidene følger oversikten: rolige kort, lister og samme statusfarger. */
+.reference-look .sh-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.reference-look .sh-page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+}
+.reference-look .sh-page-head:first-child {
+  margin-top: 0;
+}
+.reference-look .sh-page-head h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.4px;
+}
+.reference-look .sh-page .sh-focus-card {
+  min-height: 0;
+}
+.reference-look .sh-page > .sh-list-card,
+.reference-look .sh-exp-list {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.reference-look .sh-page .sh-steps {
+  max-width: 640px;
+}
+.reference-look .sh-page .sh-steps.sh-steps-mini {
+  max-width: 520px;
+}
+.reference-look .sh-page > .sh-link {
+  align-self: flex-start;
+}
+.reference-look .sh-chip-done {
+  color: #6f7076;
+}
+.reference-look .sh-chip-done::before {
+  content: "✓";
+  width: auto;
+  height: auto;
+  background: none;
+}
+.reference-look .sh-exp-list {
+  margin-top: 16px;
+}
+.reference-look .sh-exp {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  column-gap: 16px;
+  padding: 20px 0;
+}
+.reference-look .sh-exp + .sh-exp {
+  border-top: 1px solid #e7e7ea;
+}
+.reference-look .sh-exp .company-logo,
+.reference-look .sh-exp-school {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+}
+.reference-look .sh-exp .company-logo img {
+  width: 36px;
+  height: 24px;
+}
+.reference-look .sh-exp .company-logo-fallback {
+  background: #fff;
+  font-size: 19px;
+}
+.reference-look .sh-exp-school {
+  display: grid;
+  place-items: center;
+  padding: 7px;
+  background: #fff;
+}
+.reference-look .sh-exp-school .school-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.reference-look .sh-exp h3 {
+  margin: 0;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: 0;
+  color: #242426;
+}
+.reference-look .sh-exp small {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  color: #737478;
+}
+.reference-look .sh-exp p {
+  max-width: 640px;
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #55565c;
+}
+.reference-look .sh-exp-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.reference-look .sh-exp-skills span,
+.reference-look .sh-kind {
+  padding: 5px 10px;
+  border-radius: 100px;
+  background: #fff;
+  font-size: 11px;
+  color: #55565c;
+  white-space: nowrap;
+}
+.reference-look .sh-kind {
+  font-weight: 500;
+}
+
+/* Finn oppdrag: rene kort uten bilde. */
+.reference-look .sh-quest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+.reference-look .sh-quest {
+  border: 0;
+  border-radius: 28px;
+  background: #f5f5f6;
+  box-shadow: none;
+}
+.reference-look .sh-quest > [class*="_content_"] {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  padding: 22px;
+}
+.reference-look .sh-quest .sh-quest-top {
+  order: 0;
+  margin-bottom: 10px;
+}
+.reference-look .sh-quest h3 {
+  order: 1;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.4px;
+}
+.reference-look .sh-quest [class*="_description_"] {
+  order: 2;
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #6b6c72;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.reference-look .sh-quest .sh-quest-meta {
+  order: 3;
+  margin-top: 6px;
+}
+.reference-look .sh-quest [class*="_footer_"] {
+  order: 4;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid #e6e6e8;
+}
+.reference-look .sh-quest [class*="_meta_"] {
+  font-size: 16px;
+  font-weight: 600;
+  color: #242426;
+}
+.sh-quest-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #4a4b50;
+}
+.sh-quest-top .company-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+.sh-quest-top .company-logo img {
+  width: 30px;
+  height: 20px;
+}
+.sh-quest-match {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 5px 10px;
+  border-radius: 100px;
+  background: #e5f5ea;
+  color: #23834b;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.sh-quest-match::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.sh-quest-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.sh-quest-meta > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 100px;
+  background: #fff;
+  font-size: 11px;
+  color: #55565c;
+}
+
+/* Forhåndsvisningen av et oppdrag: logo først, ingen doble fakta. */
+[data-framer-portal-id]:has(.sh-quest-top) > [class*="_content_"] {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+[data-framer-portal-id] .sh-quest-top {
+  order: -1;
+  margin-bottom: 6px;
+  padding-right: 44px;
+}
+[data-framer-portal-id]:has(.sh-quest-top) [class*="_meta_"] {
+  font-size: 16px;
+  font-weight: 600;
+  color: #242426;
+}
+[data-framer-portal-id] .sh-quest-meta > span {
+  background: #f5f5f6;
+}
+[data-framer-portal-id]:has(.sh-quest-top) .quest-detail-meta {
+  display: none;
+}
+/* Inntekt: diagrammet til venstre, tallene til høyre. */
+.reference-look .dashboard:has(.sh-chart-card) {
+  grid-template-columns: minmax(0, 1fr) 310px;
+}
+.reference-look .dashboard:has(.sh-chart-card) .profile-column {
+  display: block;
+}
+.reference-look .dashboard:has(.sh-chart-card) .profile-column .profile-card,
+.reference-look .dashboard:has(.sh-chart-card) .profile-column .aside-note {
+  display: none;
+}
+@media (max-width: 950px) {
+  .reference-look .dashboard:has(.sh-chart-card) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.reference-look .sh-chart-card,
+.reference-look .sh-income-summary {
+  display: flex;
+  flex-direction: column;
+  padding: 26px;
+  border-radius: 30px;
+  background: #f5f5f6;
+}
+.reference-look .sh-income-bars.sh-income-bars-lg {
+  flex: none;
+  height: 280px;
+  max-height: none;
+  gap: 14px;
+  margin-top: 26px;
+}
+.reference-look .sh-income-bars em {
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 500;
+  color: #55565c;
+  white-space: nowrap;
+}
+.reference-look .sh-income-total {
+  margin: 16px 0 18px;
+  font-family: var(--font-display);
+  font-size: 44px;
+  font-weight: 500;
+  letter-spacing: -1px;
+  color: #242426;
+}
+.reference-look .sh-income-total span {
+  font-size: 20px;
+}
+.reference-look .sh-stat-rows > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 0;
+  border-top: 1px solid #e7e7ea;
+  font-size: 13px;
+  color: #55565c;
+}
+.reference-look .sh-stat-rows b {
+  font-weight: 600;
+  color: #242426;
+}
+.reference-look .sh-income-summary .sh-income-links {
+  margin-top: auto;
+}
+
+/* Oppdragsvinduet: logo, status, fakta og tydelige steg. */
+.sh-task-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.sh-task-head .company-logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 15px;
+}
+.sh-task-head .company-logo img {
+  width: 36px;
+  height: 22px;
+}
+.sh-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 13px;
+  border-radius: 100px;
+  background: #e5f5ea;
+  color: #23834b;
+  font-size: 12px;
+  font-weight: 500;
+}
+.sh-live::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: sh-live-pulse 1.8s ease-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sh-live::before {
+    animation: none;
+  }
+}
+.sh-task-brief {
+  margin: 4px 0 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: #242426;
+}
+.sh-task-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sh-task-facts > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px;
+  border-radius: 100px;
+  background: #f5f5f6;
+  font-size: 12px;
+  color: #4a4b50;
+}
+.sh-task-steps {
+  padding: 18px 20px 8px;
+  border-radius: 22px;
+  background: #f5f5f6;
+}
+.sh-task-steps-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  color: #737478;
+}
+.sh-task-steps-head b {
+  font-weight: 500;
+  color: #242426;
+}
+.sh-task-progress {
+  display: block;
+  height: 6px;
+  margin: 12px 0 6px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #e2e2e5;
+}
+.sh-task-progress i {
+  display: block;
+  width: 66.6%;
+  height: 100%;
+  border-radius: inherit;
+  background: #ff6a3d;
+}
+.sh-task-steps ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sh-task-steps li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  font-size: 14px;
+  color: #6f7076;
+}
+.sh-task-steps li + li {
+  border-top: 1px solid #e7e7ea;
+}
+.sh-task-steps li > span {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 600;
+}
+.sh-task-steps li.is-done > span {
+  background: #ff6a3d;
+  color: #fff;
+}
+.sh-task-steps li.is-current {
+  font-weight: 500;
+  color: #242426;
+}
+.sh-task-steps li.is-current > span {
+  background: #fff;
+  box-shadow: inset 0 0 0 2px #ff6a3d;
+  color: #ff6a3d;
+}
+.sh-task-steps em {
+  margin-left: auto;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: #fff1ea;
+  color: #d6542d;
+  font-size: 11px;
+  font-style: normal;
+}
+@media (max-width: 700px) {
+  .reference-look .sh-exp {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .reference-look .sh-exp > .sh-kind {
+    grid-column: 2;
+    justify-self: start;
+    margin-top: 10px;
+  }
+  .reference-look .sh-income-bars.sh-income-bars-lg {
+    height: 220px;
+    gap: 8px;
+  }
+  .reference-look .sh-income-bars em {
+    font-size: 9px;
+  }
+}
+/* Meldinger: samme grå flate, hvit boble og hvitt tekstfelt. */
+.reference-look .main-column .message-view {
+  padding: 26px;
+  border: 0;
+  border-radius: 30px;
+  background: #f5f5f6;
+}
+.reference-look .main-column .message-person .company-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+}
+.reference-look .main-column .message-person p {
+  font-size: 12px;
+  color: #737478;
+}
+.reference-look .main-column .message-bubble {
+  max-width: 560px;
+  border-radius: 20px 20px 20px 6px;
+  background: #fff;
+  font-size: 14px;
+  color: #242426;
+}
+.reference-look .main-column .message-bubble small {
+  color: #8a8b91;
+}
+.reference-look .main-column .message-view label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #242426;
+}
+.reference-look .main-column .message-view textarea {
+  border: 1px solid #e7e7ea;
+  border-radius: 18px;
+  background: #fff;
+  color: #242426;
+}
+.company-logo.telenor {
+  background: #1aa3c9;
+}
+.company-logo.telenor img {
+  filter: brightness(0) invert(1);
+}
+
+/* Søknader på oversikten: en liten bunke. Trykk for å se alle. */
+.reference-look .sh-stack {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: calc(68px + (var(--n) - 1) * 14px);
+  margin: 14px 0;
+  padding: 0;
+  text-align: left;
+}
+.reference-look .sh-stack-card {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: calc(10 - var(--i));
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 12px;
+  height: 68px;
+  padding: 0 14px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow:
+    0 1px 2px rgb(20 20 30 / 4%),
+    0 6px 18px rgb(20 20 30 / 6%);
+  transform: translateY(calc(var(--i) * 10px)) scale(calc(1 - var(--i) * 0.05));
+  transform-origin: 50% 0;
+  transition:
+    transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.2s;
+}
+.reference-look .sh-stack-card:not(:first-child) > * {
+  visibility: hidden;
+}
+.reference-look .sh-stack:hover .sh-stack-card,
+.reference-look .sh-stack:focus-visible .sh-stack-card {
+  transform: translateY(calc(var(--i) * 14px - 3px))
+    scale(calc(1 - var(--i) * 0.05));
+}
+.reference-look .sh-stack:hover .sh-stack-card:first-child,
+.reference-look .sh-stack:focus-visible .sh-stack-card:first-child {
+  box-shadow: 0 12px 28px rgb(20 20 30 / 12%);
+}
+.reference-look .sh-stack:focus-visible {
+  outline: none;
+}
+.reference-look .sh-stack:focus-visible .sh-stack-card:first-child {
+  outline: 2px solid #ff6a3d;
+  outline-offset: 2px;
+}
+.reference-look .sh-stack-card .company-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+.reference-look .sh-stack-card .company-logo img {
+  width: 30px;
+  height: 20px;
+}
+.reference-look .sh-stack-card > span:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.reference-look .sh-stack-card strong {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #242426;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.reference-look .sh-stack-card small {
+  font-size: 11px;
+  color: #737478;
+}
+.reference-look .sh-stack-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 100px;
+  background: #f2f2f4;
+  color: #6f7076;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.reference-look .sh-stack-status::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.reference-look .sh-stack-status.is-review {
+  background: #eef4ff;
+  color: #3478f6;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reference-look .sh-stack-card {
+    transition: none;
   }
 }

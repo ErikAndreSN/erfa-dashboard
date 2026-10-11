@@ -100,9 +100,16 @@
   box-shadow: none;
 }
 .business-app .nav-count {
-  background: #fff0e9;
-  color: #d6542d;
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
   border-radius: 100px;
+  background: #ff6a3d;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
 }
 .biz-nav-dot {
   margin-left: auto;
@@ -2442,8 +2449,8 @@
   background: var(--biz-surface);
 }
 .biz-student-trust .biz-match.high {
-  background: #fff1ea;
-  color: #c4532c;
+  background: #e5f5ea;
+  color: #23834b;
 }
 
 /* Oversikt: ett fokuskort øverst, resten som rolige lister. */
