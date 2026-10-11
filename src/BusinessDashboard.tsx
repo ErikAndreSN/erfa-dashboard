@@ -32,6 +32,11 @@ import { BottomSheet } from "./components/arc/bottom-sheet/bottom-sheet";
 import { Avatar } from "./components/arc/avatar/avatar";
 import { BRAND_NAME, BrandMark } from "./brand";
 import "./business.css";
+import {
+  BUSINESS_STORE,
+  SchoolIdentity,
+  VerifiedSkills,
+} from "./VerifiedSkills";
 
 type Stage = "Publisert" | "Avtale" | "Pågår" | "Fullført";
 type ApplicationStage = "Søkt" | "Vurderes" | "Tilbudt jobb" | "Fått jobben";
@@ -49,6 +54,8 @@ type Job = {
   studentApproved: boolean;
   companyApproved: boolean;
   attest?: string;
+  attestSkills?: string[];
+  attestCompany?: string;
   tools?: { name: string; level: number }[];
   expectations?: string;
   day?: string;
@@ -181,7 +188,7 @@ const candidates: Candidate[] = [
     initials: "SJ",
     photo: "/people/sara.png",
     study: "Markedsføring og ledelse",
-    school: "NTNU",
+    school: "Høyskolen Kristiania",
     semester: "5. semester",
     skills: ["Sosiale medier", "Tekst", "Canva", "SEO"],
     attests: 4,
@@ -297,7 +304,7 @@ const freshDraft = () => ({
   engagement: "Selvstendig oppdrag",
   payType: "Totalpris",
 });
-const storeKey = "erfa-business-demo-v1";
+const storeKey = BUSINESS_STORE;
 const qaMode = new URLSearchParams(window.location.search).get("demo") === "qa";
 function load() {
   try {
@@ -338,6 +345,8 @@ export function BusinessDashboard() {
     [activeApplicationId, setActiveApplicationId] = useState<number>(1),
     [draft, setDraft] = useState(freshDraft),
     [attest, setAttest] = useState(""),
+    [attestSkills, setAttestSkills] = useState<string[]>([]),
+    [newSkill, setNewSkill] = useState(""),
     [toast, setToast] = useState(""),
     [menu, setMenu] = useState(false),
     [message, setMessage] = useState(""),
@@ -379,11 +388,13 @@ export function BusinessDashboard() {
     contact: "Maria Hansen",
   });
   useEffect(() => {
-    if (!qaMode)
+    if (!qaMode) {
       localStorage.setItem(
         storeKey,
         JSON.stringify({ jobs, applications, talent, talentDrafts }),
       );
+      window.dispatchEvent(new Event("erfa-attests-updated"));
+    }
   }, [jobs, applications, talent, talentDrafts]);
   useEffect(() => {
     if (!toast) return;
@@ -1426,6 +1437,8 @@ export function BusinessDashboard() {
                     onClick={() => {
                       setActiveJobId(j.id);
                       setAttest(j.attest || "");
+                      setAttestSkills(j.attestSkills || []);
+                      setNewSkill("");
                       setSheet("attest");
                     }}
                   >
@@ -2302,6 +2315,8 @@ export function BusinessDashboard() {
                     className="primary-cta"
                     onClick={() => {
                       setAttest(selectedJob.attest || "");
+                      setAttestSkills(selectedJob.attestSkills || []);
+                      setNewSkill("");
                       setSheet("attest");
                     }}
                   >
@@ -2338,18 +2353,17 @@ export function BusinessDashboard() {
                 <Avatar src={student.photo} name={student.name} size="lg" />
                 <div>
                   <h2>{student.name}</h2>
-                  <p>
-                    <GraduationCap size={17} />
-                    {student.study}
-                  </p>
-                  <span>
-                    {student.school} · {student.semester}
-                  </span>
                 </div>
                 <span className="biz-badge">
                   {matchFor(activeApplication)} % samsvar
                 </span>
               </div>
+              <SchoolIdentity
+                school={student.school}
+                study={student.study}
+                semester={student.semester}
+              />
+              <VerifiedSkills jobs={jobs} candidateId={student.id} />
               <div className="biz-skills">
                 {student.skills.map((s) => (
                   <span key={s}>{s}</span>
@@ -2430,18 +2444,46 @@ export function BusinessDashboard() {
                   !selectedJob.companyApproved
                 )
                   return;
-                updateJob(selectedJob.id, { attest: attest.trim() });
+                updateJob(selectedJob.id, {
+                  attest: attest.trim(),
+                  attestSkills,
+                  attestCompany: company.name,
+                });
                 setSheet("");
-                setToast("Attesten er lagret i demoen");
+                setToast(
+                  "Attesten og ferdighetene er lagt til på studentprofilen i demoen",
+                );
               }}
             >
-              <div className="biz-attest-heading">
-                <FileCheck2 size={28} />
-                <h2>
-                  {candidates.find((c) => c.id === selectedJob.selected)?.name}
-                </h2>
-                <p>{selectedJob.title}</p>
+              <div className="biz-attest-student">
+                <CandidatePhoto
+                  candidate={candidates.find(
+                    (c) => c.id === selectedJob.selected,
+                  )}
+                />
+                <div>
+                  <h2>
+                    {
+                      candidates.find((c) => c.id === selectedJob.selected)
+                        ?.name
+                    }
+                  </h2>
+                  <span>Attest for {selectedJob.title}</span>
+                </div>
               </div>
+              <SchoolIdentity
+                school={
+                  candidates.find((c) => c.id === selectedJob.selected)
+                    ?.school || ""
+                }
+                study={
+                  candidates.find((c) => c.id === selectedJob.selected)?.study
+                }
+                semester={
+                  candidates.find((c) => c.id === selectedJob.selected)
+                    ?.semester
+                }
+              />
               <label>
                 Hva gjorde studenten bra?
                 <textarea
@@ -2453,6 +2495,92 @@ export function BusinessDashboard() {
                   placeholder="Beskriv oppgaven, hva studenten leverte og hvordan samarbeidet fungerte."
                 />
               </label>
+              <fieldset className="biz-attest-skills">
+                <legend>Hvilke ferdigheter brukte studenten?</legend>
+                <p>
+                  Velg ferdighetene dere så i arbeidet. De legges til på
+                  studentprofilen med denne attesten som dokumentasjon.
+                </p>
+                <div className="biz-skill-picker">
+                  {Array.from(
+                    new Set([
+                      ...selectedJob.skills,
+                      ...(candidates.find((c) => c.id === selectedJob.selected)
+                        ?.skills || []),
+                      ...attestSkills,
+                    ]),
+                  ).map((skill) => (
+                    <button
+                      type="button"
+                      key={skill}
+                      aria-pressed={attestSkills.includes(skill)}
+                      onClick={() =>
+                        setAttestSkills((current) =>
+                          current.includes(skill)
+                            ? current.filter((s) => s !== skill)
+                            : [...current, skill],
+                        )
+                      }
+                    >
+                      {attestSkills.includes(skill) ? (
+                        <Check size={14} />
+                      ) : (
+                        <Plus size={14} />
+                      )}
+                      {skill}
+                    </button>
+                  ))}
+                </div>
+                <div className="biz-new-skill">
+                  <label>
+                    Legg til en annen ferdighet
+                    <input
+                      value={newSkill}
+                      maxLength={40}
+                      placeholder="F.eks. produkttekster"
+                      onChange={(e) => setNewSkill(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          if (newSkill.trim()) {
+                            setAttestSkills((current) =>
+                              current.some(
+                                (s) =>
+                                  s.toLowerCase() ===
+                                  newSkill.trim().toLowerCase(),
+                              )
+                                ? current
+                                : [...current, newSkill.trim()],
+                            );
+                            setNewSkill("");
+                          }
+                        }
+                      }}
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    aria-label="Legg til ferdighet"
+                    disabled={!newSkill.trim()}
+                    onClick={() => {
+                      setAttestSkills((current) =>
+                        current.some(
+                          (s) =>
+                            s.toLowerCase() === newSkill.trim().toLowerCase(),
+                        )
+                          ? current
+                          : [...current, newSkill.trim()],
+                      );
+                      setNewSkill("");
+                    }}
+                  >
+                    <Plus size={18} />
+                  </button>
+                </div>
+                <small>
+                  {attestSkills.length} valgt · Bekreftes av {company.name}
+                </small>
+              </fieldset>
               <p>
                 Studenten bestemmer selv om attesten skal vises i porteføljen
                 sin.

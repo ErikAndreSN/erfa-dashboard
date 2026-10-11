@@ -1,0 +1,88 @@
+.school-identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+  margin: 16px 0;
+}
+.school-identity > img {
+  width: 84px;
+  height: 38px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.school-identity > div {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+.school-identity span,
+.school-identity small {
+  color: #737478;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.school-identity strong {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.verified-skills {
+  margin: 24px 0;
+  text-align: left;
+}
+.verified-skills h3 {
+  font-size: 16px;
+  margin: 0 0 14px;
+}
+.verified-skills article {
+  border: 1px solid #e9e9eb;
+  border-radius: 20px;
+  padding: 18px;
+  margin: 10px 0;
+  background: #fff;
+}
+.verified-skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.verified-skill-tags span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 30px;
+  padding: 7px 10px;
+  font-size: 12px;
+  background: #fff0e9;
+  color: #9e3d21;
+}
+.verified-skills article p {
+  font-size: 12px;
+  font-weight: 500;
+  margin: 12px 0 4px;
+}
+.verified-skills article small {
+  font-size: 12px;
+  color: #737478;
+}
+.verified-skills details {
+  margin-top: 14px;
+  font-size: 13px;
+}
+.verified-skills summary {
+  cursor: pointer;
+}
+.verified-skills blockquote {
+  margin: 12px 0 0;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+@media (max-width: 480px) {
+  .school-identity {
+    gap: 12px;
+  }
+  .school-identity > img {
+    width: 66px;
+  }
+}
