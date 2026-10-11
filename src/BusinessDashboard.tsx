@@ -40,7 +40,8 @@ import {
 } from "./VerifiedSkills";
 
 type Stage = "Publisert" | "Avtale" | "Pågår" | "Fullført";
-type ApplicationStage = "Søkt" | "Vurderes" | "Tilbudt jobb" | "Fått jobben";
+type ApplicationStage =
+  "Søkt" | "Vurderes" | "Tilbudt jobb" | "Fått jobben" | "Ikke valgt";
 type Job = {
   id: number;
   title: string;
@@ -67,6 +68,7 @@ type Job = {
   payType?: string;
   views?: number;
   saves?: number;
+  paused?: boolean;
 };
 type Candidate = {
   id: number;
@@ -192,6 +194,115 @@ const initialJobs: Job[] = [
     companyApproved: true,
   },
 ];
+// Et større, fiktivt søkerutvalg på det første oppdraget, for å vise innboksen.
+const poolNames = [
+  "Ingrid Lie",
+  "Mathias Dahl",
+  "Nora Strand",
+  "Elias Moen",
+  "Sofie Haugen",
+  "Henrik Bakken",
+  "Emma Solberg",
+  "Jakob Lunde",
+  "Thea Eide",
+  "Oskar Nilsen",
+  "Maja Aas",
+  "Sander Hagen",
+  "Ida Berntsen",
+  "Magnus Vik",
+  "Julie Ruud",
+  "Tobias Sæther",
+  "Hanna Lien",
+  "Kristian Foss",
+  "Selma Bråthen",
+  "Adrian Tveit",
+  "Mia Rønning",
+  "Vetle Kvam",
+  "Frida Sunde",
+  "Sebastian Engen",
+  "Amalie Hovland",
+  "Even Lyngstad",
+  "Ella Myhre",
+  "Aksel Brekke",
+  "Live Sandvik",
+  "Håkon Aune",
+  "Tiril Øien",
+  "Markus Grønvold",
+  "Sigrid Holte",
+  "Fredrik Nyhus",
+  "Vilde Krogh",
+  "Benjamin Rød",
+  "Astrid Fjeld",
+  "Erlend Skaug",
+];
+const poolSchools = [
+  "Høyskolen Kristiania",
+  "BI",
+  "NTNU",
+  "Universitetet i Oslo",
+  "OsloMet",
+  "Universitetet i Bergen",
+  "NHH",
+];
+const poolStudies = [
+  "Markedsføring og ledelse",
+  "Kommunikasjon",
+  "Medievitenskap",
+  "Grafisk design",
+  "Journalistikk",
+  "Økonomi og administrasjon",
+  "Digital markedsføring",
+];
+const poolSkills = [
+  "Sosiale medier",
+  "Tekst",
+  "Canva",
+  "Video",
+  "Foto",
+  "SEO",
+  "Figma",
+  "Instagram",
+  "TikTok",
+  "Analyse",
+  "Copywriting",
+  "Premiere Pro",
+];
+const seeded = (n: number) => {
+  const x = Math.sin(n * 9301 + 49297) * 233280;
+  return x - Math.floor(x);
+};
+const poolCandidates: Candidate[] = poolNames.map((name, i) => {
+  const study = poolStudies[Math.floor(seeded(i + 3) * poolStudies.length)],
+    first = Math.floor(seeded(i + 11) * poolSkills.length);
+  return {
+    id: 100 + i,
+    name,
+    initials: name
+      .split(" ")
+      .map((part) => part[0])
+      .join(""),
+    photo: "",
+    study,
+    school: poolSchools[Math.floor(seeded(i + 5) * poolSchools.length)],
+    semester: 2 + Math.floor(seeded(i + 7) * 5) + ". semester",
+    skills: [0, 3, 7].map(
+      (step) => poolSkills[(first + step) % poolSkills.length],
+    ),
+    attests: Math.floor(seeded(i + 13) * 4),
+    match: Math.round(52 + seeded(i + 17) * 46),
+    bio:
+      "Studerer " +
+      study.toLowerCase() +
+      " og liker å lage innhold som folk faktisk stopper opp for.",
+    quote: "Leverte gjennomtenkt arbeid til avtalt tid.",
+  };
+});
+const poolApplications: Application[] = poolCandidates.map((c) => ({
+  id: c.id,
+  jobId: 1,
+  candidateId: c.id,
+  stage: "Søkt",
+}));
 const candidates: Candidate[] = [
   {
     id: 1,
@@ -252,6 +363,7 @@ const candidates: Candidate[] = [
     bio: "Jeg klipper korte videoer med tydelig historiefortelling. Liker å finne de små detaljene som gjør innholdet bedre.",
     quote: "Emil var selvstendig, kreativ og fulgte briefen godt.",
   },
+  ...poolCandidates,
 ];
 function StatusChip({ job, label }: { job: Job; label?: string }) {
   const [tone, text] =
@@ -274,7 +386,7 @@ function CandidatePhoto({
   const [failed, setFailed] = useState(false);
   return (
     <span className={"biz-avatar" + (small ? " small" : "")}>
-      {candidate && !failed ? (
+      {candidate?.photo && !failed ? (
         <img
           src={candidate.photo}
           alt={`Profilbilde av ${candidate.name}`}
@@ -296,10 +408,13 @@ const initialApplications: Application[] = [
   { id: 5, jobId: 3, candidateId: 3, stage: "Fått jobben" },
   { id: 6, jobId: 4, candidateId: 2, stage: "Fått jobben" },
   { id: 7, jobId: 5, candidateId: 1, stage: "Fått jobben" },
+  ...poolApplications,
 ];
 const stages: Stage[] = ["Publisert", "Avtale", "Pågår", "Fullført"];
 const matchFor = (a: Application) =>
-  ({ 1: 94, 2: 72, 3: 92, 4: 64, 5: 89, 6: 91, 7: 94 })[a.id] ?? 0;
+  ({ 1: 94, 2: 72, 3: 92, 4: 64, 5: 89, 6: 91, 7: 94 })[a.id] ??
+  candidates.find((c) => c.id === a.candidateId)?.match ??
+  0;
 const feeRate = 0.125;
 const money = (value: number) =>
   new Intl.NumberFormat("nb-NO", { maximumFractionDigits: 2 }).format(value) +
@@ -339,10 +454,15 @@ function load() {
     )
       return {
         ...v,
-        applications: v.applications.map((a: Application) => ({
-          ...a,
-          stage: (a.stage as string) === "Valgt" ? "Fått jobben" : a.stage,
-        })),
+        applications: [
+          ...v.applications.map((a: Application) => ({
+            ...a,
+            stage: (a.stage as string) === "Valgt" ? "Fått jobben" : a.stage,
+          })),
+          ...poolApplications.filter(
+            (p) => !v.applications.some((a: Application) => a.id === p.id),
+          ),
+        ],
       };
   } catch {}
   return { jobs: initialJobs, applications: initialApplications };
@@ -380,7 +500,10 @@ export function BusinessDashboard() {
     [applicationDrag, setApplicationDrag] = useState<number | null>(null),
     [applicationTarget, setApplicationTarget] =
       useState<ApplicationStage | null>(null),
-    [applicationKeyboard, setApplicationKeyboard] = useState(false);
+    [applicationKeyboard, setApplicationKeyboard] = useState(false),
+    [inboxFilter, setInboxFilter] = useState("Alle"),
+    [inboxSelected, setInboxSelected] = useState<number[]>([]),
+    [inboxLimit, setInboxLimit] = useState(12);
   const [talentDrafts, setTalentDrafts] = useState<
     {
       id: number;
@@ -616,6 +739,36 @@ export function BusinessDashboard() {
           : "Søkeren er flyttet til " + target,
     );
   };
+  const advanceApplications = (ids: number[]) => {
+    const job = jobs.find((j) => j.id === pipelineJob);
+    if (job?.selected) {
+      setToast("Dette oppdraget har allerede en valgt student.");
+      return;
+    }
+    setApplications((list) =>
+      list.map((a) => (ids.includes(a.id) ? { ...a, stage: "Vurderes" } : a)),
+    );
+    setInboxSelected([]);
+    setToast(
+      ids.length === 1
+        ? "Søkeren er flyttet til Vurderes"
+        : ids.length + " søkere er flyttet til Vurderes",
+    );
+  };
+  const declineApplications = (ids: number[]) => {
+    setApplications((list) =>
+      list.map((a) => (ids.includes(a.id) ? { ...a, stage: "Ikke valgt" } : a)),
+    );
+    setInboxSelected([]);
+    setToast(
+      (ids.length === 1 ? "Søkeren" : ids.length + " søkere") +
+        " får en vennlig beskjed. Ingen melding sendes i demoen.",
+    );
+  };
+  const restoreApplication = (id: number) =>
+    setApplications((list) =>
+      list.map((a) => (a.id === id ? { ...a, stage: "Søkt" } : a)),
+    );
   const jobCard = (j: Job) => {
     const person = candidates.find((c) => c.id === j.selected);
     return (
@@ -648,7 +801,21 @@ export function BusinessDashboard() {
   };
   const pipeline = () => {
     const current = jobs.find((j) => j.id === pipelineJob) || jobs[0],
-      list = applications.filter((a) => a.jobId === current.id);
+      list = applications.filter((a) => a.jobId === current.id),
+      incoming = list
+        .filter((a) => a.stage === "Søkt")
+        .sort((a, b) => matchFor(b) - matchFor(a)),
+      declined = list.filter((a) => a.stage === "Ikke valgt"),
+      topMatches = incoming.filter((a) => matchFor(a) >= 85),
+      shown = incoming.filter(
+        (a) =>
+          inboxFilter === "Alle" ||
+          (inboxFilter === "Topp-match" && matchFor(a) >= 85) ||
+          (inboxFilter === "Har attest" &&
+            (candidates.find((c) => c.id === a.candidateId)?.attests || 0) > 0),
+      ),
+      person = (a: Application) =>
+        candidates.find((c) => c.id === a.candidateId)!;
     return (
       <section className="biz-board-section">
         <div className="biz-section-head">
@@ -672,7 +839,7 @@ export function BusinessDashboard() {
         <div className="biz-pipeline-summary">
           <span>
             <Users size={16} />
-            <b>{list.length}</b> søkere
+            <b>{list.length - declined.length}</b> søkere
           </span>
           <span>{current.category}</span>
           <span>
@@ -720,8 +887,33 @@ export function BusinessDashboard() {
                 </span>
               </div>
               <div className="biz-lane-cards">
+                {stage === "Søkt" && incoming.length > 0 && (
+                  <div className="biz-inbox-summary">
+                    <span className="biz-avatar-stack">
+                      {incoming.slice(0, 3).map((a) => (
+                        <CandidatePhoto key={a.id} candidate={person(a)} />
+                      ))}
+                    </span>
+                    <strong>
+                      {incoming.length}{" "}
+                      {incoming.length === 1 ? "ny søker" : "nye søkere"}
+                    </strong>
+                    <small>
+                      {topMatches.length} topp-match · sortert etter samsvar
+                    </small>
+                    <button
+                      onClick={() =>
+                        document
+                          .getElementById("biz-inbox")
+                          ?.scrollIntoView({ behavior: "smooth" })
+                      }
+                    >
+                      Se og velg <ArrowRight size={14} />
+                    </button>
+                  </div>
+                )}
                 {list
-                  .filter((a) => a.stage === stage)
+                  .filter((a) => a.stage === stage && stage !== "Søkt")
                   .map((a) => {
                     const c = candidates.find((c) => c.id === a.candidateId)!;
                     return (
@@ -880,6 +1072,227 @@ export function BusinessDashboard() {
           Tilbud og aksept er demosteg. Ingen tilbud sendes eller avtaler inngås
           her.
         </p>
+        <section className="biz-inbox" id="biz-inbox" aria-label="Nye søkere">
+          <div className="biz-section-head">
+            <div>
+              <h2>Nye søkere</h2>
+              <p>
+                {incoming.length} venter · {list.length - declined.length} av
+                maks 50 søknader
+                {current.paused ? " · søknader er satt på pause" : ""}
+              </p>
+            </div>
+            <button
+              className={
+                "biz-inbox-pause" + (current.paused ? " is-paused" : "")
+              }
+              onClick={() => updateJob(current.id, { paused: !current.paused })}
+            >
+              {current.paused ? "Åpne for søknader" : "Pause søknader"}
+            </button>
+          </div>
+          {topMatches.length > 0 && (
+            <div className="biz-inbox-picks">
+              <h3>
+                <span className="biz-todo-kind kind-new">Erfa anbefaler</span>
+                De {Math.min(5, topMatches.length)} som passer best
+              </h3>
+              <div className="biz-inbox-pick-row">
+                {topMatches.slice(0, 5).map((a) => {
+                  const c = person(a);
+                  return (
+                    <article className="biz-inbox-pick" key={a.id}>
+                      <button
+                        className="biz-inbox-pick-open"
+                        onClick={() => openApplicant(a.id)}
+                      >
+                        <CandidatePhoto candidate={c} />
+                        <strong>{c.name}</strong>
+                        <small>
+                          {c.study} · {c.school}
+                        </small>
+                        <span className="biz-status is-match">
+                          {matchFor(a)} % samsvar
+                        </span>
+                      </button>
+                      <button
+                        className="biz-inbox-advance"
+                        onClick={() => advanceApplications([a.id])}
+                      >
+                        Gå videre <ArrowRight size={14} />
+                      </button>
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          <div className="biz-inbox-toolbar">
+            <div
+              className="biz-inbox-filters"
+              role="group"
+              aria-label="Filtrer søkere"
+            >
+              {["Alle", "Topp-match", "Har attest"].map((f) => (
+                <button
+                  key={f}
+                  aria-pressed={inboxFilter === f}
+                  className={inboxFilter === f ? "active" : ""}
+                  onClick={() => {
+                    setInboxFilter(f);
+                    setInboxSelected([]);
+                  }}
+                >
+                  {f}
+                  <span>
+                    {f === "Alle"
+                      ? incoming.length
+                      : f === "Topp-match"
+                        ? topMatches.length
+                        : incoming.filter((a) => person(a).attests > 0).length}
+                  </span>
+                </button>
+              ))}
+            </div>
+            {inboxSelected.length > 0 ? (
+              <div className="biz-inbox-bulk">
+                <b>{inboxSelected.length} valgt</b>
+                <button
+                  className="biz-inbox-advance"
+                  onClick={() => advanceApplications(inboxSelected)}
+                >
+                  Gå videre <ArrowRight size={14} />
+                </button>
+                <button onClick={() => declineApplications(inboxSelected)}>
+                  Ikke nå
+                </button>
+                <button onClick={() => setInboxSelected([])}>Avbryt</button>
+              </div>
+            ) : (
+              <label className="biz-inbox-select-all">
+                <input
+                  type="checkbox"
+                  checked={false}
+                  disabled={!shown.length}
+                  onChange={() =>
+                    setInboxSelected(
+                      shown.slice(0, inboxLimit).map((a) => a.id),
+                    )
+                  }
+                />
+                Velg alle viste
+              </label>
+            )}
+          </div>
+          <div className="biz-inbox-list">
+            {shown.slice(0, inboxLimit).map((a) => {
+              const c = person(a),
+                checked = inboxSelected.includes(a.id);
+              return (
+                <div
+                  className={"biz-inbox-row" + (checked ? " is-selected" : "")}
+                  key={a.id}
+                >
+                  <input
+                    type="checkbox"
+                    aria-label={"Velg " + c.name}
+                    checked={checked}
+                    onChange={() =>
+                      setInboxSelected((ids) =>
+                        checked
+                          ? ids.filter((id) => id !== a.id)
+                          : [...ids, a.id],
+                      )
+                    }
+                  />
+                  <button
+                    className="biz-inbox-person"
+                    onClick={() => openApplicant(a.id)}
+                  >
+                    <CandidatePhoto candidate={c} />
+                    <span>
+                      <strong>{c.name}</strong>
+                      <small>
+                        {c.study} · {c.school} · {c.semester}
+                      </small>
+                    </span>
+                  </button>
+                  <span className="biz-inbox-skills">
+                    {c.skills.slice(0, 2).map((skill) => (
+                      <span key={skill}>{skill}</span>
+                    ))}
+                  </span>
+                  <span className="biz-inbox-attests">
+                    <FileCheck2 size={14} />
+                    {c.attests}
+                  </span>
+                  <span
+                    className={
+                      "biz-status " +
+                      (matchFor(a) >= 85 ? "is-match" : "is-neutral")
+                    }
+                  >
+                    {matchFor(a)} %
+                  </span>
+                  <span className="biz-inbox-actions">
+                    <button
+                      className="biz-inbox-advance"
+                      onClick={() => advanceApplications([a.id])}
+                    >
+                      Gå videre
+                    </button>
+                    <button onClick={() => declineApplications([a.id])}>
+                      Ikke nå
+                    </button>
+                    <button
+                      className="biz-inbox-save"
+                      aria-label={
+                        (talent.includes(c.id) ? "Fjern " : "Lagre ") +
+                        c.name +
+                        " i talentbase"
+                      }
+                      aria-pressed={talent.includes(c.id)}
+                      onClick={() => toggleTalent(c.id)}
+                    >
+                      <Heart
+                        size={15}
+                        fill={talent.includes(c.id) ? "currentColor" : "none"}
+                      />
+                    </button>
+                  </span>
+                </div>
+              );
+            })}
+            {!shown.length && (
+              <p className="biz-inbox-empty">
+                {incoming.length
+                  ? "Ingen søkere passer filteret."
+                  : "Ingen nye søkere akkurat nå."}
+              </p>
+            )}
+          </div>
+          {shown.length > inboxLimit && (
+            <button
+              className="biz-inbox-more"
+              onClick={() => setInboxLimit((n) => n + 12)}
+            >
+              Vis flere ({shown.length - inboxLimit} til)
+            </button>
+          )}
+          {declined.length > 0 && (
+            <details className="biz-inbox-declined">
+              <summary>Ikke valgt ({declined.length})</summary>
+              {declined.map((a) => (
+                <div key={a.id}>
+                  <span>{person(a).name}</span>
+                  <button onClick={() => restoreApplication(a.id)}>
+                    Angre
+                  </button>
+                </div>
+              ))}
+            </details>
+          )}
+        </section>
       </section>
     );
   };
@@ -1349,7 +1762,7 @@ export function BusinessDashboard() {
                     ? `Du har ${todoCount} ting å gjøre.`
                     : "Alt er à jour."
                   : page === "Søknader"
-                    ? "Flytt kandidatene etter hvor de er i søknadsprosessen. Dra kortet fra Søkt til Vurderes, videre til Tilbudt jobb og til slutt Fått jobben når kandidaten har takket ja."
+                    ? "Velg ut blant nye søkere, og følg dem du går videre med gjennom prosessen."
                     : page === "Statistikk"
                       ? "Se hva som skaper interesse og gode søknader."
                       : page === "Talentbase"
@@ -1448,7 +1861,10 @@ export function BusinessDashboard() {
                     const people =
                       j.stage === "Publisert"
                         ? applications
-                            .filter((a) => a.jobId === j.id)
+                            .filter(
+                              (a) =>
+                                a.jobId === j.id && a.stage !== "Ikke valgt",
+                            )
                             .map((a) =>
                               candidates.find((c) => c.id === a.candidateId),
                             )
@@ -2457,14 +2873,16 @@ export function BusinessDashboard() {
                 ))}
               </div>
               <p className="biz-student-bio">{student.bio}</p>
-              <div className="biz-testimonial">
-                <span>
-                  <FileCheck2 size={18} />
-                  {student.attests} attester fra tidligere oppdrag
-                </span>
-                <blockquote>«{student.quote}»</blockquote>
-                <small>Utdrag fra en fiktiv attest · eksempeldata</small>
-              </div>
+              {student.attests > 0 && (
+                <div className="biz-testimonial">
+                  <span>
+                    <FileCheck2 size={18} />
+                    {student.attests} attester fra tidligere oppdrag
+                  </span>
+                  <blockquote>«{student.quote}»</blockquote>
+                  <small>Utdrag fra en fiktiv attest · eksempeldata</small>
+                </div>
+              )}
               <div className="biz-action-panel">
                 <p>Søkt på</p>
                 <h3>{selectedJob.title}</h3>

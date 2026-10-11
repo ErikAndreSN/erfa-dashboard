@@ -52,7 +52,9 @@ og resultatmappe **dist**. Ingen miljøvariabler trengs for demoen.
 
 Profil, erfaringer og oppdrag lagres i nettleserens localStorage.
 Hver person har sine egne eksempeldata; endringer synkroniseres ikke mellom brukere.
-Bedriften flytter studentkort per annonse gjennom Søkt → Vurderes → Tilbudt jobb → Fått jobben.
+Nye søkere samles i en innboks per annonse, sortert etter samsvar, med «Erfa anbefaler» (de fem beste),
+filtre, flervalg og valgene Gå videre, Ikke nå og Lagre i talentbase. Det første oppdraget har 40 fiktive søkere.
+Brettet viser Søkt som et oppsummeringskort og følger de valgte gjennom Vurderes → Tilbudt jobb → Fått jobben.
 Både dra-og-slipp, tastatur og statusvalg støttes. Tilbud og aksept er bare demoregistreringer.
 Valgte studenter følges opp under Oppdrag, med egne faner for Pågående og Fullførte.
 Bedriften kan skrive attest og lagre kandidater i en lokal talentbase.
