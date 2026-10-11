@@ -32,6 +32,7 @@ import { BottomSheet } from "./components/arc/bottom-sheet/bottom-sheet";
 import { Avatar } from "./components/arc/avatar/avatar";
 import { BRAND_NAME, BrandMark } from "./brand";
 import "./business.css";
+import { Select } from "./components/arc/select/select";
 import {
   BUSINESS_STORE,
   SchoolIdentity,
@@ -574,17 +575,15 @@ export function BusinessDashboard() {
           </div>
           <label className="biz-pipeline-select">
             Oppdrag
-            <select
-              aria-label="Velg oppdrag for søknader"
-              value={current.id}
-              onChange={(e) => setPipelineJob(Number(e.target.value))}
-            >
-              {jobs.map((j) => (
-                <option key={j.id} value={j.id}>
-                  {j.title}
-                </option>
-              ))}
-            </select>
+            <Select
+              label="Velg oppdrag for søknader"
+              value={String(current.id)}
+              onValueChange={(value) => setPipelineJob(Number(value))}
+              options={jobs.map((j) => ({
+                value: String(j.id),
+                label: j.title,
+              }))}
+            />
           </label>
         </div>
         <div className="biz-pipeline-summary">
