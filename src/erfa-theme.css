@@ -1,0 +1,18 @@
+/* One Erfa palette shared by all Arc components and dashboard surfaces. */
+:root{--background:#fff;--surface:#fff;--surface-raised:#fff;--surface-muted:#f6f6f3;--foreground:#23241f;--text-secondary:#707367;--text-muted:#7e8174;--border:#e8e9e2;--border-subtle:#efefe9;--border-strong:#d6d8ce;--accent:#FF6A3D;--accent-strong:#E95C32;--accent-subtle:#FFF0EA;--font-body:'DM Sans',sans-serif;--font-display:'Cabinet Grotesk',sans-serif;--text-3xl:28px;--text-sm:12px;--text-xs:10px;--text-base:13px;--leading-display:1.15;--tracking-display:-.03em;--tracking-body:0;--radius-panel:28px;--radius-surface:20px;--success:#707367;--warning:#707367}
+.brand-symbol,.sidebar nav>button.active svg{color:var(--accent)}
+.sidebar{background:var(--surface-muted)}.sidebar nav>button{color:var(--text-secondary)}.sidebar nav>button.active{background:var(--surface);color:var(--foreground)}
+.heading p,.topbar strong,.study,.profile-location,.bio,.section-subtitle{color:var(--text-secondary)}
+.heading h1{font-weight:500;font-size:44px}.heading{margin-bottom:30px}.heading p{font-size:13px;margin-top:10px}
+
+.chart-hidden{height:180px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:var(--surface-muted);border-radius:15px;color:var(--text-secondary)}
+.earnings-chart{--accent:#FF6A3D}.earnings-chart>figure{gap:15px}.income-card [class*='value']{font-size:26px}.income-card [class*='kind'],.income-card [class*='when']{font-size:11px}
+@media(max-width:700px){.heading h1{font-size:38px}.heading p{font-size:12px}}
+
+/* Semantic status colours, following the supplied reference. */
+:root{--text-secondary:#737780;--text-muted:#838790;--border:#ececf0;--border-subtle:#f1f2f4;--surface-muted:#f8f9fb;--success:#318650;--warning:#b96836;--focus-ring:#FF6A3D}
+.sidebar{background:#fff}.sidebar nav>button.active{background:#fff0ea;color:#d54f25;box-shadow:none}.sidebar nav>button:hover{background:#f8f9fb}.unread-dot,.topbar .icon-btn:after{background:#FF6A3D}.work-status{background:#edf4ff;color:#3478df}.work-status.review{background:#fbf0ff;color:#ae3dce}.skill-list>span,.category-tag{background:#f0f2f5;color:#606876}
+
+.company-logo{display:inline-flex;align-items:center;justify-content:center;width:46px;height:38px;border-radius:10px;flex-shrink:0;background:#f0f0f2;color:#303238}.company-logo.nrk{background:#14151a}.company-logo.vg{background:#df122a}.company-logo img{width:34px;height:20px;object-fit:contain}.company-logo-fallback{font:600 22px var(--font-display)}.match-company{display:flex;align-items:center;gap:8px}.match-company .company-logo{width:42px;height:30px;border-radius:8px}.match-company .company-logo img{width:32px;height:18px}
+/* Rounded navigation and controls keep the same calm visual language. */
+.sidebar nav>button{border-radius:100px}.sidebar nav>button.active{background:#ffece3;color:#d6522b}.topbar .avatar.small{box-shadow:0 0 0 4px #fff,0 4px 16px #24242408}.heading .primary-cta{border-radius:100px!important;min-height:44px!important;padding-inline:22px!important}

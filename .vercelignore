@@ -1,0 +1,5 @@
+node_modules
+dist
+.env*
+public/*-prompt.txt
+public/logos/SOURCES.md
