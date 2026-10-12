@@ -1844,7 +1844,7 @@ export function BusinessDashboard() {
           ))}
         </nav>
         <div className="sidebar-foot">
-          <a className="biz-student-link" href="/">
+          <a className="biz-student-link" href="/student">
             Se studentflaten <ArrowUpRight size={14} />
           </a>
           <button onClick={() => navigate("Bedriftsprofil")}>
