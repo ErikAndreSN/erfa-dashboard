@@ -367,6 +367,9 @@
 .biz-stage-dot.stage-1 {
   background: #b579ec;
 }
+.biz-stage-dot.stage-shortlist {
+  background: #ff8a5c;
+}
 .biz-stage-dot.stage-2 {
   background: #4385ed;
 }
@@ -690,6 +693,10 @@
   color: #72727b;
   font-size: 10px;
   padding: 6px 10px;
+}
+.biz-badge.shortlist {
+  background: #fff0e9;
+  color: #c4532c;
 }
 .biz-badge.review {
   background: #faf0fc;
@@ -2202,8 +2209,9 @@
   min-height: 44px;
   border-radius: 14px;
 }
+/* Søkt-feltet viser bare en oppsummering, så det kan være smalere. */
 .biz-application-board {
-  grid-template-columns: repeat(4, minmax(280px, 1fr));
+  grid-template-columns: minmax(200px, 0.85fr) repeat(4, minmax(220px, 1fr));
   overflow-x: auto;
   padding: 4px 2px 16px;
   scroll-snap-type: x proximity;
@@ -2217,7 +2225,7 @@
 }
 @media (max-width: 700px) {
   .biz-application-board {
-    grid-template-columns: repeat(4, min(304px, calc(100vw - 52px)));
+    grid-template-columns: repeat(5, min(304px, calc(100vw - 52px)));
     margin-right: 0;
   }
 }
@@ -3431,4 +3439,56 @@ button.biz-focus-card:hover {
   .biz-keyword-cell em {
     display: inline;
   }
+}
+
+/* Aktuell: søkere bedriften har plukket ut fra søkeordlisten. */
+.biz-card-next {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid #ffc9b5;
+  border-radius: 14px;
+  background: #fff4ef;
+  color: #c4532c;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.biz-card-next:hover {
+  background: #ffe9df;
+}
+.biz-card-next:focus-visible {
+  outline: 2px solid var(--biz-orange);
+  outline-offset: 2px;
+}
+.biz-lane-empty.is-shortlist {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.biz-lane-empty.is-shortlist button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px;
+  border: 0;
+  border-radius: 100px;
+  background: #fff;
+  color: #c4532c;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.biz-inbox-advance svg {
+  flex-shrink: 0;
+}
+.biz-section-head p.biz-inbox-hint {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #c4532c;
 }

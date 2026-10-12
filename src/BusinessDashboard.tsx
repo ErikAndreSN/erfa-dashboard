@@ -49,7 +49,12 @@ import {
 
 type Stage = "Publisert" | "Avtale" | "Pågår" | "Fullført";
 type ApplicationStage =
-  "Søkt" | "Vurderes" | "Tilbudt jobb" | "Fått jobben" | "Ikke valgt";
+  | "Søkt"
+  | "Aktuell"
+  | "Vurderes"
+  | "Tilbudt jobb"
+  | "Fått jobben"
+  | "Ikke valgt";
 type Job = {
   id: number;
   title: string;
@@ -804,7 +809,14 @@ export function BusinessDashboard() {
     setJobs((list) =>
       list.map((j) => (j.id === id ? { ...j, ...changes } : j)),
     );
-  const review = () => moveApplication(activeApplicationId, "Vurderes");
+  // Fra Søkt går søkeren først til Aktuell, deretter til Vurderes.
+  const review = () => {
+    if (activeApplication)
+      moveApplication(
+        activeApplication.id,
+        activeApplication.stage === "Søkt" ? "Aktuell" : "Vurderes",
+      );
+  };
   const toggleTalent = (id: number) => {
     setTalent((list) =>
       list.includes(id) ? list.filter((x) => x !== id) : [...list, id],
@@ -847,6 +859,7 @@ export function BusinessDashboard() {
   };
   const applicationStages: ApplicationStage[] = [
     "Søkt",
+    "Aktuell",
     "Vurderes",
     "Tilbudt jobb",
     "Fått jobben",
@@ -901,13 +914,13 @@ export function BusinessDashboard() {
       return;
     }
     setApplications((list) =>
-      list.map((a) => (ids.includes(a.id) ? { ...a, stage: "Vurderes" } : a)),
+      list.map((a) => (ids.includes(a.id) ? { ...a, stage: "Aktuell" } : a)),
     );
     setInboxSelected([]);
     setToast(
       ids.length === 1
-        ? "Søkeren er flyttet til Vurderes"
-        : ids.length + " søkere er flyttet til Vurderes",
+        ? "Søkeren er lagt til som aktuell"
+        : ids.length + " søkere er lagt til som aktuelle",
     );
   };
   const declineApplications = (ids: number[]) => {
@@ -1085,7 +1098,14 @@ export function BusinessDashboard() {
             >
               <div className="biz-lane-head">
                 <span>
-                  <i className={"biz-stage-dot stage-" + i} />
+                  <i
+                    className={
+                      "biz-stage-dot " +
+                      (stage === "Aktuell"
+                        ? "stage-shortlist"
+                        : "stage-" + (i > 1 ? i - 1 : i))
+                    }
+                  />
                   {stage}
                 </span>
                 <span className="biz-count">
@@ -1174,7 +1194,7 @@ export function BusinessDashboard() {
                                 Math.max(
                                   0,
                                   Math.min(
-                                    3,
+                                    applicationStages.length - 1,
                                     applicationStages.indexOf(
                                       applicationTarget || stage,
                                     ) + (e.key === "ArrowRight" ? 1 : -1),
@@ -1243,6 +1263,15 @@ export function BusinessDashboard() {
                             {matchFor(a)} % samsvar
                           </b>
                         </div>
+                        {stage === "Aktuell" && (
+                          <button
+                            className="biz-card-next"
+                            onClick={() => moveApplication(a.id, "Vurderes")}
+                          >
+                            Vurder {c.name.split(" ")[0]}{" "}
+                            <ArrowRight size={14} />
+                          </button>
+                        )}
                         <label className="biz-status-control">
                           <span className="sr-only">Status for {c.name}</span>
                           <Select
@@ -1261,13 +1290,31 @@ export function BusinessDashboard() {
                       </article>
                     );
                   })}
-                {!list.some((a) => a.stage === stage) && (
-                  <div className="biz-lane-empty">
-                    {stage === "Søkt"
-                      ? "Ingen nye søkere"
-                      : "Flytt en student hit"}
-                  </div>
-                )}
+                {!list.some((a) => a.stage === stage) &&
+                  (stage === "Aktuell" ? (
+                    <div className="biz-lane-empty is-shortlist">
+                      <span>
+                        Legg til søkere som virker aktuelle fra listen nederst.
+                      </span>
+                      {incoming.length > 0 && (
+                        <button
+                          onClick={() =>
+                            document
+                              .getElementById("biz-inbox")
+                              ?.scrollIntoView({ behavior: "smooth" })
+                          }
+                        >
+                          Gå til listen <ArrowRight size={14} />
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="biz-lane-empty">
+                      {stage === "Søkt"
+                        ? "Ingen nye søkere"
+                        : "Flytt en student hit"}
+                    </div>
+                  ))}
               </div>
             </section>
           ))}
@@ -1289,6 +1336,11 @@ export function BusinessDashboard() {
                 søkeordene de har · {list.length - declined.length} av maks 50
                 søknader
                 {current.paused ? " · søknader er satt på pause" : ""}
+              </p>
+              <p className="biz-inbox-hint">
+                Trykk «Aktuell» på dem som ser lovende ut ved første øyekast.
+                De legges i feltet Aktuell i søknadsprosessen over, der du kan
+                vurdere dem videre.
               </p>
             </div>
             <button
@@ -1421,7 +1473,7 @@ export function BusinessDashboard() {
                         className="biz-inbox-advance"
                         onClick={() => advanceApplications([a.id])}
                       >
-                        Gå videre <ArrowRight size={14} />
+                        <Plus size={14} /> Legg til som aktuell
                       </button>
                     </article>
                   );
@@ -1463,7 +1515,7 @@ export function BusinessDashboard() {
                   className="biz-inbox-advance"
                   onClick={() => advanceApplications(inboxSelected)}
                 >
-                  Gå videre <ArrowRight size={14} />
+                  <Plus size={14} /> Legg til som aktuelle
                 </button>
                 <button onClick={() => declineApplications(inboxSelected)}>
                   Ikke nå
@@ -1617,9 +1669,10 @@ export function BusinessDashboard() {
                     <span className="biz-inbox-actions">
                       <button
                         className="biz-inbox-advance"
+                        aria-label={"Legg til " + c.name + " som aktuell"}
                         onClick={() => advanceApplications([a.id])}
                       >
-                        Gå videre
+                        <Plus size={14} /> Aktuell
                       </button>
                       <button onClick={() => declineApplications([a.id])}>
                         Ikke nå
@@ -1943,7 +1996,14 @@ export function BusinessDashboard() {
     return (
       <>
         <div className="biz-segmented" aria-label="Søkerstatus">
-          {["Alle", "Søkt", "Vurderes", "Tilbudt jobb", "Fått jobben"].map(
+          {[
+            "Alle",
+            "Søkt",
+            "Aktuell",
+            "Vurderes",
+            "Tilbudt jobb",
+            "Fått jobben",
+          ].map(
             (s) => (
               <button
                 key={s}
@@ -1997,7 +2057,9 @@ export function BusinessDashboard() {
                       ? "selected"
                       : a.stage === "Vurderes"
                         ? "review"
-                        : "")
+                        : a.stage === "Aktuell"
+                          ? "shortlist"
+                          : "")
                   }
                 >
                   {a.stage}
@@ -3291,16 +3353,28 @@ export function BusinessDashboard() {
               <div className="biz-action-panel">
                 <div className="biz-candidate-stage">
                   <span className="biz-badge">{activeApplication.stage}</span>
-                  <span>Søkt → Vurderes → Tilbudt jobb → Fått jobben</span>
+                  <span>
+                    Søkt → Aktuell → Vurderes → Tilbudt jobb → Fått jobben
+                  </span>
                 </div>
                 {selectedJob.stage === "Publisert" ? (
                   <div className="biz-candidate-actions">
                     <Button
                       variant="secondary"
                       onClick={review}
-                      disabled={activeApplication.stage !== "Søkt"}
+                      disabled={
+                        !["Søkt", "Aktuell"].includes(activeApplication.stage)
+                      }
                     >
-                      Vurder søker <Users size={16} />
+                      {activeApplication.stage === "Søkt" ? (
+                        <>
+                          Legg til som aktuell <Plus size={16} />
+                        </>
+                      ) : (
+                        <>
+                          Vurder søker <Users size={16} />
+                        </>
+                      )}
                     </Button>
                     <Button
                       className="primary-cta"
