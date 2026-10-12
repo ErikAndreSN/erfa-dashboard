@@ -2942,24 +2942,6 @@ button.biz-focus-card:hover {
   height: 16px;
   accent-color: var(--biz-orange);
 }
-.biz-inbox-list {
-  padding: 6px 18px;
-  border-radius: 26px;
-  background: var(--biz-surface);
-}
-.biz-inbox-row {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1.6fr) minmax(0, 1fr) auto auto auto;
-  align-items: center;
-  column-gap: 14px;
-  padding: 12px 0;
-}
-.biz-inbox-row + .biz-inbox-row {
-  border-top: 1px solid #e7e7ea;
-}
-.biz-inbox-row.is-selected .biz-inbox-person strong {
-  color: #c4532c;
-}
 .biz-inbox-person {
   display: flex;
   align-items: center;
@@ -2986,25 +2968,6 @@ button.biz-focus-card:hover {
   color: var(--biz-muted);
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-.biz-inbox-skills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.biz-inbox-skills span {
-  padding: 4px 9px;
-  border-radius: 100px;
-  background: #fff;
-  color: #55565c;
-  font-size: 11px;
-}
-.biz-inbox-attests {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  color: var(--biz-muted);
 }
 .biz-inbox-actions {
   display: flex;
@@ -3060,18 +3023,232 @@ button.biz-focus-card:hover {
   text-decoration: underline;
 }
 @media (max-width: 950px) {
-  .biz-inbox-row {
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    row-gap: 10px;
-  }
-  .biz-inbox-skills,
-  .biz-inbox-attests {
-    display: none;
-  }
-  .biz-inbox-actions {
-    grid-column: 2 / -1;
-  }
   .biz-inbox-pick-row {
     grid-template-columns: repeat(5, 200px);
+  }
+}
+
+/* Sammenligning av søkere: krav som kolonner, dokumentasjon 0–4 per krav. */
+.biz-screen-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.biz-screen-summary > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 20px;
+  border-radius: 22px;
+  background: var(--biz-surface);
+}
+.biz-screen-summary strong {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.6px;
+}
+.biz-screen-summary strong span {
+  font-family: var(--font-body, inherit);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--biz-muted);
+}
+.biz-screen-summary b {
+  font-size: 13px;
+  font-weight: 500;
+}
+.biz-screen-summary i {
+  display: block;
+  height: 6px;
+  margin: 6px 0 2px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #e2e2e5;
+}
+.biz-screen-summary em {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #23834b;
+}
+.biz-screen-summary small {
+  font-size: 11px;
+  color: var(--biz-muted);
+}
+.biz-matrix {
+  padding: 16px 18px 8px;
+  border-radius: 26px;
+  background: var(--biz-surface);
+}
+.biz-matrix-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-bottom: 14px;
+  font-size: 11px;
+  color: var(--biz-muted);
+}
+.biz-matrix-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.biz-matrix-legend .biz-evidence {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  font-style: normal;
+}
+.biz-matrix-head,
+.biz-matrix-row {
+  display: grid;
+  grid-template-columns: 16px minmax(190px, 1.3fr) 58px minmax(0, 2fr) auto;
+  align-items: center;
+  column-gap: 14px;
+}
+.biz-matrix-head {
+  padding: 0 0 8px;
+  font-size: 11px;
+  color: var(--biz-muted);
+}
+.biz-matrix-head .biz-matrix-cells span {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  color: var(--biz-ink);
+  font-weight: 500;
+}
+.biz-matrix-head small {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--biz-muted);
+}
+.biz-matrix-row {
+  padding: 10px 0;
+  border-top: 1px solid #e7e7ea;
+}
+.biz-matrix-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--biz-orange);
+}
+.biz-matrix-row.is-selected .biz-inbox-person strong {
+  color: #c4532c;
+}
+.biz-matrix-rank {
+  width: 16px;
+  font-size: 12px;
+  color: var(--biz-muted);
+  text-align: right;
+}
+.biz-matrix-score {
+  font-size: 15px;
+  font-weight: 600;
+}
+.biz-matrix-cells {
+  display: grid;
+  grid-template-columns: repeat(var(--reqs, 4), minmax(0, 1fr));
+  gap: 6px;
+}
+.biz-evidence {
+  display: grid;
+  place-items: center;
+  height: 30px;
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: 500;
+}
+.biz-evidence.lvl-0 {
+  background: #ececee;
+  color: #9a9aa0;
+}
+.biz-evidence.lvl-1 {
+  background: #e6f3ea;
+  color: #4f7a60;
+}
+.biz-evidence.lvl-2 {
+  background: #c9e8d4;
+  color: #2f6b47;
+}
+.biz-evidence.lvl-3 {
+  background: #8fcda8;
+  color: #0f4428;
+}
+.biz-evidence.lvl-4 {
+  background: #23834b;
+  color: #fff;
+}
+/* Skjemaet vises i et eget lag utenfor .business-app, så fargene står direkte her. */
+.biz-requirement-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.biz-requirement-picker > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.biz-requirement-picker > span small {
+  font-size: 11px;
+  font-weight: 400;
+  color: #737478;
+}
+.biz-requirement-picker > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.biz-requirement-picker button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 100px;
+  font-size: 12px;
+}
+.biz-requirement-picker button small {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.biz-requirement-picker .is-must {
+  background: #242426;
+  color: #fff;
+}
+.biz-requirement-picker .is-nice {
+  background: #f5f5f6;
+  color: #242426;
+}
+.biz-requirement-picker .is-nice small {
+  color: #737478;
+}
+@media (max-width: 950px) {
+  .biz-screen-summary {
+    grid-template-columns: 1fr;
+  }
+  .biz-matrix-head {
+    display: none;
+  }
+  .biz-matrix-row {
+    grid-template-columns: 16px minmax(0, 1fr) auto;
+    row-gap: 10px;
+  }
+  .biz-matrix-row > .biz-matrix-cells,
+  .biz-matrix-row > .biz-inbox-actions {
+    grid-column: 2 / -1;
+  }
+  .biz-evidence {
+    height: 26px;
+    font-size: 10px;
   }
 }

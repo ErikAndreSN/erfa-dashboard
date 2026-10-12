@@ -52,8 +52,10 @@ og resultatmappe **dist**. Ingen miljøvariabler trengs for demoen.
 
 Profil, erfaringer og oppdrag lagres i nettleserens localStorage.
 Hver person har sine egne eksempeldata; endringer synkroniseres ikke mellom brukere.
-Nye søkere samles i en innboks per annonse, sortert etter samsvar, med «Erfa anbefaler» (de fem beste),
-filtre, flervalg og valgene Gå videre, Ikke nå og Lagre i talentbase. Det første oppdraget har 40 fiktive søkere.
+Nye søkere samles i en innboks per annonse med «Erfa anbefaler» (de fem beste), en oppsummering og en
+sammenligningsmatrise: oppdragets ferdigheter og verktøy er kolonner (må ha / fint å ha, valgt ved publisering),
+og hver søker får 0–4 per krav etter dokumentasjon (4 attest, 3 fullført oppdrag, 2 studier, 1 oppgitt selv).
+Samsvar er vektet snitt der må-krav teller dobbelt. Filtre, flervalg og valgene Gå videre, Ikke nå og Lagre i talentbase. Det første oppdraget har 40 fiktive søkere.
 Brettet viser Søkt som et oppsummeringskort og følger de valgte gjennom Vurderes → Tilbudt jobb → Fått jobben.
 Både dra-og-slipp, tastatur og statusvalg støttes. Tilbud og aksept er bare demoregistreringer.
 Valgte studenter følges opp under Oppdrag, med egne faner for Pågående og Fullførte.
