@@ -32,14 +32,14 @@ Eldre designfiler er bevart, men er ikke egne publiserte sider.
 
 ## Samarbeid
 
-Bidragsytere trenger skrivetilgang til det private GitHub-repoet.
-Lag en egen gren for hver endring, for eksempel `codex/bedre-sokerkort`,
+Repoet er åpent: https://github.com/ErikAndreSN/erfa-dashboard.
+Alle kan lese koden; for å pushe trenger du skrivetilgang (be eieren legge deg til som samarbeidspartner).
+Lag en egen gren for hver endring, for eksempel `espen/bedre-matrise`,
 og åpne en pull request til `main`. Kjør `npm run build` før endringen slås sammen.
 
-Når repoet er koblet til Vercel, kan Vercel lage forhåndsvisninger av pull requests
-og oppdatere den delte demoen fra `main`. Vercel-tilgang og GitHub-tilgang er separate.
-For private repoer må også Vercels krav til teammedlemskap og abonnement være oppfylt
-for at andre bidragsyteres commits skal kunne publiseres automatisk.
+Vercel lager en forhåndsvisning av hver pull request og oppdaterer den delte demoen
+(https://erfa-dashboard.vercel.app) når endringer kommer inn på `main`.
+Fordi repoet er åpent, publiseres også commits fra andre bidragsytere enn eieren.
 
 ## Koble til Vercel
 
