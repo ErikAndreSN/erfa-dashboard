@@ -38,7 +38,14 @@ import {
   VerifiedSkills,
 } from "./VerifiedSkills";
 import { CandidateExplorer, type CandidateProfile } from "./CandidateExplorer";
-import { espenProfile } from "./demo-profiles";
+import {
+  emilProfile,
+  espenProfile,
+  jonasProfile,
+  linaProfile,
+  poolAbout,
+  saraProfile,
+} from "./demo-profiles";
 
 type Stage = "Publisert" | "Avtale" | "Pågår" | "Fullført";
 type ApplicationStage =
@@ -302,7 +309,7 @@ const seeded = (n: number) => {
 const poolCandidates: Candidate[] = poolNames.map((name, i) => {
   const study = poolStudies[Math.floor(seeded(i + 3) * poolStudies.length)],
     first = Math.floor(seeded(i + 11) * poolSkills.length);
-  return {
+  const student = {
     id: 100 + i,
     name,
     initials: name
@@ -323,6 +330,10 @@ const poolCandidates: Candidate[] = poolNames.map((name, i) => {
       study.toLowerCase() +
       " og liker å lage innhold som folk faktisk stopper opp for.",
     quote: "Leverte gjennomtenkt arbeid til avtalt tid.",
+  };
+  return {
+    ...student,
+    profile: { about: poolAbout(student, (n) => seeded(i * 7 + n)) },
   };
 });
 const poolApplications: Application[] = poolCandidates.map((c) => ({
@@ -346,6 +357,7 @@ const candidates: Candidate[] = [
     bio: "Jeg liker å gjøre gode ideer enkle å forstå. Har laget innhold for små bedrifter og vil bruke det jeg lærer i praksis.",
     quote:
       "Sara leverte gjennomarbeidet innhold til avtalt tid. Enkel å samarbeide med.",
+    profile: saraProfile,
   },
   {
     id: 2,
@@ -361,6 +373,7 @@ const candidates: Candidate[] = [
     bio: "Jeg trives med tall og gjør store datasett om til innsikt som kan brukes. Har erfaring med Excel og Power BI.",
     quote:
       "Jonas gjorde analysen lett å forstå og ga oss nyttige anbefalinger.",
+    profile: jonasProfile,
   },
   {
     id: 3,
@@ -376,6 +389,7 @@ const candidates: Candidate[] = [
     bio: "Jeg lager løsninger som er enkle å bruke. Har gjennomført brukertester i studiene og i to betalte oppdrag.",
     quote:
       "Lina stilte gode spørsmål og fant forbedringer vi ikke hadde sett selv.",
+    profile: linaProfile,
   },
   {
     id: 4,
@@ -390,6 +404,7 @@ const candidates: Candidate[] = [
     match: 92,
     bio: "Jeg klipper korte videoer med tydelig historiefortelling. Liker å finne de små detaljene som gjør innholdet bedre.",
     quote: "Emil var selvstendig, kreativ og fulgte briefen godt.",
+    profile: emilProfile,
   },
   {
     id: 5,
@@ -649,6 +664,10 @@ export function BusinessDashboard() {
     setTalentMessage("");
     setSheet("talent-request");
   };
+  // Arket beholder formen sin mens det lukkes, selv om innholdet forsvinner.
+  const lastSheet = useRef(sheet);
+  if (sheet) lastSheet.current = sheet;
+  const candidateSheet = lastSheet.current === "candidate";
   const appDragRef = useRef<number | null>(null),
     appClickUntil = useRef(0);
   const [company, setCompany] = useState({
@@ -2368,12 +2387,15 @@ export function BusinessDashboard() {
         }
         description={company.name + " · " + BRAND_NAME}
         closeLabel="Lukk"
-        detents={[0.9, 0.97]}
-        className={"biz-sheet" + (sheet === "candidate" ? " is-candidate" : "")}
+        detents={candidateSheet ? [0.97] : [0.9, 0.97]}
+        className={"biz-sheet" + (candidateSheet ? " is-candidate" : "")}
+        overlayClassName={
+          candidateSheet ? "biz-sheet-overlay is-candidate" : undefined
+        }
       >
         <div
           className={
-            "biz-sheet-content" + (sheet === "candidate" ? " is-candidate" : "")
+            "biz-sheet-content" + (candidateSheet ? " is-candidate" : "")
           }
         >
           {sheet === "talent-request" && (

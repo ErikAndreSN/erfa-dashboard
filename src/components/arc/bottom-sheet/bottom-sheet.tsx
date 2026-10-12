@@ -28,6 +28,8 @@ export interface BottomSheetProps {
   onDetentChange?: (index: number) => void;
   closeLabel?: string;
   className?: string;
+  /** Extra class for the dimmed backdrop behind the sheet. */
+  overlayClassName?: string;
   children: ReactNode;
 }
 
@@ -80,7 +82,7 @@ export function BottomSheet({ trigger, open: openProp, defaultOpen = false, onOp
   </DialogPrimitive.Root>;
 }
 
-function Sheet({ title, description, detents = [.45, .92], initialDetent = 0, onDetentChange, closeLabel = "Close", className, children, onDismiss }: Omit<BottomSheetProps, "trigger" | "open" | "defaultOpen" | "onOpenChange"> & { onDismiss: () => void }) {
+function Sheet({ title, description, detents = [.45, .92], initialDetent = 0, onDetentChange, closeLabel = "Close", className, overlayClassName, children, onDismiss }: Omit<BottomSheetProps, "trigger" | "open" | "defaultOpen" | "onOpenChange"> & { onDismiss: () => void }) {
   const [isPresent, safeToRemove] = usePresence();
   const reduced = useReducedMotion() ?? false;
   const detentKey = detents.join(",");
@@ -350,7 +352,7 @@ function Sheet({ title, description, detents = [.45, .92], initialDetent = 0, on
 
   return <>
     <DialogPrimitive.Overlay asChild forceMount>
-      <motion.div className={styles.overlay} style={{ opacity: backdrop }} />
+      <motion.div className={[styles.overlay, overlayClassName].filter(Boolean).join(" ")} style={{ opacity: backdrop }} />
     </DialogPrimitive.Overlay>
     <DialogPrimitive.Content
       asChild
