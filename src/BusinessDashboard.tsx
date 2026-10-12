@@ -1152,7 +1152,7 @@ export function BusinessDashboard() {
                           !applicationKeyboard && stage !== "Fått jobben"
                         }
                         className={
-                          "biz-student-card " +
+                          "biz-student-card is-compact " +
                           (applicationDrag === a.id ? "is-dragging" : "")
                         }
                         onDragStart={(e) => {
@@ -1206,26 +1206,7 @@ export function BusinessDashboard() {
                             moveApplication(a.id, applicationTarget || stage);
                         }}
                       >
-                        <div className="biz-student-card-top">
-                          <CandidatePhoto candidate={c} />
-                          <button
-                            aria-label={
-                              (talent.includes(c.id) ? "Fjern " : "Lagre ") +
-                              c.name +
-                              " i talentbase"
-                            }
-                            aria-pressed={talent.includes(c.id)}
-                            onClick={() => toggleTalent(c.id)}
-                          >
-                            <Heart
-                              size={17}
-                              fill={
-                                talent.includes(c.id) ? "currentColor" : "none"
-                              }
-                            />
-                          </button>
-                          <GripVertical size={15} />
-                        </div>
+                        {/* Kompakt kort: nok til å kjenne igjen studenten, resten ligger i profilen. */}
                         <button
                           className="biz-student-open"
                           onClick={() => {
@@ -1233,45 +1214,39 @@ export function BusinessDashboard() {
                               openApplicant(a.id);
                           }}
                         >
-                          <h3>{c.name}</h3>
-                          <p>{c.study}</p>
+                          <CandidatePhoto candidate={c} small />
+                          <span className="biz-student-id">
+                            <strong>{c.name}</strong>
+                            <small>{c.study}</small>
+                            <small>{c.school}</small>
+                          </span>
+                          <GripVertical
+                            size={14}
+                            className="biz-student-grip"
+                            aria-hidden="true"
+                          />
                         </button>
-                        <div className="biz-student-school">
-                          <span className="biz-student-school-logo">
-                            <SchoolLogo school={c.school} />
-                          </span>
-                          <span>
-                            <strong>{c.school}</strong>
-                            <small>{c.semester}</small>
-                          </span>
-                        </div>
-                        <div className="biz-skills">
-                          {c.skills.slice(0, 2).map((skill) => (
-                            <span key={skill}>{skill}</span>
-                          ))}
-                        </div>
-                        <div className="biz-student-trust">
-                          <span>
-                            <FileCheck2 size={14} />
-                            {c.attests} attester
-                          </span>
-                          <b
+                        <div className="biz-student-fit">
+                          <span
                             className={
-                              "biz-match" + (matchFor(a) >= 85 ? " high" : "")
+                              "biz-fit-bar" +
+                              (matchFor(a) >= 85 ? " is-high" : "")
                             }
+                            aria-hidden="true"
                           >
-                            {matchFor(a)} % samsvar
-                          </b>
+                            <i style={{ width: matchFor(a) + "%" }} />
+                          </span>
+                          <b>{matchFor(a)} %</b>
+                          {stage === "Aktuell" && (
+                            <button
+                              className="biz-card-next"
+                              aria-label={"Vurder " + c.name}
+                              onClick={() => moveApplication(a.id, "Vurderes")}
+                            >
+                              Vurder <ArrowRight size={13} />
+                            </button>
+                          )}
                         </div>
-                        {stage === "Aktuell" && (
-                          <button
-                            className="biz-card-next"
-                            onClick={() => moveApplication(a.id, "Vurderes")}
-                          >
-                            Vurder {c.name.split(" ")[0]}{" "}
-                            <ArrowRight size={14} />
-                          </button>
-                        )}
                         <label className="biz-status-control">
                           <span className="sr-only">Status for {c.name}</span>
                           <Select

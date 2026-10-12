@@ -3492,3 +3492,102 @@ button.biz-focus-card:hover {
   font-size: 12px;
   color: #c4532c;
 }
+
+/* Kompakte kort på søknadstavla, så bedriften ser mange kandidater samtidig. */
+.biz-application-board .biz-lane {
+  min-height: 300px;
+}
+.biz-student-card.is-compact {
+  gap: 10px;
+  padding: 12px 12px 12px 12px;
+  border-radius: 16px;
+}
+.biz-student-card.is-compact .biz-student-open {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: inherit;
+  overflow-wrap: normal;
+}
+.biz-student-card.is-compact .biz-avatar {
+  width: 36px;
+  height: 36px;
+  font-size: 11px;
+}
+.biz-student-id {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+.biz-student-id strong {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--biz-ink);
+}
+.biz-student-card.is-compact .biz-student-id small {
+  overflow: hidden;
+  font-size: 11px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.biz-student-grip {
+  flex-shrink: 0;
+  align-self: flex-start;
+  color: #b4b4ba;
+}
+.biz-student-fit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.biz-fit-bar {
+  flex: 1;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #efeff1;
+}
+.biz-fit-bar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #f0a285;
+}
+.biz-fit-bar.is-high i {
+  background: #3fa36a;
+}
+.biz-student-fit b {
+  font-size: 12px;
+  font-weight: 600;
+}
+.biz-student-fit .biz-card-next {
+  width: auto;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 100px;
+  font-size: 11px;
+}
+/* Statusvalget trengs bare på mobil, der kortene ikke kan dras. */
+.biz-student-card.is-compact .biz-status-control {
+  display: none;
+}
+@media (max-width: 700px) {
+  .biz-student-card.is-compact .biz-status-control {
+    display: block;
+  }
+  .biz-student-card.is-compact .biz-status-control .erfa-select-trigger {
+    min-height: 38px;
+  }
+}
