@@ -28,7 +28,6 @@ import {
 } from "lucide-react";
 import { Button } from "./components/arc/button/button";
 import { BottomSheet } from "./components/arc/bottom-sheet/bottom-sheet";
-import { Avatar } from "./components/arc/avatar/avatar";
 import { BRAND_NAME, BrandMark } from "./brand";
 import "./business.css";
 import { Select } from "./components/arc/select/select";
@@ -38,6 +37,8 @@ import {
   SchoolLogo,
   VerifiedSkills,
 } from "./VerifiedSkills";
+import { CandidateExplorer, type CandidateProfile } from "./CandidateExplorer";
+import { espenProfile } from "./demo-profiles";
 
 type Stage = "Publisert" | "Avtale" | "Pågår" | "Fullført";
 type ApplicationStage =
@@ -84,6 +85,7 @@ type Candidate = {
   match: number;
   bio: string;
   quote: string;
+  profile?: CandidateProfile;
 };
 type Task = {
   key: string;
@@ -193,6 +195,31 @@ const initialJobs: Job[] = [
     selected: 1,
     studentApproved: true,
     companyApproved: true,
+  },
+  {
+    id: 6,
+    title: "Analyser data fra kundereisen",
+    category: "Analyse",
+    amount: 5500,
+    hours: "12–16 timer",
+    deadline: "2026-10-30",
+    description:
+      "Vi har data fra nettsiden, nyhetsbrevet og kundeservice. Finn ut hvor kundene faller fra, og presenter tre konkrete forbedringer.",
+    skills: ["Dataanalyse", "Databaser"],
+    tools: [
+      { name: "Excel", level: 3 },
+      { name: "Power BI", level: 2 },
+    ],
+    expectations:
+      "Du er trygg på Excel eller SQL og kan forklare funn enkelt. Vi gir deg tilgang til anonymiserte data og en kort innføring.",
+    day: "Et digitalt oppstartsmøte med Maya. Deretter jobber du fleksibelt, med en kort statusprat hver uke.",
+    start: "2026-10-26",
+    workplace: "Eksternt",
+    engagement: "Selvstendig oppdrag",
+    payType: "Totalpris",
+    stage: "Publisert",
+    studentApproved: false,
+    companyApproved: false,
   },
 ];
 // Et større, fiktivt søkerutvalg på det første oppdraget, for å vise innboksen.
@@ -364,6 +391,21 @@ const candidates: Candidate[] = [
     bio: "Jeg klipper korte videoer med tydelig historiefortelling. Liker å finne de små detaljene som gjør innholdet bedre.",
     quote: "Emil var selvstendig, kreativ og fulgte briefen godt.",
   },
+  {
+    id: 5,
+    name: "Espen Rønning",
+    initials: "ER",
+    photo: "",
+    study: "IT og e-business",
+    school: "Høyskolen Kristiania",
+    semester: "5. semester",
+    skills: ["Dataanalyse", "Databaser", "SQL", "Excel", "Systemdesign"],
+    attests: 0,
+    match: 88,
+    bio: "Studerer IT og e-business og er CTO i en studentoppstart. Liker å gjøre rotete data om til noe man kan ta beslutninger på.",
+    quote: "",
+    profile: espenProfile,
+  },
   ...poolCandidates,
 ];
 function StatusChip({ job, label }: { job: Job; label?: string }) {
@@ -409,6 +451,7 @@ const initialApplications: Application[] = [
   { id: 5, jobId: 3, candidateId: 3, stage: "Fått jobben" },
   { id: 6, jobId: 4, candidateId: 2, stage: "Fått jobben" },
   { id: 7, jobId: 5, candidateId: 1, stage: "Fått jobben" },
+  { id: 8, jobId: 6, candidateId: 5, stage: "Søkt" },
   ...poolApplications,
 ];
 const stages: Stage[] = ["Publisert", "Avtale", "Pågår", "Fullført"];
@@ -460,6 +503,7 @@ const evidenceOverrides: Record<number, Record<string, number>> = {
     figma: 3,
   },
   4: { videoklipping: 4, "premiere pro": 3 },
+  5: { dataanalyse: 3, databaser: 3, sql: 3, excel: 2, "power bi": 2 },
 };
 const hashText = (text: string) =>
   [...text].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) % 9973, 7);
@@ -522,12 +566,20 @@ function load() {
     )
       return {
         ...v,
+        // Oppdrag og søknader som er lagt til i demoen etter forrige besøk.
+        jobs: [
+          ...v.jobs,
+          ...initialJobs.filter((j) => !v.jobs.some((s: Job) => s.id === j.id)),
+        ],
         applications: [
           ...v.applications.map((a: Application) => ({
             ...a,
             stage: (a.stage as string) === "Valgt" ? "Fått jobben" : a.stage,
           })),
-          ...poolApplications.filter(
+          ...[
+            ...initialApplications.filter((a) => a.jobId === 6),
+            ...poolApplications,
+          ].filter(
             (p) => !v.applications.some((a: Application) => a.id === p.id),
           ),
         ],
@@ -2317,9 +2369,13 @@ export function BusinessDashboard() {
         description={company.name + " · " + BRAND_NAME}
         closeLabel="Lukk"
         detents={[0.9, 0.97]}
-        className="biz-sheet"
+        className={"biz-sheet" + (sheet === "candidate" ? " is-candidate" : "")}
       >
-        <div className="biz-sheet-content">
+        <div
+          className={
+            "biz-sheet-content" + (sheet === "candidate" ? " is-candidate" : "")
+          }
+        >
           {sheet === "talent-request" && (
             <form
               className="biz-publish"
@@ -3037,41 +3093,15 @@ export function BusinessDashboard() {
             </>
           )}
           {sheet === "candidate" && student && activeApplication && (
-            <>
-              <div className="biz-student-profile">
-                <Avatar src={student.photo} name={student.name} size="lg" />
-                <div>
-                  <h2>{student.name}</h2>
-                </div>
-                <span className="biz-badge">
-                  {matchFor(activeApplication)} % samsvar
-                </span>
-              </div>
-              <SchoolIdentity
-                school={student.school}
-                study={student.study}
-                semester={student.semester}
-              />
-              <VerifiedSkills jobs={jobs} candidateId={student.id} />
-              <div className="biz-skills">
-                {student.skills.map((s) => (
-                  <span key={s}>{s}</span>
-                ))}
-              </div>
-              <p className="biz-student-bio">{student.bio}</p>
-              {student.attests > 0 && (
-                <div className="biz-testimonial">
-                  <span>
-                    <FileCheck2 size={18} />
-                    {student.attests} attester fra tidligere oppdrag
-                  </span>
-                  <blockquote>«{student.quote}»</blockquote>
-                  <small>Utdrag fra en fiktiv attest · eksempeldata</small>
-                </div>
-              )}
+            <CandidateExplorer
+              key={student.id}
+              candidate={student}
+              jobTitle={selectedJob.title}
+              requirements={requirementsFor(selectedJob).map((r) => r.name)}
+              match={matchFor(activeApplication)}
+              verified={<VerifiedSkills jobs={jobs} candidateId={student.id} />}
+            >
               <div className="biz-action-panel">
-                <p>Søkt på</p>
-                <h3>{selectedJob.title}</h3>
                 <div className="biz-candidate-stage">
                   <span className="biz-badge">{activeApplication.stage}</span>
                   <span>Søkt → Vurderes → Tilbudt jobb → Fått jobben</span>
@@ -3122,7 +3152,7 @@ export function BusinessDashboard() {
                 </Button>
                 <small>Tilbud og aksept registreres kun i demoen.</small>
               </div>
-            </>
+            </CandidateExplorer>
           )}
           {sheet === "attest" && selectedJob && (
             <form

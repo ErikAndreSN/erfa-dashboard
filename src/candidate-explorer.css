@@ -1,0 +1,689 @@
+/* Bli kjent med studenten: tre bobler til venstre, innholdet til høyre. */
+.biz-sheet.is-candidate {
+  width: min(100%, 72rem);
+}
+.biz-sheet-content.is-candidate {
+  max-width: 1080px;
+}
+.cx {
+  --cx-ink: #242426;
+  --cx-muted: #737478;
+  --cx-soft: #8c8c95;
+  --cx-line: #eee7df;
+  --cx-sand: #f7f4f0;
+  --cx-orange: #ff6a3d;
+  --cx-rust: #c4532f;
+  --cx-peach: #fff0e9;
+  color: var(--cx-ink);
+}
+.cx .cx-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--cx-line);
+}
+.cx .cx-head span,
+.cx .cx-kicker,
+.cx .cx-school small,
+.cx .cx-pitch span {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+.cx .cx-head span {
+  color: var(--cx-soft);
+}
+.cx .cx-head strong {
+  font-size: 15px;
+  font-weight: 500;
+}
+.cx .cx-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+  gap: 22px;
+  align-items: start;
+}
+
+/* Scenen med portrett og bobler */
+.cx .cx-stage {
+  position: sticky;
+  top: 12px;
+  overflow: clip;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 34px 24px 26px;
+  border: 1px solid #f6e4d8;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 1px 1px, rgb(214 84 45 / 0.13) 1px, transparent 0)
+      0 0 / 18px 18px,
+    linear-gradient(160deg, #fff8f3, #fdeee4);
+  text-align: center;
+}
+.cx .cx-stage::before,
+.cx .cx-stage::after {
+  content: "";
+  position: absolute;
+  border: 1px solid rgb(214 84 45 / 0.12);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.cx .cx-stage::before {
+  width: 420px;
+  height: 420px;
+  left: -150px;
+  top: -130px;
+}
+.cx .cx-stage::after {
+  width: 300px;
+  height: 300px;
+  right: -120px;
+  bottom: -110px;
+}
+.cx .cx-match {
+  position: relative;
+  padding: 8px 14px;
+  border-radius: 100px;
+  background: var(--cx-orange);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 6px 16px rgb(255 106 61 / 0.25);
+}
+.cx .cx-portrait {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 132px;
+  height: 132px;
+  margin-top: 22px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--cx-peach);
+  color: #d6542d;
+  font: 500 40px var(--font-display);
+  box-shadow:
+    0 0 0 6px #fff,
+    0 0 0 7px #f3dccd,
+    0 18px 40px rgb(120 60 30 / 0.14);
+}
+.cx .cx-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cx .cx-stage h2 {
+  position: relative;
+  margin: 22px 0 0;
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+.cx .cx-stage > p {
+  position: relative;
+  margin: 2px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--cx-muted);
+}
+.cx .cx-bubbles {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 26px;
+}
+.cx .cx-bubble {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 140px;
+  height: 140px;
+  padding: 20px;
+  border: 1px solid #f0dccf;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.72);
+  color: var(--cx-ink);
+  font: inherit;
+  cursor: pointer;
+  box-shadow: 0 10px 26px rgb(120 60 30 / 0.08);
+  backdrop-filter: blur(6px);
+  animation: cx-float 6s ease-in-out infinite;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+.cx .cx-bubble.is-person,
+.cx .cx-bubble.is-cv {
+  margin-top: 26px;
+}
+.cx .cx-bubble.is-school {
+  animation-delay: -2s;
+}
+.cx .cx-bubble.is-cv {
+  animation-delay: -4s;
+}
+.cx .cx-bubble:hover {
+  border-color: #f3c9b5;
+  background: #fff;
+}
+.cx .cx-bubble.is-active {
+  border-color: var(--cx-orange);
+  background: #fff;
+  box-shadow:
+    0 0 0 4px rgb(255 106 61 / 0.14),
+    0 14px 30px rgb(120 60 30 / 0.12);
+}
+.cx .cx-bubble:focus-visible {
+  outline: 2px solid var(--cx-orange);
+  outline-offset: 3px;
+}
+.cx .cx-bubble-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--cx-peach);
+  color: #d6542d;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+.cx .cx-bubble.is-active .cx-bubble-icon {
+  background: var(--cx-orange);
+  color: #fff;
+}
+.cx .cx-bubble strong {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.cx .cx-bubble small {
+  font-size: 10px;
+  line-height: 1.3;
+  color: var(--cx-soft);
+}
+.cx .cx-hint {
+  position: relative;
+  margin: 18px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #a08a7c;
+}
+@keyframes cx-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* Innholdet for valgt boble */
+.cx .cx-side {
+  min-width: 0;
+}
+.cx .cx-side > .biz-action-panel {
+  margin-top: 14px;
+}
+.cx .cx-panel {
+  padding: 30px;
+  border: 1px solid var(--cx-line);
+  border-radius: 28px;
+  background: #fff;
+  animation: cx-in 0.28s ease-out;
+}
+@keyframes cx-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+.cx .cx-kicker {
+  margin: 0;
+  line-height: 1.4;
+  color: #b0715a;
+}
+.cx .cx-panel h3 {
+  margin: 8px 0 0;
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+.cx .cx-lead {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--cx-muted);
+}
+.cx .cx-section {
+  margin-top: 24px;
+}
+.cx .cx-section h4 {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.cx .cx-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.cx .cx-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  border: 1px solid transparent;
+  border-radius: 100px;
+  background: #f3f1ee;
+  color: #5f6066;
+  font-size: 11px;
+  line-height: 1.3;
+}
+.cx .cx-chip.is-now,
+.cx .cx-chip.is-hit {
+  background: var(--cx-peach);
+  color: var(--cx-rust);
+}
+.cx .cx-chip.is-next {
+  border: 1px dashed #d9d4ce;
+  background: transparent;
+  color: var(--cx-soft);
+}
+.cx .cx-empty {
+  margin: 24px 0 0;
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--cx-sand);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--cx-muted);
+}
+
+/* Utdanning og emner */
+.cx .cx-school {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 20px;
+  padding: 18px 20px;
+  border-radius: 20px;
+  background: var(--cx-sand);
+}
+.cx .cx-school > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.cx .cx-school small {
+  color: var(--cx-soft);
+}
+.cx .cx-school strong {
+  font-size: 17px;
+  font-weight: 600;
+}
+.cx .cx-school span {
+  font-size: 12px;
+  color: var(--cx-muted);
+}
+.cx .cx-school > .school-logo {
+  flex-shrink: 0;
+  width: auto;
+  height: 52px;
+  max-width: 120px;
+  padding: 8px 12px;
+  border-radius: 14px;
+  background: #fff;
+  object-fit: contain;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.05);
+}
+.cx .cx-school > svg {
+  flex-shrink: 0;
+  color: var(--cx-soft);
+}
+.cx .cx-hits {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cx .cx-hits li {
+  padding: 14px 16px;
+  border: 1px solid var(--cx-line);
+  border-radius: 16px;
+}
+.cx .cx-hits li > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+}
+.cx .cx-hits strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+.cx .cx-hits p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--cx-muted);
+}
+.cx .cx-status {
+  font-size: 10px;
+  white-space: nowrap;
+  color: var(--cx-soft);
+}
+.cx .cx-status.is-now {
+  color: var(--cx-rust);
+}
+.cx .cx-covers {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--cx-rust);
+}
+.cx .cx-course-group + .cx-course-group {
+  margin-top: 12px;
+}
+.cx .cx-course-group > span {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11px;
+  color: var(--cx-soft);
+}
+
+/* CV og portefølje */
+.cx .cx-projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+.cx .cx-projects article {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+  border-radius: 18px;
+  background: var(--cx-sand);
+}
+.cx .cx-projects small {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cx-soft);
+}
+.cx .cx-projects strong {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.cx .cx-projects p {
+  margin: 0 0 6px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--cx-muted);
+}
+.cx .cx-projects .cx-chip {
+  background: #fff;
+}
+.cx .cx-projects .cx-chip.is-hit {
+  background: var(--cx-peach);
+}
+.cx .cx-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0 0 0 5px;
+  padding: 2px 0 2px 18px;
+  border-left: 1px solid var(--cx-line);
+  list-style: none;
+}
+.cx .cx-timeline li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.cx .cx-timeline li::before {
+  content: "";
+  position: absolute;
+  left: -24px;
+  top: 4px;
+  width: 7px;
+  height: 7px;
+  border: 2px solid var(--cx-orange);
+  border-radius: 50%;
+  background: #fff;
+}
+.cx .cx-timeline strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+.cx .cx-timeline span {
+  font-size: 11px;
+  color: var(--cx-soft);
+}
+.cx .cx-timeline p {
+  margin: 3px 0 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--cx-muted);
+}
+.cx .cx-panel .verified-skills {
+  margin-top: 24px;
+}
+.cx .cx-quote,
+.cx .cx-pitch {
+  margin: 24px 0 0;
+  padding: 18px 20px;
+  border-radius: 20px;
+  background: linear-gradient(125deg, #fff0e8, #fff8f4);
+  font: 500 16px/1.5 var(--font-display);
+  color: #3a2c25;
+}
+.cx .cx-quote small {
+  display: block;
+  margin-top: 8px;
+  font: 400 10px/1.4 var(--font-body);
+  color: var(--cx-soft);
+}
+.cx .cx-file {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  padding: 14px 16px;
+  border: 1px solid var(--cx-line);
+  border-radius: 16px;
+  color: inherit;
+  text-decoration: none;
+}
+.cx .cx-file:hover {
+  border-color: #f3c9b5;
+}
+.cx .cx-file > svg:first-child {
+  color: var(--cx-orange);
+}
+.cx .cx-file > span {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+.cx .cx-file strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+.cx .cx-file small {
+  font-size: 11px;
+  color: var(--cx-soft);
+}
+
+/* Personen bak søknaden */
+.cx .cx-pitch {
+  margin-top: 20px;
+}
+.cx .cx-pitch span {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--font-body);
+  color: #b0715a;
+}
+.cx .cx-intro {
+  margin: 18px 0 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #3d3e42;
+}
+.cx .cx-week {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+.cx .cx-week > div {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--cx-sand);
+}
+.cx .cx-week dt {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #b0715a;
+}
+.cx .cx-week dd {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #4a4b50;
+}
+.cx .cx-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cx .cx-list li {
+  display: flex;
+  gap: 9px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: #4a4b50;
+}
+.cx .cx-list svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: var(--cx-orange);
+}
+.cx .cx-fact {
+  margin: 24px 0 0;
+  padding: 16px 18px;
+  border-left: 3px solid var(--cx-orange);
+  border-radius: 0 14px 14px 0;
+  background: #fffaf6;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #4a4b50;
+}
+.cx .cx-fact strong {
+  display: block;
+  margin-bottom: 2px;
+  font-weight: 600;
+  color: var(--cx-ink);
+}
+.cx .cx-note {
+  display: block;
+  margin-top: 18px;
+  font-size: 10px;
+  color: var(--cx-soft);
+}
+
+@media (max-width: 950px) {
+  .cx .cx-grid {
+    grid-template-columns: 1fr;
+  }
+  .cx .cx-stage {
+    position: relative;
+    top: 0;
+  }
+}
+@media (max-width: 700px) {
+  .cx .cx-stage {
+    padding: 26px 16px 20px;
+  }
+  .cx .cx-portrait {
+    width: 104px;
+    height: 104px;
+    font-size: 32px;
+  }
+  .cx .cx-stage h2 {
+    font-size: 26px;
+  }
+  .cx .cx-bubbles {
+    gap: 8px;
+  }
+  .cx .cx-bubble {
+    width: 94px;
+    height: 94px;
+    padding: 8px;
+    gap: 4px;
+  }
+  .cx .cx-bubble.is-person,
+  .cx .cx-bubble.is-cv {
+    margin-top: 18px;
+  }
+  .cx .cx-bubble-icon {
+    width: 30px;
+    height: 30px;
+  }
+  .cx .cx-bubble strong {
+    font-size: 10px;
+  }
+  .cx .cx-bubble small {
+    display: none;
+  }
+  .cx .cx-panel {
+    padding: 22px 18px;
+  }
+  .cx .cx-panel h3 {
+    font-size: 24px;
+  }
+  .cx .cx-week > div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cx .cx-bubble,
+  .cx .cx-panel {
+    animation: none;
+  }
+}
