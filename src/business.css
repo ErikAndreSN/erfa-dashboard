@@ -1824,9 +1824,7 @@
 .biz-status-control select:disabled {
   opacity: 0.7;
 }
-.biz-pipeline-note {
-  margin-top: 15px !important;
-}
+
 .biz-work-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2835,60 +2833,15 @@ button.biz-focus-card:hover {
   background: #fff4dc;
   color: #a8650a;
 }
-.biz-inbox-picks {
-  margin-bottom: 18px;
-  padding: 20px;
-  border-radius: 26px;
-  background: var(--biz-surface);
-}
-.biz-inbox-picks h3 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0 0 14px;
-  font-size: 15px;
-  font-weight: 500;
-}
-.biz-inbox-pick-row {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(150px, 1fr));
-  gap: 12px;
-  overflow-x: auto;
-}
-.biz-inbox-pick {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px;
-  border-radius: 20px;
-  background: #fff;
-}
-.biz-inbox-pick-open {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  min-width: 0;
-  text-align: left;
-}
-.biz-inbox-pick-open .biz-avatar {
-  width: 44px;
-  height: 44px;
-  margin-bottom: 6px;
-}
-.biz-inbox-pick-open strong {
-  font-size: 14px;
-  font-weight: 500;
-}
-.biz-inbox-pick-open small {
-  font-size: 11px;
-  line-height: 1.4;
-  color: var(--biz-muted);
-}
-.biz-inbox-pick-open .biz-status {
-  margin-top: 6px;
-}
+
+
+
+
+
+
+
+
+
 .biz-inbox-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -2988,14 +2941,7 @@ button.biz-focus-card:hover {
   color: var(--biz-ink);
   font-size: 12px;
 }
-.biz-inbox-actions .biz-inbox-save {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  color: #d75b34;
-}
+
 .biz-inbox-empty {
   padding: 18px 0;
   font-size: 13px;
@@ -3029,63 +2975,14 @@ button.biz-focus-card:hover {
   font-size: 12px;
   text-decoration: underline;
 }
-@media (max-width: 950px) {
-  .biz-inbox-pick-row {
-    grid-template-columns: repeat(5, 200px);
-  }
-}
 
-/* Sammenligning av søkere: krav som kolonner, dokumentasjon 0–4 per krav. */
-.biz-screen-summary {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-bottom: 18px;
-}
-.biz-screen-summary > div {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 18px 20px;
-  border-radius: 22px;
-  background: var(--biz-surface);
-}
-.biz-screen-summary strong {
-  font-family: var(--font-display);
-  font-size: 30px;
-  font-weight: 500;
-  line-height: 1.1;
-  letter-spacing: -0.6px;
-}
-.biz-screen-summary strong span {
-  font-family: var(--font-body, inherit);
-  font-size: 12px;
-  font-weight: 400;
-  letter-spacing: 0;
-  color: var(--biz-muted);
-}
-.biz-screen-summary b {
-  font-size: 13px;
-  font-weight: 500;
-}
-.biz-screen-summary i {
-  display: block;
-  height: 6px;
-  margin: 6px 0 2px;
-  overflow: hidden;
-  border-radius: 6px;
-  background: #e2e2e5;
-}
-.biz-screen-summary em {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: #23834b;
-}
-.biz-screen-summary small {
-  font-size: 11px;
-  color: var(--biz-muted);
-}
+
+
+
+
+
+
+
 /* Søkeord blant studentene: bedriften velger ordene, listen rangeres etter dem. */
 .biz-keyword-setup {
   display: grid;
@@ -3211,9 +3108,7 @@ button.biz-focus-card:hover {
   color: #a0a0a6;
   cursor: default;
 }
-.biz-screen-summary i.is-lacking em {
-  background: #e8806b;
-}
+
 .biz-matrix {
   overflow-x: auto;
   padding: 16px 18px 8px;
@@ -3407,9 +3302,7 @@ button.biz-focus-card:hover {
   color: #737478;
 }
 @media (max-width: 950px) {
-  .biz-screen-summary {
-    grid-template-columns: 1fr;
-  }
+
   .biz-keyword-setup {
     grid-template-columns: 1fr;
   }
@@ -3486,11 +3379,7 @@ button.biz-focus-card:hover {
 .biz-inbox-advance svg {
   flex-shrink: 0;
 }
-.biz-section-head p.biz-inbox-hint {
-  margin-top: 4px;
-  font-size: 12px;
-  color: #c4532c;
-}
+
 
 /* Kompakte kort på søknadstavla, så bedriften ser mange kandidater samtidig. */
 .biz-application-board .biz-lane {
@@ -3735,5 +3624,39 @@ button.biz-focus-card:hover {
 @media (prefers-reduced-motion: reduce) {
   .biz-view-switch em {
     animation: none;
+  }
+}
+.biz-inbox-cap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.biz-inbox-cap small {
+  font-size: 11px;
+  color: var(--biz-muted);
+  white-space: nowrap;
+}
+.biz-keyword-setup {
+  grid-template-columns: minmax(150px, 200px) minmax(0, 1fr);
+  padding: 16px 20px;
+}
+/* Oppdragsvalg og nøkkelinfo på samme linje. */
+.biz-applicant-head {
+  align-items: flex-end;
+  gap: 14px;
+}
+.biz-applicant-head .biz-pipeline-summary {
+  flex: 1;
+  margin: 0;
+}
+@media (max-width: 700px) {
+  .biz-applicant-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+@media (max-width: 950px) {
+  .biz-keyword-setup {
+    grid-template-columns: 1fr;
   }
 }

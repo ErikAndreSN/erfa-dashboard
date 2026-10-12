@@ -978,7 +978,6 @@ export function BusinessDashboard() {
       person = (a: Application) =>
         candidates.find((c) => c.id === a.candidateId)!,
       requirements = requirementsFor(current),
-      musts = requirements.filter((r) => r.must),
       source = (a: Application, r: Requirement) =>
         keywordSource(person(a), r.name, jobs),
       missing = (a: Application) => missingMusts(person(a), current, jobs),
@@ -1005,9 +1004,7 @@ export function BusinessDashboard() {
       visible = shown.slice(0, inboxLimit),
       // Pipelinen er alt etter Søkt.
       pipelineStages = applicationStages.slice(1),
-      inPipeline = list.filter((a) => pipelineStages.includes(a.stage)),
-      share = (n: number, total: number) =>
-        (total ? Math.round((n / total) * 100) : 0) + "%";
+      inPipeline = list.filter((a) => pipelineStages.includes(a.stage));
     const niceNames = requirements
         .filter((r) => !r.must)
         .map((r) => r.name.toLowerCase()),
@@ -1046,14 +1043,7 @@ export function BusinessDashboard() {
       };
     return (
       <section className="biz-board-section">
-        <div className="biz-section-head">
-          <div>
-            <h2>Søknader</h2>
-            <p>
-              Se gjennom alle som har søkt, og følg de aktuelle videre i
-              pipelinen.
-            </p>
-          </div>
+        <div className="biz-section-head biz-applicant-head">
           <label className="biz-pipeline-select">
             Oppdrag
             <Select
@@ -1066,20 +1056,16 @@ export function BusinessDashboard() {
               }))}
             />
           </label>
-        </div>
-        <div className="biz-pipeline-summary">
-          <span>
-            <Users size={16} />
-            <b>{list.length - declined.length}</b> søkere
-          </span>
-          <span>{current.category}</span>
-          <span>
-            {money(current.amount)}
-            {current.payType === "Timepris" ? " / time" : " totalt"}
-          </span>
-          <button onClick={() => openJob(current.id)}>
-            Se oppdragsbeskrivelse <ArrowUpRight size={14} />
-          </button>
+          <div className="biz-pipeline-summary">
+            <span>{current.category}</span>
+            <span>
+              {money(current.amount)}
+              {current.payType === "Timepris" ? " / time" : " totalt"}
+            </span>
+            <button onClick={() => openJob(current.id)}>
+              Se oppdragsbeskrivelse <ArrowUpRight size={14} />
+            </button>
+          </div>
         </div>
         {/* To visninger: først søkerne, så pipelinen for dem som er aktuelle. */}
         <div className="biz-view-switch" role="tablist" aria-label="Visning">
@@ -1091,7 +1077,7 @@ export function BusinessDashboard() {
             <Users size={18} />
             <span>
               <b>Søkere</b>
-              <small>Alle som har søkt, rangert etter søkeord</small>
+              <small>Rangert etter søkeord</small>
             </span>
             <em>{incoming.length}</em>
           </button>
@@ -1104,7 +1090,7 @@ export function BusinessDashboard() {
             <SquareKanban size={18} />
             <span>
               <b>Pipeline</b>
-              <small>Følg de aktuelle gjennom ansettelsen</small>
+              <small>Følg ansettelsen videre</small>
             </span>
             <em key={inPipeline.length}>{inPipeline.length}</em>
           </button>
@@ -1119,15 +1105,14 @@ export function BusinessDashboard() {
                 <ArrowLeft size={15} /> Søkere <span>{incoming.length}</span>
               </button>
               <div>
-                <h3>Pipeline for {current.title}</h3>
+                <h3>Pipeline</h3>
                 <p>
-                  Hold styr på ansettelsesprosessen. Kandidatene du har markert
-                  som aktuelle starter her. Flytt dem videre etter hvert som du
-                  har vurdert dem, gitt tilbud og fått svar.
+                  Dra kortene videre etter hvert som du vurderer, gir tilbud og
+                  får svar.
                 </p>
               </div>
             </div>
-            <p className="biz-drag-help" id="application-drag-help">
+            <p className="sr-only" id="application-drag-help">
               Dra studentkort til neste steg. Tastatur: mellomrom, piltaster og
               Enter. På mobil kan du bruke statusvalget i kortet.
             </p>
@@ -1347,10 +1332,6 @@ export function BusinessDashboard() {
                 </section>
               ))}
             </div>
-            <p className="biz-drag-help biz-pipeline-note">
-              Tilbud og aksept er demosteg. Ingen tilbud sendes eller avtaler
-              inngås her.
-            </p>
           </>
         )}
         {applicantView === "søkere" && (
@@ -1363,34 +1344,32 @@ export function BusinessDashboard() {
               <div>
                 <h2>Søkeord blant studentene</h2>
                 <p>
-                  {incoming.length} nye søkere, rangert etter hvor mange av
-                  søkeordene de har · {list.length - declined.length} av maks 50
-                  søknader
-                  {current.paused ? " · søknader er satt på pause" : ""}
-                </p>
-                <p className="biz-inbox-hint">
-                  Trykk «Aktuell» på dem som ser lovende ut ved første øyekast.
-                  De flyttes til pipelinen, der du følger dem videre.
+                  Trykk «Aktuell» på dem som ser lovende ut. De flyttes til
+                  pipelinen.
                 </p>
               </div>
-              <button
-                className={
-                  "biz-inbox-pause" + (current.paused ? " is-paused" : "")
-                }
-                onClick={() =>
-                  updateJob(current.id, { paused: !current.paused })
-                }
-              >
-                {current.paused ? "Åpne for søknader" : "Pause søknader"}
-              </button>
+              <span className="biz-inbox-cap">
+                <small>
+                  {list.length - declined.length}/50 søknader
+                  {current.paused ? " · pause" : ""}
+                </small>
+                <button
+                  className={
+                    "biz-inbox-pause" + (current.paused ? " is-paused" : "")
+                  }
+                  onClick={() =>
+                    updateJob(current.id, { paused: !current.paused })
+                  }
+                >
+                  {current.paused ? "Åpne for søknader" : "Pause søknader"}
+                </button>
+              </span>
             </div>
             <div className="biz-keyword-setup">
               <div className="biz-keyword-intro">
-                <strong>Søkeord for oppdraget</strong>
+                <strong>Søkeord</strong>
                 <small>
-                  Velg de ordene som er nødvendige for å gjøre oppdraget. Trykk
-                  på et ord for å bytte mellom må ha og fint å ha. Søkere som
-                  mangler et må-ha-ord havner nederst.
+                  Trykk på et ord for å bytte mellom må ha og fint å ha.
                 </small>
               </div>
               <div className="biz-keyword-list">
@@ -1443,76 +1422,6 @@ export function BusinessDashboard() {
                 </form>
               </div>
             </div>
-            <div className="biz-screen-summary">
-              <div>
-                <strong>
-                  {incoming.length}
-                  <span> av {list.length}</span>
-                </strong>
-                <b>venter på beslutning</b>
-                <small>{list.length - incoming.length} allerede vurdert</small>
-              </div>
-              <div>
-                <strong>
-                  {covering.length}
-                  <span> av {incoming.length}</span>
-                </strong>
-                <b>har alle må-ha-ordene</b>
-                <i>
-                  <em
-                    style={{ width: share(covering.length, incoming.length) }}
-                  />
-                </i>
-                <small>Se på disse først</small>
-              </div>
-              <div>
-                <strong>
-                  {lacking}
-                  <span> av {incoming.length}</span>
-                </strong>
-                <b>mangler minst ett må-ha-ord</b>
-                <i className="is-lacking">
-                  <em style={{ width: share(lacking, incoming.length) }} />
-                </i>
-                <small>Rangert nederst i listen</small>
-              </div>
-            </div>
-            {covering.length > 0 && (
-              <div className="biz-inbox-picks">
-                <h3>
-                  <span className="biz-todo-kind kind-new">Erfa anbefaler</span>
-                  De {Math.min(5, covering.length)} som passer best
-                </h3>
-                <div className="biz-inbox-pick-row">
-                  {covering.slice(0, 5).map((a) => {
-                    const c = person(a);
-                    return (
-                      <article className="biz-inbox-pick" key={a.id}>
-                        <button
-                          className="biz-inbox-pick-open"
-                          onClick={() => openApplicant(a.id)}
-                        >
-                          <CandidatePhoto candidate={c} />
-                          <strong>{c.name}</strong>
-                          <small>
-                            {c.study} · {c.school}
-                          </small>
-                          <span className="biz-status is-match">
-                            {matchFor(a)} % samsvar
-                          </span>
-                        </button>
-                        <button
-                          className="biz-inbox-advance"
-                          onClick={() => advanceApplications([a.id])}
-                        >
-                          <Plus size={14} /> Legg til som aktuell
-                        </button>
-                      </article>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
             <div className="biz-inbox-toolbar">
               <div
                 className="biz-inbox-filters"
@@ -1575,17 +1484,7 @@ export function BusinessDashboard() {
               }
             >
               <p className="biz-matrix-legend">
-                <span>
-                  <i className="biz-keyword-cell is-hit">
-                    <Check size={12} strokeWidth={2.5} />
-                  </i>
-                  Har ordet i ferdigheter, emner, CV eller attester. Hold musen
-                  over for å se hvor.
-                </span>
-                <span>
-                  <i className="biz-keyword-cell is-miss">Mangler</i>
-                  Mangler et må-ha-ord
-                </span>
+                Hold over ✓ for å se hvor ordet er funnet.
               </p>
               <div className="biz-matrix-head" aria-hidden="true">
                 <span />
@@ -1620,11 +1519,7 @@ export function BusinessDashboard() {
                       lacks &&
                       (i === 0 || coversAll(visible[i - 1])) && (
                         <div className="biz-matrix-divider">
-                          <strong>Mangler må-ha-søkeord · {lacking}</strong>
-                          <span>
-                            Rangert lavere fordi de mangler minst ett ord du har
-                            satt som må ha.
-                          </span>
+                          <strong>Mangler må-ha-ord · {lacking}</strong>
                         </div>
                       )}
                     <div
@@ -1661,11 +1556,6 @@ export function BusinessDashboard() {
                       </button>
                       <span className="biz-matrix-score">
                         <b>{matchFor(a)} %</b>
-                        {musts.length > 0 && (
-                          <small>
-                            {musts.length - missing(a)} av {musts.length} må ha
-                          </small>
-                        )}
                       </span>
                       <span className="biz-matrix-cells">
                         {requirements.map((r) => {
@@ -1710,23 +1600,6 @@ export function BusinessDashboard() {
                         </button>
                         <button onClick={() => declineApplications([a.id])}>
                           Ikke nå
-                        </button>
-                        <button
-                          className="biz-inbox-save"
-                          aria-label={
-                            (talent.includes(c.id) ? "Fjern " : "Lagre ") +
-                            c.name +
-                            " i talentbase"
-                          }
-                          aria-pressed={talent.includes(c.id)}
-                          onClick={() => toggleTalent(c.id)}
-                        >
-                          <Heart
-                            size={15}
-                            fill={
-                              talent.includes(c.id) ? "currentColor" : "none"
-                            }
-                          />
                         </button>
                       </span>
                     </div>
@@ -2243,7 +2116,7 @@ export function BusinessDashboard() {
                     ? `Du har ${todoCount} ting å gjøre.`
                     : "Alt er à jour."
                   : page === "Søknader"
-                    ? "Velg ut blant nye søkere, og følg dem du går videre med gjennom prosessen."
+                    ? "Velg ut søkere og følg dem gjennom ansettelsen."
                     : page === "Statistikk"
                       ? "Se hva som skaper interesse og gode søknader."
                       : page === "Talentbase"
