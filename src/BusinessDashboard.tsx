@@ -118,7 +118,7 @@ const initialJobs: Job[] = [
     ],
     expectations:
       "Du skriver godt norsk og kan tilpasse budskap til Instagram og LinkedIn. Vi gir deg en brief og en innføring i merkevaren.",
-    day: "Et digitalt oppstartsmøte med Maria. Deretter jobber du fleksibelt rundt studiene, med en kort gjennomgang av første utkast.",
+    day: "Et digitalt oppstartsmøte med Maya. Deretter jobber du fleksibelt rundt studiene, med en kort gjennomgang av første utkast.",
     start: "2026-10-19",
     workplace: "Eksternt",
     engagement: "Selvstendig oppdrag",
@@ -603,7 +603,7 @@ export function BusinessDashboard() {
     name: "GreenTech AS",
     industry: "Bærekraftig teknologi",
     about: "Vi utvikler løsninger som gjør det enklere å velge grønt.",
-    contact: "Maria Hansen",
+    contact: "Maya Hansen",
   });
   useEffect(() => {
     if (!qaMode) {
