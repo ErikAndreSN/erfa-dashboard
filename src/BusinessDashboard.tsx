@@ -320,7 +320,7 @@ const poolCandidates: Candidate[] = poolNames.map((name, i) => {
     study,
     school: poolSchools[Math.floor(seeded(i + 5) * poolSchools.length)],
     semester: 2 + Math.floor(seeded(i + 7) * 5) + ". semester",
-    skills: [0, 3, 7].map(
+    skills: [0, 1, 2, 5].map(
       (step) => poolSkills[(first + step) % poolSkills.length],
     ),
     attests: Math.floor(seeded(i + 13) * 4),
@@ -490,54 +490,56 @@ const requirementsFor = (job: Job): Requirement[] => {
     must: !nice.includes(name.toLowerCase()),
   }));
 };
-const evidenceLabels = [
-  "Ingen bevis",
-  "Oppgitt selv",
-  "Studier eller prosjekt",
-  "Fullført oppdrag",
-  "Bekreftet i attest",
-];
-const evidenceShort = ["–", "Selv", "Studier", "Oppdrag", "Attest"];
-const evidenceOverrides: Record<number, Record<string, number>> = {
-  1: {
-    "sosiale medier": 4,
-    tekst: 4,
-    canva: 4,
-    "meta business suite": 2,
-    videoklipping: 2,
-    "premiere pro": 2,
-    seo: 3,
-  },
-  2: { excel: 4, dataanalyse: 3 },
-  3: {
-    "sosiale medier": 3,
-    tekst: 3,
-    canva: 3,
-    "meta business suite": 2,
-    brukertesting: 4,
-    figma: 3,
-  },
-  4: { videoklipping: 4, "premiere pro": 3 },
-  5: { dataanalyse: 3, databaser: 3, sql: 3, excel: 2, "power bi": 2 },
+// Generelle søkeord dekker også nærliggende ord studentene selv bruker.
+const relatedTerms: Record<string, string[]> = {
+  "sosiale medier": ["instagram", "tiktok", "some", "meta business suite"],
+  tekst: ["copywriting", "tekstforfatting"],
+  videoklipping: ["video", "premiere pro", "davinci resolve"],
+  dataanalyse: ["analyse", "statistikk", "power bi", "datavisualisering"],
+  databaser: ["sql", "datamodellering"],
+  design: ["figma", "grafisk design", "webdesign"],
+  brukertesting: ["brukerundersøkelser", "intervju"],
 };
-const hashText = (text: string) =>
-  [...text].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) % 9973, 7);
-const evidenceFor = (c: Candidate, requirement: string) => {
-  const key = requirement.toLowerCase(),
-    fixed = evidenceOverrides[c.id]?.[key];
-  if (fixed !== undefined) return fixed;
-  const r = seeded(c.id * 13 + hashText(key));
-  if (c.skills.some((s) => s.toLowerCase() === key))
-    return c.attests > 0 && r > 0.45 ? 4 : r > 0.15 ? 3 : 2;
-  return r < 0.45 ? 3 : r < 0.65 ? 2 : r < 0.8 ? 1 : 0;
+const termsFor = (keyword: string) => {
+  const key = keyword.toLowerCase();
+  return [key, ...(relatedTerms[key] || [])];
 };
-const scoreFor = (c: Candidate, job: Job) => {
+const escapeRegExp = (text: string) =>
+  text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+// Hvor i profilen studenten har søkeordet, eller tom tekst hvis det mangler.
+const keywordSource = (c: Candidate, keyword: string, jobs: Job[]) => {
+  const terms = termsFor(keyword),
+    hit = (list: string[] = []) =>
+      list.find((item) => terms.includes(item.toLowerCase())),
+    inText = (text: string) =>
+      terms.some((t) =>
+        new RegExp("(^|[^\\p{L}])" + escapeRegExp(t), "iu").test(text),
+      ),
+    attest = jobs.find((j) => j.selected === c.id && hit(j.attestSkills)),
+    work = c.profile?.experience?.find((e) => inText(e.role + " " + e.text)),
+    project = c.profile?.projects?.find((p) => hit(p.tags)),
+    course = c.profile?.courses?.find((x) => hit(x.tags));
+  if (attest) return "Bekreftet i attest for " + attest.title;
+  if (work) return "Erfaring: " + work.role + ", " + work.place;
+  if (project) return "Prosjekt: " + project.title;
+  if (course) return "Emne: " + course.name;
+  if (hit(c.skills)) return "Oppgitt som ferdighet";
+  return "";
+};
+const missingMusts = (c: Candidate, job: Job, jobs: Job[]) =>
+  requirementsFor(job).filter((r) => r.must && !keywordSource(c, r.name, jobs))
+    .length;
+// Andelen av søkeordene studenten har. Må-ha-ord teller dobbelt.
+const scoreFor = (c: Candidate, job: Job, jobs: Job[]) => {
   const requirements = requirementsFor(job);
   if (!requirements.length) return c.match;
   const weight = (r: Requirement) => (r.must ? 2 : 1);
   return Math.round(
-    (requirements.reduce((n, r) => n + evidenceFor(c, r.name) * weight(r), 0) /
-      requirements.reduce((n, r) => n + 4 * weight(r), 0)) *
+    (requirements.reduce(
+      (n, r) => n + (keywordSource(c, r.name, jobs) ? weight(r) : 0),
+      0,
+    ) /
+      requirements.reduce((n, r) => n + weight(r), 0)) *
       100,
   );
 };
@@ -616,7 +618,7 @@ export function BusinessDashboard() {
   const matchFor = (a: Application) => {
     const job = jobs.find((j) => j.id === a.jobId),
       c = candidates.find((x) => x.id === a.candidateId);
-    return job && c ? scoreFor(c, job) : 0;
+    return job && c ? scoreFor(c, job, jobs) : 0;
   };
   const [page, setPage] = useState("Oversikt"),
     [query, setQuery] = useState(""),
@@ -643,7 +645,8 @@ export function BusinessDashboard() {
     [applicationKeyboard, setApplicationKeyboard] = useState(false),
     [inboxFilter, setInboxFilter] = useState("Alle"),
     [inboxSelected, setInboxSelected] = useState<number[]>([]),
-    [inboxLimit, setInboxLimit] = useState(12);
+    [inboxLimit, setInboxLimit] = useState(12),
+    [keywordDraft, setKeywordDraft] = useState("");
   const [talentDrafts, setTalentDrafts] = useState<
     {
       id: number;
@@ -957,29 +960,68 @@ export function BusinessDashboard() {
         candidates.find((c) => c.id === a.candidateId)!,
       requirements = requirementsFor(current),
       musts = requirements.filter((r) => r.must),
-      level = (a: Application, r: Requirement) =>
-        evidenceFor(person(a), r.name),
-      coversAll = (a: Application) => musts.every((r) => level(a, r) >= 3),
-      strongMost = (a: Application) =>
-        musts.filter((r) => level(a, r) >= 3).length > musts.length / 2,
-      hasAttest = (a: Application) =>
-        requirements.some((r) => level(a, r) === 4),
+      source = (a: Application, r: Requirement) =>
+        keywordSource(person(a), r.name, jobs),
+      missing = (a: Application) => missingMusts(person(a), current, jobs),
+      coversAll = (a: Application) => missing(a) === 0,
       list = applications.filter((a) => a.jobId === current.id),
+      // De som mangler må-ha-ord havner nederst, uansett hvor mye annet de har.
       incoming = list
         .filter((a) => a.stage === "Søkt")
-        .sort((a, b) => matchFor(b) - matchFor(a)),
+        .sort(
+          (a, b) =>
+            missing(a) - missing(b) ||
+            matchFor(b) - matchFor(a) ||
+            person(b).attests - person(a).attests,
+        ),
       declined = list.filter((a) => a.stage === "Ikke valgt"),
       covering = incoming.filter(coversAll),
-      strong = incoming.filter(strongMost),
-      topMatches = incoming.filter((a) => matchFor(a) >= 70),
+      lacking = incoming.length - covering.length,
       shown = incoming.filter(
         (a) =>
           inboxFilter === "Alle" ||
-          (inboxFilter === "Dekker alle må-krav" && coversAll(a)) ||
-          (inboxFilter === "Har attest" && hasAttest(a)),
+          (inboxFilter === "Har alle må-ha" && coversAll(a)) ||
+          (inboxFilter === "Mangler må-ha" && !coversAll(a)),
       ),
+      visible = shown.slice(0, inboxLimit),
       share = (n: number, total: number) =>
         (total ? Math.round((n / total) * 100) : 0) + "%";
+    const niceNames = requirements
+        .filter((r) => !r.must)
+        .map((r) => r.name.toLowerCase()),
+      toggleKeyword = (r: Requirement) => {
+        const key = r.name.toLowerCase();
+        updateJob(current.id, {
+          niceToHave: r.must
+            ? [...niceNames, key]
+            : niceNames.filter((n) => n !== key),
+        });
+        setToast(
+          r.name + (r.must ? " er nå fint å ha" : " er nå et må-ha-søkeord"),
+        );
+      },
+      removeKeyword = (r: Requirement) => {
+        const key = r.name.toLowerCase();
+        updateJob(current.id, {
+          skills: current.skills.filter((s) => s.toLowerCase() !== key),
+          tools: (current.tools || []).filter(
+            (t) => t.name.toLowerCase() !== key,
+          ),
+          niceToHave: niceNames.filter((n) => n !== key),
+        });
+      },
+      addKeyword = (name: string) => {
+        const clean = name.trim();
+        if (
+          !clean ||
+          requirements.some((r) => r.name.toLowerCase() === clean.toLowerCase())
+        )
+          return;
+        updateJob(current.id, {
+          skills: [...current.skills, clean],
+          niceToHave: niceNames,
+        });
+      };
     return (
       <section className="biz-board-section">
         <div className="biz-section-head">
@@ -1062,7 +1104,7 @@ export function BusinessDashboard() {
                       {incoming.length}{" "}
                       {incoming.length === 1 ? "ny søker" : "nye søkere"}
                     </strong>
-                    <small>{covering.length} dekker alle må-krav</small>
+                    <small>{covering.length} har alle må-ha-ordene</small>
                     <button
                       onClick={() =>
                         document
@@ -1234,13 +1276,18 @@ export function BusinessDashboard() {
           Tilbud og aksept er demosteg. Ingen tilbud sendes eller avtaler inngås
           her.
         </p>
-        <section className="biz-inbox" id="biz-inbox" aria-label="Nye søkere">
+        <section
+          className="biz-inbox"
+          id="biz-inbox"
+          aria-label="Søkeord blant studentene"
+        >
           <div className="biz-section-head">
             <div>
-              <h2>Nye søkere</h2>
+              <h2>Søkeord blant studentene</h2>
               <p>
-                {incoming.length} venter · {list.length - declined.length} av
-                maks 50 søknader
+                {incoming.length} nye søkere, rangert etter hvor mange av
+                søkeordene de har · {list.length - declined.length} av maks 50
+                søknader
                 {current.paused ? " · søknader er satt på pause" : ""}
               </p>
             </div>
@@ -1252,6 +1299,65 @@ export function BusinessDashboard() {
             >
               {current.paused ? "Åpne for søknader" : "Pause søknader"}
             </button>
+          </div>
+          <div className="biz-keyword-setup">
+            <div className="biz-keyword-intro">
+              <strong>Søkeord for oppdraget</strong>
+              <small>
+                Velg de ordene som er nødvendige for å gjøre oppdraget. Trykk
+                på et ord for å bytte mellom må ha og fint å ha. Søkere som
+                mangler et må-ha-ord havner nederst.
+              </small>
+            </div>
+            <div className="biz-keyword-list">
+              {requirements.map((r) => (
+                <span
+                  key={r.name}
+                  className={"biz-keyword" + (r.must ? " is-must" : "")}
+                >
+                  <button
+                    type="button"
+                    aria-pressed={r.must}
+                    title={r.must ? "Gjør til fint å ha" : "Gjør til må ha"}
+                    onClick={() => toggleKeyword(r)}
+                  >
+                    <small>{r.must ? "Må ha" : "Fint å ha"}</small>
+                    {r.name}
+                  </button>
+                  <button
+                    type="button"
+                    className="biz-keyword-remove"
+                    aria-label={"Fjern søkeordet " + r.name}
+                    onClick={() => removeKeyword(r)}
+                  >
+                    <X size={13} />
+                  </button>
+                </span>
+              ))}
+              <form
+                className="biz-keyword-add"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  addKeyword(keywordDraft);
+                  setKeywordDraft("");
+                }}
+              >
+                <input
+                  aria-label="Nytt søkeord"
+                  placeholder="Legg til søkeord"
+                  value={keywordDraft}
+                  maxLength={40}
+                  onChange={(e) => setKeywordDraft(e.target.value)}
+                />
+                <button
+                  type="submit"
+                  aria-label="Legg til søkeord"
+                  disabled={!keywordDraft.trim()}
+                >
+                  <Plus size={14} />
+                </button>
+              </form>
+            </div>
           </div>
           <div className="biz-screen-summary">
             <div>
@@ -1267,34 +1373,34 @@ export function BusinessDashboard() {
                 {covering.length}
                 <span> av {incoming.length}</span>
               </strong>
-              <b>dekker alle må-krav</b>
+              <b>har alle må-ha-ordene</b>
               <i>
                 <em
                   style={{ width: share(covering.length, incoming.length) }}
                 />
               </i>
-              <small>Fullført oppdrag eller attest på alle</small>
+              <small>Se på disse først</small>
             </div>
             <div>
               <strong>
-                {strong.length}
+                {lacking}
                 <span> av {incoming.length}</span>
               </strong>
-              <b>sterke på de fleste må-krav</b>
-              <i>
-                <em style={{ width: share(strong.length, incoming.length) }} />
+              <b>mangler minst ett må-ha-ord</b>
+              <i className="is-lacking">
+                <em style={{ width: share(lacking, incoming.length) }} />
               </i>
-              <small>3 eller 4 på flertallet</small>
+              <small>Rangert nederst i listen</small>
             </div>
           </div>
-          {topMatches.length > 0 && (
+          {covering.length > 0 && (
             <div className="biz-inbox-picks">
               <h3>
                 <span className="biz-todo-kind kind-new">Erfa anbefaler</span>
-                De {Math.min(5, topMatches.length)} som passer best
+                De {Math.min(5, covering.length)} som passer best
               </h3>
               <div className="biz-inbox-pick-row">
-                {topMatches.slice(0, 5).map((a) => {
+                {covering.slice(0, 5).map((a) => {
                   const c = person(a);
                   return (
                     <article className="biz-inbox-pick" key={a.id}>
@@ -1329,7 +1435,7 @@ export function BusinessDashboard() {
               role="group"
               aria-label="Filtrer søkere"
             >
-              {["Alle", "Dekker alle må-krav", "Har attest"].map((f) => (
+              {["Alle", "Har alle må-ha", "Mangler må-ha"].map((f) => (
                 <button
                   key={f}
                   aria-pressed={inboxFilter === f}
@@ -1343,9 +1449,9 @@ export function BusinessDashboard() {
                   <span>
                     {f === "Alle"
                       ? incoming.length
-                      : f === "Dekker alle må-krav"
+                      : f === "Har alle må-ha"
                         ? covering.length
-                        : incoming.filter(hasAttest).length}
+                        : lacking}
                   </span>
                 </button>
               ))}
@@ -1371,9 +1477,7 @@ export function BusinessDashboard() {
                   checked={false}
                   disabled={!shown.length}
                   onChange={() =>
-                    setInboxSelected(
-                      shown.slice(0, inboxLimit).map((a) => a.id),
-                    )
+                    setInboxSelected(visible.map((a) => a.id))
                   }
                 />
                 Velg alle viste
@@ -1382,106 +1486,162 @@ export function BusinessDashboard() {
           </div>
           <div
             className="biz-matrix"
-            style={{ "--reqs": requirements.length } as React.CSSProperties}
+            style={
+              {
+                "--reqs": Math.max(1, requirements.length),
+              } as React.CSSProperties
+            }
           >
-            <div className="biz-matrix-legend" aria-label="Forklaring">
-              {evidenceLabels.map((label, i) => (
-                <span key={label}>
-                  <i className={"biz-evidence lvl-" + i}>{i}</i>
-                  {label}
-                </span>
-              ))}
-            </div>
+            <p className="biz-matrix-legend">
+              <span>
+                <i className="biz-keyword-cell is-hit">
+                  <Check size={12} strokeWidth={2.5} />
+                </i>
+                Har ordet i ferdigheter, emner, CV eller attester. Hold musen
+                over for å se hvor.
+              </span>
+              <span>
+                <i className="biz-keyword-cell is-miss">Mangler</i>
+                Mangler et må-ha-ord
+              </span>
+            </p>
             <div className="biz-matrix-head" aria-hidden="true">
               <span />
               <span>Søker</span>
               <span>Samsvar</span>
               <span className="biz-matrix-cells">
-                {requirements.map((r) => (
-                  <span key={r.name}>
-                    <small>{r.must ? "Må ha" : "Fint å ha"}</small>
-                    {r.name}
-                  </span>
-                ))}
+                {requirements.length ? (
+                  requirements.map((r) => (
+                    <span
+                      key={r.name}
+                      className={"biz-matrix-key" + (r.must ? " is-must" : "")}
+                    >
+                      <small>{r.must ? "Må ha" : "Fint å ha"}</small>
+                      {r.name}
+                    </span>
+                  ))
+                ) : (
+                  <span className="biz-matrix-key">Ingen søkeord</span>
+                )}
               </span>
               <span />
             </div>
-            {shown.slice(0, inboxLimit).map((a, i) => {
+            {visible.map((a, i) => {
               const c = person(a),
-                checked = inboxSelected.includes(a.id);
+                checked = inboxSelected.includes(a.id),
+                lacks = !coversAll(a);
               return (
-                <div
-                  className={"biz-matrix-row" + (checked ? " is-selected" : "")}
-                  key={a.id}
-                >
-                  <input
-                    type="checkbox"
-                    aria-label={"Velg " + c.name}
-                    checked={checked}
-                    onChange={() =>
-                      setInboxSelected((ids) =>
-                        checked
-                          ? ids.filter((id) => id !== a.id)
-                          : [...ids, a.id],
-                      )
-                    }
-                  />
-                  <button
-                    className="biz-inbox-person"
-                    onClick={() => openApplicant(a.id)}
-                  >
-                    <span className="biz-matrix-rank">{i + 1}</span>
-                    <CandidatePhoto candidate={c} />
-                    <span>
-                      <strong>{c.name}</strong>
-                      <small>
-                        {c.school} · {c.semester}
-                      </small>
-                    </span>
-                  </button>
-                  <b className="biz-matrix-score">{matchFor(a)} %</b>
-                  <span className="biz-matrix-cells">
-                    {requirements.map((r) => {
-                      const n = level(a, r);
-                      return (
-                        <span
-                          key={r.name}
-                          className={"biz-evidence lvl-" + n}
-                          title={r.name + ": " + evidenceLabels[n]}
-                          aria-label={r.name + ": " + evidenceLabels[n]}
-                        >
-                          {evidenceShort[n]}
+                <React.Fragment key={a.id}>
+                  {inboxFilter === "Alle" &&
+                    lacks &&
+                    (i === 0 || coversAll(visible[i - 1])) && (
+                      <div className="biz-matrix-divider">
+                        <strong>Mangler må-ha-søkeord · {lacking}</strong>
+                        <span>
+                          Rangert lavere fordi de mangler minst ett ord du har
+                          satt som må ha.
                         </span>
-                      );
-                    })}
-                  </span>
-                  <span className="biz-inbox-actions">
-                    <button
-                      className="biz-inbox-advance"
-                      onClick={() => advanceApplications([a.id])}
-                    >
-                      Gå videre
-                    </button>
-                    <button onClick={() => declineApplications([a.id])}>
-                      Ikke nå
-                    </button>
-                    <button
-                      className="biz-inbox-save"
-                      aria-label={
-                        (talent.includes(c.id) ? "Fjern " : "Lagre ") +
-                        c.name +
-                        " i talentbase"
+                      </div>
+                    )}
+                  <div
+                    className={
+                      "biz-matrix-row" +
+                      (checked ? " is-selected" : "") +
+                      (lacks ? " is-lacking" : "")
+                    }
+                  >
+                    <input
+                      type="checkbox"
+                      aria-label={"Velg " + c.name}
+                      checked={checked}
+                      onChange={() =>
+                        setInboxSelected((ids) =>
+                          checked
+                            ? ids.filter((id) => id !== a.id)
+                            : [...ids, a.id],
+                        )
                       }
-                      aria-pressed={talent.includes(c.id)}
-                      onClick={() => toggleTalent(c.id)}
+                    />
+                    <button
+                      className="biz-inbox-person"
+                      onClick={() => openApplicant(a.id)}
                     >
-                      <Heart
-                        size={15}
-                        fill={talent.includes(c.id) ? "currentColor" : "none"}
-                      />
+                      <span className="biz-matrix-rank">{i + 1}</span>
+                      <CandidatePhoto candidate={c} />
+                      <span>
+                        <strong>{c.name}</strong>
+                        <small>
+                          {c.school} · {c.semester}
+                        </small>
+                      </span>
                     </button>
-                  </span>
-                </div>
+                    <span className="biz-matrix-score">
+                      <b>{matchFor(a)} %</b>
+                      {musts.length > 0 && (
+                        <small>
+                          {musts.length - missing(a)} av {musts.length} må ha
+                        </small>
+                      )}
+                    </span>
+                    <span className="biz-matrix-cells">
+                      {requirements.map((r) => {
+                        const where = source(a, r);
+                        return (
+                          <span
+                            key={r.name}
+                            className={
+                              "biz-keyword-cell " +
+                              (where
+                                ? "is-hit"
+                                : r.must
+                                  ? "is-miss"
+                                  : "is-empty")
+                            }
+                            title={r.name + ": " + (where || "mangler")}
+                            aria-label={
+                              r.name + ": " + (where ? "har, " + where : "mangler")
+                            }
+                          >
+                            <em>{r.name}</em>
+                            {where ? (
+                              <Check size={14} strokeWidth={2.5} />
+                            ) : r.must ? (
+                              "Mangler"
+                            ) : (
+                              "–"
+                            )}
+                          </span>
+                        );
+                      })}
+                    </span>
+                    <span className="biz-inbox-actions">
+                      <button
+                        className="biz-inbox-advance"
+                        onClick={() => advanceApplications([a.id])}
+                      >
+                        Gå videre
+                      </button>
+                      <button onClick={() => declineApplications([a.id])}>
+                        Ikke nå
+                      </button>
+                      <button
+                        className="biz-inbox-save"
+                        aria-label={
+                          (talent.includes(c.id) ? "Fjern " : "Lagre ") +
+                          c.name +
+                          " i talentbase"
+                        }
+                        aria-pressed={talent.includes(c.id)}
+                        onClick={() => toggleTalent(c.id)}
+                      >
+                        <Heart
+                          size={15}
+                          fill={talent.includes(c.id) ? "currentColor" : "none"}
+                        />
+                      </button>
+                    </span>
+                  </div>
+                </React.Fragment>
               );
             })}
             {!shown.length && (
@@ -1582,7 +1742,10 @@ export function BusinessDashboard() {
       views: j.views ?? ({ 1: 248, 2: 186, 3: 154, 4: 212, 5: 167 }[j.id] || 0),
       saves: j.saves ?? ({ 1: 23, 2: 18, 3: 12, 4: 20, 5: 14 }[j.id] || 0),
       count: list.length,
-      qualified: list.filter((a) => matchFor(a) >= 85).length,
+      qualified: list.filter((a) => {
+        const c = candidates.find((x) => x.id === a.candidateId);
+        return c && !missingMusts(c, j, jobs);
+      }).length,
     };
   });
   const statistics = () => (
@@ -1591,7 +1754,7 @@ export function BusinessDashboard() {
         <BarChart3 size={18} />
         <span>
           Eksempelstatistikk · Annonseklikk og lagringer er fiktive. Søkertall
-          følger demoen. Kvalifisert betyr minst 85 % samsvar i eksempeldataene.
+          følger demoen. Kvalifisert betyr at søkeren har alle må-ha-søkeordene.
         </span>
       </div>
       <div className="biz-metric-grid">
@@ -3119,7 +3282,9 @@ export function BusinessDashboard() {
               key={student.id}
               candidate={student}
               jobTitle={selectedJob.title}
-              requirements={requirementsFor(selectedJob).map((r) => r.name)}
+              requirements={requirementsFor(selectedJob).flatMap((r) =>
+                termsFor(r.name),
+              )}
               match={matchFor(activeApplication)}
               verified={<VerifiedSkills jobs={jobs} candidateId={student.id} />}
             >

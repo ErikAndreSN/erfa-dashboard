@@ -3079,7 +3079,136 @@ button.biz-focus-card:hover {
   font-size: 11px;
   color: var(--biz-muted);
 }
+/* Søkeord blant studentene: bedriften velger ordene, listen rangeres etter dem. */
+.biz-keyword-setup {
+  display: grid;
+  grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
+  gap: 16px 28px;
+  align-items: start;
+  margin-bottom: 18px;
+  padding: 20px 22px;
+  border: 1px solid var(--biz-border);
+  border-radius: 22px;
+  background: #fff;
+}
+.biz-keyword-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.biz-keyword-intro strong {
+  font-size: 14px;
+  font-weight: 600;
+}
+.biz-keyword-intro small {
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--biz-muted);
+}
+.biz-keyword-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.biz-keyword {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--biz-border);
+  border-radius: 100px;
+  background: var(--biz-surface);
+}
+.biz-keyword > button:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 4px 8px 13px;
+  border: 0;
+  background: none;
+  color: var(--biz-ink);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.biz-keyword small {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--biz-muted);
+}
+.biz-keyword.is-must {
+  border-color: #242426;
+  background: #242426;
+}
+.biz-keyword.is-must > button:first-child {
+  color: #fff;
+}
+.biz-keyword.is-must small {
+  color: #ffb59b;
+}
+.biz-keyword-remove {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-right: 4px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--biz-muted);
+  cursor: pointer;
+}
+.biz-keyword-remove:hover {
+  background: rgb(0 0 0 / 0.06);
+}
+.biz-keyword.is-must .biz-keyword-remove {
+  color: #b5b5bb;
+}
+.biz-keyword.is-must .biz-keyword-remove:hover {
+  background: rgb(255 255 255 / 0.12);
+}
+.biz-keyword button:focus-visible,
+.biz-keyword-add:focus-within {
+  outline: 2px solid var(--biz-orange);
+  outline-offset: 2px;
+}
+.biz-keyword-add {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 3px 2px 12px;
+  border: 1px dashed #cfcfd4;
+  border-radius: 100px;
+}
+.biz-keyword-add input {
+  width: 130px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+}
+.biz-keyword-add button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--biz-orange);
+  color: #fff;
+  cursor: pointer;
+}
+.biz-keyword-add button:disabled {
+  background: #e4e4e7;
+  color: #a0a0a6;
+  cursor: default;
+}
+.biz-screen-summary i.is-lacking em {
+  background: #e8806b;
+}
 .biz-matrix {
+  overflow-x: auto;
   padding: 16px 18px 8px;
   border-radius: 26px;
   background: var(--biz-surface);
@@ -3087,47 +3216,60 @@ button.biz-focus-card:hover {
 .biz-matrix-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 16px;
-  margin-bottom: 14px;
+  gap: 6px 22px;
+  margin: 0 0 14px;
   font-size: 11px;
   color: var(--biz-muted);
 }
 .biz-matrix-legend span {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
-.biz-matrix-legend .biz-evidence {
-  width: 20px;
-  height: 20px;
-  border-radius: 6px;
-  font-style: normal;
+.biz-matrix-legend .biz-keyword-cell {
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 7px;
+  font-size: 10px;
 }
+/* Overskrift og rader deler samme rutenett, så kolonnene står rett under hverandre. */
 .biz-matrix-head,
 .biz-matrix-row {
   display: grid;
-  grid-template-columns: 16px minmax(190px, 1.3fr) 58px minmax(0, 2fr) auto;
+  grid-template-columns:
+    16px minmax(200px, 1.5fr) 92px repeat(var(--reqs, 4), minmax(84px, 1fr))
+    206px;
   align-items: center;
-  column-gap: 14px;
+  column-gap: 12px;
+  /* Faste spor pluss 96px per søkeord. Blir det trangt, ruller tabellen sidelengs. */
+  min-width: calc(610px + var(--reqs, 4) * 96px);
+}
+.biz-matrix-cells {
+  display: contents;
 }
 .biz-matrix-head {
   padding: 0 0 8px;
   font-size: 11px;
   color: var(--biz-muted);
 }
-.biz-matrix-head .biz-matrix-cells span {
+.biz-matrix-key {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 1px;
   color: var(--biz-ink);
   font-weight: 500;
+  text-align: center;
 }
-.biz-matrix-head small {
+.biz-matrix-key small {
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.4px;
   text-transform: uppercase;
   color: var(--biz-muted);
+}
+.biz-matrix-key.is-must small {
+  color: #c4532c;
 }
 .biz-matrix-row {
   padding: 10px 0;
@@ -3141,6 +3283,10 @@ button.biz-focus-card:hover {
 .biz-matrix-row.is-selected .biz-inbox-person strong {
   color: #c4532c;
 }
+.biz-matrix-row.is-lacking .biz-inbox-person,
+.biz-matrix-row.is-lacking .biz-matrix-score {
+  opacity: 0.62;
+}
 .biz-matrix-rank {
   width: 16px;
   font-size: 12px;
@@ -3148,41 +3294,62 @@ button.biz-focus-card:hover {
   text-align: right;
 }
 .biz-matrix-score {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.biz-matrix-score b {
   font-size: 15px;
   font-weight: 600;
 }
-.biz-matrix-cells {
-  display: grid;
-  grid-template-columns: repeat(var(--reqs, 4), minmax(0, 1fr));
-  gap: 6px;
+.biz-matrix-score small {
+  font-size: 10px;
+  color: var(--biz-muted);
 }
-.biz-evidence {
-  display: grid;
-  place-items: center;
-  height: 30px;
-  border-radius: 9px;
+.biz-keyword-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  border-radius: 10px;
   font-size: 11px;
+  font-style: normal;
   font-weight: 500;
 }
-.biz-evidence.lvl-0 {
+.biz-keyword-cell em {
+  display: none;
+  font-style: normal;
+}
+.biz-keyword-cell.is-hit {
+  background: #e3f1e8;
+  color: #23834b;
+}
+.biz-keyword-cell.is-miss {
+  background: #fdecea;
+  color: #c2412d;
+}
+.biz-keyword-cell.is-empty {
   background: #ececee;
   color: #9a9aa0;
 }
-.biz-evidence.lvl-1 {
-  background: #e6f3ea;
-  color: #4f7a60;
+.biz-matrix-divider {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin-top: 6px;
+  padding: 16px 0 8px;
+  border-top: 2px dashed #dcdce0;
 }
-.biz-evidence.lvl-2 {
-  background: #c9e8d4;
-  color: #2f6b47;
+.biz-matrix-divider strong {
+  font-size: 12px;
+  font-weight: 600;
+  color: #c2412d;
 }
-.biz-evidence.lvl-3 {
-  background: #8fcda8;
-  color: #0f4428;
-}
-.biz-evidence.lvl-4 {
-  background: #23834b;
-  color: #fff;
+.biz-matrix-divider span {
+  font-size: 11px;
+  color: var(--biz-muted);
 }
 /* Skjemaet vises i et eget lag utenfor .business-app, så fargene står direkte her. */
 .biz-requirement-picker {
@@ -3236,19 +3403,32 @@ button.biz-focus-card:hover {
   .biz-screen-summary {
     grid-template-columns: 1fr;
   }
+  .biz-keyword-setup {
+    grid-template-columns: 1fr;
+  }
   .biz-matrix-head {
     display: none;
   }
   .biz-matrix-row {
     grid-template-columns: 16px minmax(0, 1fr) auto;
     row-gap: 10px;
+    min-width: 0;
+  }
+  .biz-matrix-row > .biz-matrix-cells {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
   }
   .biz-matrix-row > .biz-matrix-cells,
   .biz-matrix-row > .biz-inbox-actions {
     grid-column: 2 / -1;
   }
-  .biz-evidence {
-    height: 26px;
+  .biz-keyword-cell {
+    height: 28px;
+    padding: 0 10px;
     font-size: 10px;
+  }
+  .biz-keyword-cell em {
+    display: inline;
   }
 }
