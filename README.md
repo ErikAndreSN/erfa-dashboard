@@ -30,6 +30,81 @@ Bygg med `npm run build`. Resultatet ligger i `dist/`.
 
 Eldre designfiler er bevart, men er ikke egne publiserte sider.
 
+## Registrering
+
+`/registrer` er en registrering i tre trykk: skole (søk, f.eks. «kristiania» viser skolen og alle instituttene),
+linje og semester, pluss valgfag når studenten har kommet så langt. Deretter viser siden fagene og «Dette kan du
+allerede», og lagrer profilen i nettleseren før den sender studenten til `/student`.
+
+Skoler og linjer kommer fra åpne data i DBH (HK-dir, NLOD) og ligger i `public/data/studier.json`.
+Oppdater dem hvert semester (henter ~1 GB første gang og lagrer det i `.cache/`, som ikke er i git):
+
+```bash
+npm run study-data
+```
+
+Når studenten velger semester, regner registreringen ut kullet (oppstart) og når hvert valg ble tatt. Den fyller inn
+fagene fra fagplanen for akkurat det kullet, og viser valgemnene linjen kunne velge det semesteret. Dataene ligger i
+`public/data/studieplaner/<skole>.json`, med kilde for hver fagplan og hver valgemneliste.
+
+**Ingenting vises uten kontroll.** Mangler en kontrollert fagplan eller valgemneliste, sier registreringen det, og
+studenten søker blant alle fagene på skolen i stedet. Kontrollen (`scripts/lib/verify_plans.mjs`) laster ned kildene
+på nytt og krever at
+
+- kilden ligger på skolens eget domene (`scripts/school_domains.json`) eller er en arkivert kopi av en slik side,
+- fagplanen har linjenavnet i tittelen og gjelder kullet, og valgemnelisten gjelder semesteret (det som nevnes oftest),
+- hvert fag, valgemne og hver regel for hvem som kan velge et emne står i kilden (reglene ordrett, ved emnet),
+- regelen åpner for linjen («Kan kun velges av: BA i IT (… E-business …)»), og at emner med regel ikke mangler den.
+
+```bash
+npm run plans:check     # sjekk alle lagrede planer mot kildene (ingen API-nøkkel)
+npm run plans:test      # sjekk at kontrollen stopper 25 typer feil (og godtar de riktige dataene)
+```
+
+**Skoler med åpne data hentes uten AI.** Høyskolen Kristiania har et åpent API i studieportalen med fagplanen for
+hvert kull, valgemnene per kull (med pakker og delemner) og emnebeskrivelser per semester. Kontrollen henter API-et
+på nytt og sammenligner hver emnekode med fagplanen for kullet:
+
+```bash
+npm run import:kristiania                    # alle linjene (tar 15–30 min første gang, ingen API-nøkkel)
+npm run import:kristiania -- --id 8253-2110  # én linje
+```
+
+Plassholdere i fagplanen («Valgemner», «Utveksling») blir aldri vist som emner; da søker studenten blant skolens fag.
+
+Nye planer for skoler uten åpne data lages med Claude og nettsøk. Hver fagplan og valgemneliste må bestå kontrollen over og en egen Claude-kontroll
+som leser kilden; feiler ett punkt, forkastes hele listen (se `.cache/studieplaner-rapport.json`). Legg
+`ANTHROPIC_API_KEY=...` i `.env.anthropic` (aldri i git; ikke `.env.local`, den skriver `vercel env pull` over), prøv på noen linjer først, og kjør så resten. `--budget` stopper ved
+et beløp i dollar, og ferdige linjer hoppes over neste gang:
+
+```bash
+npm run plans -- --inst 8253 --limit 5
+npm run plans -- --inst 8253 --budget 100
+npm run plans -- --budget 2000
+```
+
+Valgemnelister skifter hvert semester. Kjør `npm run plans:check` jevnlig; endrer en skole siden, feiler kontrollen.
+
+**Ferdigheter** hentes fra læringsutbyttet i emnebeskrivelsen til hvert fag (i versjonen for semesteret studenten hadde
+faget). Hver ferdighet har en setning ordrett fra delen «Ferdigheter» eller «Generell kompetanse» – aldri «Kunnskap» – og
+verktøy som «JavaScript» eller «Wireshark» må stå i den setningen eller i emnets liste over arbeidsverktøy. Emnet må også
+si at det inngår i linjen. `npm run plans:check` sjekker dette, og registreringen viser hvilket fag og hvilken setning en
+ferdighet kommer fra. Ferdigheter uten kilde vises ikke.
+
+For å måle hvor riktige ferdighetene er, vurderer mennesker dem i et regneark:
+
+```bash
+npm run skills:review               # lager vurdering/ferdigheter.csv (åpne i Excel/Numbers, fyll inn «riktig»)
+npm run skills:review -- --score    # andel riktige av det som vises (mål ≥ 95 %) og andel funnet (≈ 80 %)
+```
+
+Linjer uten fagplan bruker et anslag fra `public/data/ferdigheter.json` til ferdighetene:
+
+```bash
+npm run enrich -- --limit 20
+npm run enrich
+```
+
 ## Samarbeid
 
 Repoet er åpent: https://github.com/ErikAndreSN/erfa-dashboard.

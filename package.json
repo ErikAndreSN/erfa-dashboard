@@ -1,1 +1,33 @@
-{"name":"sidequest-student-example","version":"1.0.0","private":true,"type":"module","scripts":{"dev":"vite --host 127.0.0.1","build":"vite build"},"dependencies":{"@radix-ui/react-dialog":"^1.2.0","@radix-ui/react-select":"^2.3.8","@radix-ui/react-tabs":"^1.1.22","lucide-react":"^0.468.0","motion":"^12.0.0","react":"^19.2.0","react-dom":"^19.2.0"},"devDependencies":{"@types/react":"^19.0.0","@types/react-dom":"^19.0.0","typescript":"^5.9.0","vite":"^7.0.0"}}
+{
+  "name": "sidequest-student-example",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "enrich": "node --env-file-if-exists=.env.anthropic scripts/enrich_skills.mjs",
+    "import:kristiania": "node scripts/import_kristiania.mjs",
+    "plans": "node --env-file-if-exists=.env.anthropic scripts/build_study_plans.mjs",
+    "plans:check": "node scripts/check_study_plans.mjs",
+    "plans:test": "node scripts/test_verify_plans.mjs",
+    "skills:review": "node scripts/skills_review.mjs",
+    "study-data": "python3 scripts/build_study_data.py"
+  },
+  "dependencies": {
+    "@radix-ui/react-dialog": "^1.2.0",
+    "@radix-ui/react-select": "^2.3.8",
+    "@radix-ui/react-tabs": "^1.1.22",
+    "lucide-react": "^0.468.0",
+    "motion": "^12.0.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.133.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.9.0",
+    "vite": "^7.0.0"
+  }
+}

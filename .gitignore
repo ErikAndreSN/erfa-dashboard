@@ -12,3 +12,6 @@ dist/
 preview*.png
 .vercel
 .env*
+
+# Nedlastede DBH-tabeller (store)
+.cache/

@@ -1,0 +1,903 @@
+{
+ "cohorts": {
+  "2024-høst": {
+   "semesters": [
+    [
+     {
+      "n": "Introduksjon til programmering",
+      "c": "PGR102",
+      "sp": 7.5,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/14240?year=2024&period=fall",
+      "s": [
+       {
+        "n": "JavaScript",
+        "q": "behersker bruk av grunnleggende teknikker i programmering som variabler, arrays, løkker, betingelsessetninger og funksjoner",
+        "t": "Ren JavaScript (uten bibliotek eller rammeverk) og HTML-editor."
+       },
+       {
+        "n": "Feilsøking i kode",
+        "q": "kan bruke debugger for å sjekke koden for feil"
+       }
+      ]
+     },
+     {
+      "n": "Databaser",
+      "c": "DB1102",
+      "sp": 7.5,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/9385?year=2024&period=fall",
+      "s": [
+       {
+        "n": "SQL",
+        "q": "kan bruke språket SQL for å utføre operasjoner for å legge til, endre, slette og lese data fra en database"
+       },
+       {
+        "n": "Datamodellering",
+        "q": "kan beskrive og utføre trinnene i utvikling av en databasemodell fra kravspesifikasjonen til ferdig database og tegne en modell med korrekt notasjon og kardinalitet"
+       },
+       {
+        "n": "Normalisering",
+        "q": "kan normalisere databasetabeller"
+       }
+      ]
+     },
+     {
+      "n": "Digital teknologi",
+      "c": "TK1104",
+      "sp": 7.5,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/14413?year=2024&period=fall",
+      "s": [
+       {
+        "n": "Nettverk (TCP/IP)",
+        "q": "kan benytte TCP/IP-modellen og kjennskap til tilhørende protokoller, til å analysere den fullstendige gangen i tilkopling til et LAN og nedlastningen av f.eks. en webside"
+       },
+       {
+        "n": "Kommandolinje",
+        "q": "kan benytte skall-kommandoer, overvåkings- og konfigurasjons- verktøy i Windows og/eller OSX/Linux"
+       },
+       {
+        "n": "Feilsøking",
+        "q": "kan gjennomføre systematisk feilsøking og reparasjon av typiske problemer i hardware og software"
+       }
+      ]
+     },
+     {
+      "n": "Kreativt webprosjekt",
+      "c": "PRO105",
+      "sp": 7.5,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/14320?year=2024&period=fall",
+      "s": [
+       {
+        "n": "HTML og CSS",
+        "q": "kan benytte HTML og CSS for å strukturere og stilsette innhold etter etablerte retningslinjer"
+       },
+       {
+        "n": "CSS-animasjon",
+        "q": "kan benytte HTML og CSS for å lage interaktive løsninger med animasjoner"
+       }
+      ]
+     }
+    ],
+    [
+     {
+      "n": "Objektorientert programmering",
+      "c": "PGR112",
+      "sp": 15,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/14250?year=2025&period=spring",
+      "s": [
+       {
+        "n": "Objektorientert programmering",
+        "q": "kan anvende arv og interfaces gjennom kode med polymorfisk oppbygning"
+       },
+       {
+        "n": "Testing av kode",
+        "q": "kan teste at kode fungerer som tiltenkt"
+       },
+       {
+        "n": "Databaser i kode",
+        "q": "kan ta i bruk datakilder, som fil og databaser, i sin programkode"
+       }
+      ]
+     },
+     {
+      "n": "Informasjonssikkerhet",
+      "c": "TK2100",
+      "sp": 7.5,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/14419?year=2025&period=spring",
+      "s": [
+       {
+        "n": "Risikoanalyse",
+        "q": "kan utføre en risikoanalyse i forhold til en bestemt teknologisk løsning og foreslå tilpassede tiltak"
+       },
+       {
+        "n": "Sikkerhetstesting",
+        "q": "kan planlegge og gjennomføre (enkle) sikkerhetstester av bestemte teknologiske løsninger ved hjelp av standardverktøy"
+       },
+       {
+        "n": "Wireshark og nmap",
+        "q": "kan planlegge og gjennomføre (enkle) sikkerhetstester av bestemte teknologiske løsninger ved hjelp av standardverktøy",
+        "t": "nmap (siste versjon) og Wireshark (siste versjon)."
+       }
+      ]
+     },
+     {
+      "n": "Etikk, samfunnsansvar og bærekraft",
+      "c": "ESB1100",
+      "sp": 7.5,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/25147?year=2025&period=spring",
+      "s": [
+       {
+        "n": "Interessentanalyse",
+        "q": "kan anvende relevante teorier og modeller til å analysere bedriftens påvirkning på interessenter og miljøet"
+       },
+       {
+        "n": "Bærekraft og samfunnsansvar",
+        "q": "kan anvende relevante teorier og modeller til å foreslå tiltak for å styrke bedriftens arbeid med etikk, samfunnsansvar og bærekraft"
+       }
+      ]
+     }
+    ],
+    [
+     {
+      "n": "Enterprise Systems",
+      "c": "EPS2100",
+      "sp": 15,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/13946?year=2025&period=fall",
+      "s": [
+       {
+        "n": "Prosessmodellering (BPM)",
+        "q": "can use BPM annotations, techniques and tools to analyze a business process and re-engineer it"
+       },
+       {
+        "n": "ERP og CRM",
+        "q": "can implement and use enterprise systems in small organizations",
+        "t": "ERP and CRM Systems"
+       }
+      ]
+     },
+     {
+      "n": "Digital markedsføring",
+      "c": "BU4200",
+      "sp": 7.5,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/9323?year=2025&period=fall",
+      "s": [
+       {
+        "n": "Digital markedsføring",
+        "q": "kan lage en plan for digital markedsføring"
+       },
+       {
+        "n": "Promotering av nettsider",
+        "q": "kan lage en plan for og kunne demonstrere tiltak for promotering av en web side"
+       }
+      ]
+     },
+     {
+      "n": "Bedriftsøkonomi",
+      "c": "BU3100",
+      "sp": 7.5,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/9319?year=2025&period=fall",
+      "s": [
+       {
+        "n": "Priskalkyler",
+        "q": "kan gjennomføre priskalkyler"
+       },
+       {
+        "n": "Lønnsomhetsanalyse",
+        "q": "kan analysere en kontantstrøm og beregne dennes lønnsomhet ved hjelp av nåverdi, internrente og pay-back"
+       },
+       {
+        "n": "Dekningspunktanalyse",
+        "q": "kan gjennomføre dekningspunktanalyser"
+       }
+      ]
+     }
+    ],
+    [],
+    [
+     {
+      "n": "Data Management for Analytics",
+      "c": "DMA3100",
+      "sp": 15,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/9398?year=2026&period=fall",
+      "s": [
+       {
+        "n": "Datavarehus",
+        "q": "kan modellere data for et datavarehus"
+       },
+       {
+        "n": "ETL",
+        "q": "er i stand til å utføre ETL og dataforberedende prosesser"
+       },
+       {
+        "n": "Dashbord",
+        "q": "kan bygge ulike dashbord"
+       },
+       {
+        "n": "Datavisualisering",
+        "q": "kan rapportering, analyse og visualisering av data"
+       }
+      ]
+     },
+     {
+      "n": "IT og innovasjon",
+      "c": "IS6101",
+      "sp": 7.5,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/14050?year=2026&period=fall",
+      "s": [
+       {
+        "n": "Caseanalyse",
+        "q": "behersker noen teknikker for case-analyse"
+       }
+      ]
+     },
+     {
+      "n": "Smidig prosjekt",
+      "c": "PRO203",
+      "sp": 7.5,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/19897?year=2026&period=fall",
+      "s": [
+       {
+        "n": "Scrum",
+        "q": "kan planlegge et prosjekt og utvikle en prosjektplan i tråd med Scrum"
+       },
+       {
+        "n": "Design Thinking",
+        "q": "kan tilnærme seg og sitt team en problemstilling med bruk av \"Design Thinking\"-prinsipper"
+       },
+       {
+        "n": "Versjonskontroll",
+        "q": "kan anbefale og håndtere versjonering og arbeidsflyt knyttet til delte ressurser i et tverrfaglig prosjekt der flere deltakere er aktive samtidig"
+       }
+      ]
+     }
+    ],
+    [
+     {
+      "n": "Undersøkelsesmetoder",
+      "c": "PJ6100",
+      "sp": 7.5,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/14301?year=2027&period=spring",
+      "s": [
+       {
+        "n": "Undersøkelser",
+        "q": "kan gjennomføre en undersøkelse som er relevant for et IT-prosjekt"
+       },
+       {
+        "n": "Litteratursøk",
+        "q": "kan gjennomføre og rapportere litteratursøk, samt utarbeide en korrekt referanseliste"
+       },
+       {
+        "n": "Rapportskriving",
+        "q": "kan skrive en vitenskapelig rapport såsom et forslag til et forskningsprosjekt"
+       }
+      ]
+     },
+     {
+      "n": "Bachelorprosjekt",
+      "c": "BAO304",
+      "sp": 22.5,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/19896?year=2027&period=spring",
+      "s": []
+     }
+    ]
+   ],
+   "slots": [
+    {
+     "semester": 4,
+     "credits": 30,
+     "title": "Valgemner",
+     "exchange": true,
+     "open": false
+    }
+   ],
+   "source": {
+    "type": "kristiania",
+    "title": "Studieportalen, kull 2024 høst",
+    "url": "https://www.kristiania.no/api/syllabus-descriptions/programs/14480?year=2024&period=fall",
+    "page": "https://www.kristiania.no/studieportal/fakultet-for-helse-og-teknologi/bachelorniva/2110/bachelor-i-informasjonsteknologi---e-business/",
+    "program": "2110"
+   }
+  },
+  "2025-høst": {
+   "semesters": [
+    [
+     {
+      "n": "Introduksjon til programmering",
+      "c": "PGR102",
+      "sp": 7.5,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/14240?year=2025&period=fall",
+      "s": []
+     },
+     {
+      "n": "Databaser",
+      "c": "DB1102",
+      "sp": 7.5,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/9385?year=2025&period=fall",
+      "s": []
+     },
+     {
+      "n": "Digital teknologi",
+      "c": "TK1104",
+      "sp": 7.5,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/14413?year=2025&period=fall",
+      "s": []
+     },
+     {
+      "n": "Kreativt webprosjekt",
+      "c": "PRO105",
+      "sp": 7.5,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/14320?year=2025&period=fall",
+      "s": []
+     }
+    ],
+    [
+     {
+      "n": "Objektorientert programmering",
+      "c": "PGR112",
+      "sp": 15,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/14250?year=2026&period=spring",
+      "s": []
+     },
+     {
+      "n": "Informasjonssikkerhet",
+      "c": "TK2100",
+      "sp": 7.5,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/14419?year=2026&period=spring",
+      "s": []
+     },
+     {
+      "n": "Etikk, samfunnsansvar og bærekraft",
+      "c": "ESB1100",
+      "sp": 7.5,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/25147?year=2026&period=spring",
+      "s": []
+     }
+    ],
+    [
+     {
+      "n": "Enterprise Systems",
+      "c": "EPS2100",
+      "sp": 15,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/13946?year=2026&period=fall",
+      "s": []
+     },
+     {
+      "n": "Digital markedsføring",
+      "c": "BU4200",
+      "sp": 7.5,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/9323?year=2026&period=fall",
+      "s": []
+     },
+     {
+      "n": "Bedriftsøkonomi",
+      "c": "BU3100",
+      "sp": 7.5,
+      "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/9319?year=2026&period=fall",
+      "s": []
+     }
+    ],
+    [],
+    [
+     {
+      "n": "Data Management for Analytics",
+      "c": "DMA3100",
+      "sp": 15,
+      "s": []
+     },
+     {
+      "n": "IT og innovasjon",
+      "c": "IS6101",
+      "sp": 7.5,
+      "s": []
+     },
+     {
+      "n": "Smidig prosjekt",
+      "c": "PRO203",
+      "sp": 7.5,
+      "s": []
+     }
+    ],
+    [
+     {
+      "n": "Undersøkelsesmetoder",
+      "c": "PJ6100",
+      "sp": 7.5,
+      "s": []
+     },
+     {
+      "n": "Bachelorprosjekt",
+      "c": "BAO304",
+      "sp": 22.5,
+      "s": []
+     }
+    ]
+   ],
+   "slots": [
+    {
+     "semester": 4,
+     "credits": 30,
+     "title": "Valgemner",
+     "exchange": true,
+     "open": false
+    }
+   ],
+   "source": {
+    "type": "kristiania",
+    "title": "Studieportalen, kull 2025 høst",
+    "url": "https://www.kristiania.no/api/syllabus-descriptions/programs/14480?year=2025&period=fall",
+    "page": "https://www.kristiania.no/studieportal/fakultet-for-helse-og-teknologi/bachelorniva/2110/bachelor-i-informasjonsteknologi---e-business/",
+    "program": "2110"
+   }
+  }
+ },
+ "offerings": [
+  {
+   "term": "2026-vår",
+   "semester": 4,
+   "source": {
+    "type": "kristiania",
+    "title": "Studieportalen, kull 2024 høst",
+    "url": "https://www.kristiania.no/api/syllabus-descriptions/programs/14480?year=2024&period=fall",
+    "page": "https://www.kristiania.no/studieportal/fakultet-for-helse-og-teknologi/bachelorniva/2110/bachelor-i-informasjonsteknologi---e-business/",
+    "program": "2110"
+   },
+   "options": [
+    {
+     "n": "Arbeidsintegrert læring i praksis",
+     "c": "AIL2100",
+     "sp": 30,
+     "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/21939?year=2026&period=spring",
+     "s": []
+    },
+    {
+     "n": "AI i praksis; innovasjon, teknologi og strategi",
+     "c": "AIP2100",
+     "sp": 15,
+     "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/21940?year=2026&period=spring",
+     "s": [
+      {
+       "n": "Anvendt AI",
+       "q": "er i stand til å anvende AI-teknologier for å støtte innovasjon og strategisk utvikling."
+      },
+      {
+       "n": "Vurdering av AI-løsninger",
+       "q": "kan identifisere og evaluere praktiske AI-løsninger i et næringslivsperspektiv."
+      }
+     ]
+    },
+    {
+     "n": "Bærekraft og ansvarlig kommunikasjon",
+     "c": "BKO2100",
+     "sp": 15,
+     "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/19504?year=2026&period=spring",
+     "s": [
+      {
+       "n": "Bærekraftskommunikasjon",
+       "q": "kan utvikle og implementere strategisk kommunikasjon, innholdsproduksjon og historiefortelling for å styrke merkevarer og engasjere interessenter i bærekraftsarbeidet"
+      }
+     ]
+    },
+    {
+     "n": "Økonomipakke 1",
+     "c": "ØKON999-1",
+     "sp": 30,
+     "s": [],
+     "p": [
+      {
+       "n": "Økonomistyring",
+       "c": "NEST6002",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/25413?year=2026&period=spring",
+       "s": []
+      },
+      {
+       "n": "Investering og finansiering",
+       "c": "NEST6004",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/25393?year=2026&period=spring",
+       "s": []
+      },
+      {
+       "n": "Finansregnskap",
+       "c": "NEST6084",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/25381?year=2026&period=spring",
+       "s": []
+      },
+      {
+       "n": "Matematikk for økonomer",
+       "c": "NEST6323",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/25419?year=2026&period=spring",
+       "s": []
+      }
+     ]
+    },
+    {
+     "n": "Endringsledelse og innovasjon i praksis",
+     "c": "ELI2102",
+     "sp": 30,
+     "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/15526?year=2026&period=spring",
+     "s": [
+      {
+       "n": "Endringsledelse",
+       "q": "kan planlegge, gjennomføre og vurdere en endrings- og innovasjonsprosess"
+      }
+     ]
+    },
+    {
+     "n": "Entrepreneurship",
+     "c": "ENT999-1",
+     "sp": 30,
+     "s": [],
+     "p": [
+      {
+       "n": "Entreprenøriell ledelse og finans",
+       "c": "ELF2100",
+       "sp": 15,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/24608?year=2026&period=spring",
+       "s": []
+      },
+      {
+       "n": "Sosial entreprenørskap",
+       "c": "SEN2100",
+       "sp": 15,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/25347?year=2026&period=spring",
+       "s": []
+      }
+     ]
+    },
+    {
+     "n": "Grønn markedsføring, entreprenørskap og strategi",
+     "c": "GME2100",
+     "sp": 15,
+     "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/19507?year=2026&period=spring",
+     "s": [
+      {
+       "n": "SWOT-analyse",
+       "q": "har ferdigheter i å foreslå tiltak basert på SWOT-analyse, BCG-analyse og Grønn-dulting for grønn omstilling"
+      },
+      {
+       "n": "Grønn strategi",
+       "q": "kan analysere den strategiske situasjonen til en bedrift for å etablere en grønn strategi"
+      }
+     ]
+    },
+    {
+     "n": "Hotelledelse",
+     "c": "HOL2100",
+     "sp": 15,
+     "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/21998?year=2026&period=spring",
+     "s": [
+      {
+       "n": "Nøkkeltallsanalyse",
+       "q": "kan utføre nøkkeltallsanalyser med bakgrunn i resultater i en hotellbedrift"
+      },
+      {
+       "n": "Prisstrategi",
+       "q": "kan utføre lønnsomhetsvurderinger knyttet til strategisk prising og kapasitetsstyring"
+      }
+     ]
+    },
+    {
+     "n": "International Business Communication",
+     "c": "IBS2202",
+     "sp": 30,
+     "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/15688?year=2026&period=spring",
+     "s": [
+      {
+       "n": "Interkulturell kommunikasjon",
+       "q": "can describe and analyse intercultural miscommunication, and apply strategies and communication tactics to prevent or mitigate miscommunication across cultures"
+      },
+      {
+       "n": "Forhandling",
+       "q": "can prepare and conduct intercultural negotiations and apply persuasion and influencing tactics to promote win-win solutions"
+      },
+      {
+       "n": "Historiefortelling",
+       "q": "can create engaging stories using both written, oral and visual media, and can employ storytelling as a branding and sales tool and to influence stakeholders"
+      }
+     ]
+    },
+    {
+     "n": "Strategisk innkjøp og bærekraftig verdiskaping",
+     "c": "INN999-1",
+     "sp": 30,
+     "s": [],
+     "p": [
+      {
+       "n": "Innkjøpsledelse",
+       "c": "NEST7000",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/25350?year=2026&period=spring",
+       "s": []
+      },
+      {
+       "n": "Verdikjede, teknologi og analyse",
+       "c": "NEST7001",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/25346?year=2026&period=spring",
+       "s": []
+      },
+      {
+       "n": "Innovasjon og bærekraft",
+       "c": "NEST7002",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/25348?year=2026&period=spring",
+       "s": []
+      },
+      {
+       "n": "Offentlige innkjøp og kontrakter",
+       "c": "NEST7003",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/25349?year=2026&period=spring",
+       "s": []
+      }
+     ]
+    },
+    {
+     "n": "Cultural Psychology and Digitalization",
+     "c": "KHD2100",
+     "sp": 15,
+     "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/25255?year=2026&period=spring",
+     "s": []
+    },
+    {
+     "n": "Digital innholdsproduksjon",
+     "c": "MHV2100",
+     "sp": 30,
+     "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/15913?year=2026&period=spring",
+     "s": [
+      {
+       "n": "Fotografering",
+       "q": "behersker teknisk fotografering i forholdt til det fotografiske triangel og generell objektivforståelse"
+      },
+      {
+       "n": "Multimedieproduksjon",
+       "q": "kan planlegge, og produsere, enkle multimedia-produksjoner som portrettintervjuer, korte reportasjeinnslag og korte visuelle historier som kan benyttes i en bedrifts kommunikasjon eller i journalistisk sammenheng."
+      },
+      {
+       "n": "Målgruppeanalyse",
+       "q": "kan identifisere og prioritere målgrupper for den visuelle kommunikasjonen"
+      }
+     ]
+    },
+    {
+     "n": "Nøkkelferdigheter for arbeidslivet",
+     "c": "NFA2100",
+     "sp": 15,
+     "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/20376?year=2026&period=spring",
+     "s": []
+    },
+    {
+     "n": "Positiv psykologi og livskvalitet",
+     "c": "PLI2100",
+     "sp": 15,
+     "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/25541?year=2026&period=spring",
+     "s": []
+    },
+    {
+     "n": "Praktisk ledelse og interkulturell kompetanse",
+     "c": "PLI3100",
+     "sp": 15,
+     "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/21999?year=2026&period=spring",
+     "s": [
+      {
+       "n": "Forhandling",
+       "q": "kan planlegge, lede og gjennomføre forhandlinger mot ulike målgrupper"
+      },
+      {
+       "n": "Teamledelse",
+       "q": "har kompetanse i å lede og motivere flerkulturelle team for å oppnå effektive resultater"
+      }
+     ]
+    },
+    {
+     "n": "Reklame og visuell kommunikasjon",
+     "c": "RVK2101",
+     "sp": 15,
+     "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/21941?year=2026&period=spring",
+     "s": [
+      {
+       "n": "Posisjoneringsstrategi",
+       "q": "kan utarbeide en posisjoneringsstrategi basert på markedsdata."
+      },
+      {
+       "n": "Kreativ brief",
+       "q": "kan utarbeide oppsummeringsdokumenter, slik som \"merkevarehjul\" og essensen for kampanjen i en kreativ brief."
+      },
+      {
+       "n": "Pitching",
+       "q": "kan muntlig presentere og selge inn kampanjen overfor oppdragsgivere, i et pitch-format."
+      }
+     ]
+    },
+    {
+     "n": "Social Media and Public Health",
+     "c": "SMP2100",
+     "sp": 15,
+     "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/25228?year=2026&period=spring",
+     "s": [
+      {
+       "n": "Kampanjer i sosiale medier",
+       "q": "can apply knowledge to design and evaluate public health campaigns on social media"
+      }
+     ]
+    },
+    {
+     "n": "Tenke fort og langsomt - beslutningspsykologi",
+     "c": "7401",
+     "sp": 15,
+     "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/25256?year=2026&period=spring",
+     "s": []
+    },
+    {
+     "n": "Idrettspsykologi og prestasjon",
+     "c": "7406",
+     "sp": 15,
+     "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/25257?year=2026&period=spring",
+     "s": []
+    },
+    {
+     "n": "IT Management and Entrepreneurship",
+     "c": "TEK999-2",
+     "sp": 30,
+     "s": [],
+     "p": [
+      {
+       "n": "IT prosjektledelse",
+       "c": "BU5300",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/9329?year=2026&period=spring",
+       "s": []
+      },
+      {
+       "n": "Profesjonsetikk for IT",
+       "c": "PEI2100",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/20776?year=2026&period=spring",
+       "s": []
+      },
+      {
+       "n": "Å starte ny virksomhet",
+       "c": "ÅSN1104",
+       "sp": 15,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/25261?year=2026&period=spring",
+       "s": []
+      }
+     ]
+    },
+    {
+     "n": "Programming and Algorithms",
+     "c": "TEK999-3",
+     "sp": 30,
+     "s": [],
+     "p": [
+      {
+       "n": "Programmering i C for Linux",
+       "c": "PG3401",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/14162?year=2026&period=spring",
+       "s": []
+      },
+      {
+       "n": "Python Programming",
+       "c": "PGR107",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/14245?year=2026&period=spring",
+       "s": []
+      },
+      {
+       "n": "IT prosjektledelse",
+       "c": "BU5300",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/9329?year=2026&period=spring",
+       "s": []
+      },
+      {
+       "n": "Algoritmer og datastrukturer",
+       "c": "PG4200",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/14180?year=2026&period=spring",
+       "s": []
+      }
+     ]
+    },
+    {
+     "n": "Programming and Quantum Computing",
+     "c": "TEK999-4",
+     "sp": 30,
+     "s": [],
+     "p": [
+      {
+       "n": "Programmering i C for Linux",
+       "c": "PG3401",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/14162?year=2026&period=spring",
+       "s": []
+      },
+      {
+       "n": "Python Programming",
+       "c": "PGR107",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/14245?year=2026&period=spring",
+       "s": []
+      },
+      {
+       "n": "Programming and Quantum Computing",
+       "c": "PGR213",
+       "sp": 15,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/21241?year=2026&period=spring",
+       "s": []
+      }
+     ]
+    },
+    {
+     "n": "IT-utvikling",
+     "c": "TEK999-6",
+     "sp": 30,
+     "s": [],
+     "p": [
+      {
+       "n": "IT prosjektledelse",
+       "c": "BU5300",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/9329?year=2026&period=spring",
+       "s": []
+      },
+      {
+       "n": "Unity utvikling",
+       "c": "PG2202",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/20201?year=2026&period=spring",
+       "s": []
+      },
+      {
+       "n": "Innovasjon og prototyping",
+       "c": "DS4800",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/13912?year=2026&period=spring",
+       "s": []
+      },
+      {
+       "n": "Kartbaserte websystemer",
+       "c": "KWS2100",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/20774?year=2026&period=spring",
+       "s": []
+      }
+     ]
+    },
+    {
+     "n": "Mathematics & Statistics + Programming",
+     "c": "TEK999-8",
+     "sp": 30,
+     "s": [],
+     "p": [
+      {
+       "n": "Matematikk og statistikk",
+       "c": "PGR217",
+       "sp": 15,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/21938?year=2026&period=spring",
+       "s": []
+      },
+      {
+       "n": "Python Programming",
+       "c": "PGR107",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/14245?year=2026&period=spring",
+       "s": []
+      },
+      {
+       "n": "Programmering i C for Linux",
+       "c": "PG3401",
+       "sp": 7.5,
+       "u": "https://www.kristiania.no/api/syllabus-descriptions/subjects/14162?year=2026&period=spring",
+       "s": []
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "checked": "2026-10-12"
+}
