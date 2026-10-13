@@ -149,3 +149,5 @@ Demoen er satt til `noindex` i Vercel-konfigurasjonen.
 
 Talentbasen har lokale utkast for nytt samarbeid og tilbud om fast stilling.
 Ingen forespørsler sendes til kandidater fra demoen.
+
+<!-- Testendring fra Claude for å sjekke GitHub-tilkoblingen. Trygg å slette. -->
