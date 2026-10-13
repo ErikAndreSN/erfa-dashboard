@@ -367,6 +367,9 @@
 .biz-stage-dot.stage-1 {
   background: #b579ec;
 }
+.biz-stage-dot.stage-shortlist {
+  background: #ff8a5c;
+}
 .biz-stage-dot.stage-2 {
   background: #4385ed;
 }
@@ -690,6 +693,10 @@
   color: #72727b;
   font-size: 10px;
   padding: 6px 10px;
+}
+.biz-badge.shortlist {
+  background: #fff0e9;
+  color: #c4532c;
 }
 .biz-badge.review {
   background: #faf0fc;
@@ -1817,9 +1824,7 @@
 .biz-status-control select:disabled {
   opacity: 0.7;
 }
-.biz-pipeline-note {
-  margin-top: 15px !important;
-}
+
 .biz-work-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2203,7 +2208,7 @@
   border-radius: 14px;
 }
 .biz-application-board {
-  grid-template-columns: repeat(4, minmax(280px, 1fr));
+  grid-template-columns: repeat(4, minmax(220px, 1fr));
   overflow-x: auto;
   padding: 4px 2px 16px;
   scroll-snap-type: x proximity;
@@ -2828,60 +2833,15 @@ button.biz-focus-card:hover {
   background: #fff4dc;
   color: #a8650a;
 }
-.biz-inbox-picks {
-  margin-bottom: 18px;
-  padding: 20px;
-  border-radius: 26px;
-  background: var(--biz-surface);
-}
-.biz-inbox-picks h3 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0 0 14px;
-  font-size: 15px;
-  font-weight: 500;
-}
-.biz-inbox-pick-row {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(150px, 1fr));
-  gap: 12px;
-  overflow-x: auto;
-}
-.biz-inbox-pick {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px;
-  border-radius: 20px;
-  background: #fff;
-}
-.biz-inbox-pick-open {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  min-width: 0;
-  text-align: left;
-}
-.biz-inbox-pick-open .biz-avatar {
-  width: 44px;
-  height: 44px;
-  margin-bottom: 6px;
-}
-.biz-inbox-pick-open strong {
-  font-size: 14px;
-  font-weight: 500;
-}
-.biz-inbox-pick-open small {
-  font-size: 11px;
-  line-height: 1.4;
-  color: var(--biz-muted);
-}
-.biz-inbox-pick-open .biz-status {
-  margin-top: 6px;
-}
+
+
+
+
+
+
+
+
+
 .biz-inbox-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -2981,14 +2941,7 @@ button.biz-focus-card:hover {
   color: var(--biz-ink);
   font-size: 12px;
 }
-.biz-inbox-actions .biz-inbox-save {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  color: #d75b34;
-}
+
 .biz-inbox-empty {
   padding: 18px 0;
   font-size: 13px;
@@ -3022,64 +2975,142 @@ button.biz-focus-card:hover {
   font-size: 12px;
   text-decoration: underline;
 }
-@media (max-width: 950px) {
-  .biz-inbox-pick-row {
-    grid-template-columns: repeat(5, 200px);
-  }
-}
 
-/* Sammenligning av søkere: krav som kolonner, dokumentasjon 0–4 per krav. */
-.biz-screen-summary {
+
+
+
+
+
+
+
+/* Søkeord blant studentene: bedriften velger ordene, listen rangeres etter dem. */
+.biz-keyword-setup {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
+  gap: 16px 28px;
+  align-items: start;
   margin-bottom: 18px;
+  padding: 20px 22px;
+  border: 1px solid var(--biz-border);
+  border-radius: 22px;
+  background: #fff;
 }
-.biz-screen-summary > div {
+.biz-keyword-intro {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 18px 20px;
-  border-radius: 22px;
+  gap: 6px;
+}
+.biz-keyword-intro strong {
+  font-size: 14px;
+  font-weight: 600;
+}
+.biz-keyword-intro small {
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--biz-muted);
+}
+.biz-keyword-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.biz-keyword {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--biz-border);
+  border-radius: 100px;
   background: var(--biz-surface);
 }
-.biz-screen-summary strong {
-  font-family: var(--font-display);
-  font-size: 30px;
-  font-weight: 500;
-  line-height: 1.1;
-  letter-spacing: -0.6px;
-}
-.biz-screen-summary strong span {
-  font-family: var(--font-body, inherit);
+.biz-keyword > button:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 4px 8px 13px;
+  border: 0;
+  background: none;
+  color: var(--biz-ink);
   font-size: 12px;
-  font-weight: 400;
-  letter-spacing: 0;
-  color: var(--biz-muted);
-}
-.biz-screen-summary b {
-  font-size: 13px;
   font-weight: 500;
+  cursor: pointer;
 }
-.biz-screen-summary i {
-  display: block;
-  height: 6px;
-  margin: 6px 0 2px;
-  overflow: hidden;
-  border-radius: 6px;
-  background: #e2e2e5;
-}
-.biz-screen-summary em {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: #23834b;
-}
-.biz-screen-summary small {
-  font-size: 11px;
+.biz-keyword small {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
   color: var(--biz-muted);
 }
+.biz-keyword.is-must {
+  border-color: #242426;
+  background: #242426;
+}
+.biz-keyword.is-must > button:first-child {
+  color: #fff;
+}
+.biz-keyword.is-must small {
+  color: #ffb59b;
+}
+.biz-keyword-remove {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-right: 4px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--biz-muted);
+  cursor: pointer;
+}
+.biz-keyword-remove:hover {
+  background: rgb(0 0 0 / 0.06);
+}
+.biz-keyword.is-must .biz-keyword-remove {
+  color: #b5b5bb;
+}
+.biz-keyword.is-must .biz-keyword-remove:hover {
+  background: rgb(255 255 255 / 0.12);
+}
+.biz-keyword button:focus-visible,
+.biz-keyword-add:focus-within {
+  outline: 2px solid var(--biz-orange);
+  outline-offset: 2px;
+}
+.biz-keyword-add {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 3px 2px 12px;
+  border: 1px dashed #cfcfd4;
+  border-radius: 100px;
+}
+.biz-keyword-add input {
+  width: 130px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+}
+.biz-keyword-add button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--biz-orange);
+  color: #fff;
+  cursor: pointer;
+}
+.biz-keyword-add button:disabled {
+  background: #e4e4e7;
+  color: #a0a0a6;
+  cursor: default;
+}
+
 .biz-matrix {
+  overflow-x: auto;
   padding: 16px 18px 8px;
   border-radius: 26px;
   background: var(--biz-surface);
@@ -3087,47 +3118,60 @@ button.biz-focus-card:hover {
 .biz-matrix-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 16px;
-  margin-bottom: 14px;
+  gap: 6px 22px;
+  margin: 0 0 14px;
   font-size: 11px;
   color: var(--biz-muted);
 }
 .biz-matrix-legend span {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
-.biz-matrix-legend .biz-evidence {
-  width: 20px;
-  height: 20px;
-  border-radius: 6px;
-  font-style: normal;
+.biz-matrix-legend .biz-keyword-cell {
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 7px;
+  font-size: 10px;
 }
+/* Overskrift og rader deler samme rutenett, så kolonnene står rett under hverandre. */
 .biz-matrix-head,
 .biz-matrix-row {
   display: grid;
-  grid-template-columns: 16px minmax(190px, 1.3fr) 58px minmax(0, 2fr) auto;
+  grid-template-columns:
+    16px minmax(200px, 1.5fr) 92px repeat(var(--reqs, 4), minmax(84px, 1fr))
+    206px;
   align-items: center;
-  column-gap: 14px;
+  column-gap: 12px;
+  /* Faste spor pluss 96px per søkeord. Blir det trangt, ruller tabellen sidelengs. */
+  min-width: calc(610px + var(--reqs, 4) * 96px);
+}
+.biz-matrix-cells {
+  display: contents;
 }
 .biz-matrix-head {
   padding: 0 0 8px;
   font-size: 11px;
   color: var(--biz-muted);
 }
-.biz-matrix-head .biz-matrix-cells span {
+.biz-matrix-key {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 1px;
   color: var(--biz-ink);
   font-weight: 500;
+  text-align: center;
 }
-.biz-matrix-head small {
+.biz-matrix-key small {
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.4px;
   text-transform: uppercase;
   color: var(--biz-muted);
+}
+.biz-matrix-key.is-must small {
+  color: #c4532c;
 }
 .biz-matrix-row {
   padding: 10px 0;
@@ -3141,6 +3185,10 @@ button.biz-focus-card:hover {
 .biz-matrix-row.is-selected .biz-inbox-person strong {
   color: #c4532c;
 }
+.biz-matrix-row.is-lacking .biz-inbox-person,
+.biz-matrix-row.is-lacking .biz-matrix-score {
+  opacity: 0.62;
+}
 .biz-matrix-rank {
   width: 16px;
   font-size: 12px;
@@ -3148,41 +3196,62 @@ button.biz-focus-card:hover {
   text-align: right;
 }
 .biz-matrix-score {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.biz-matrix-score b {
   font-size: 15px;
   font-weight: 600;
 }
-.biz-matrix-cells {
-  display: grid;
-  grid-template-columns: repeat(var(--reqs, 4), minmax(0, 1fr));
-  gap: 6px;
+.biz-matrix-score small {
+  font-size: 10px;
+  color: var(--biz-muted);
 }
-.biz-evidence {
-  display: grid;
-  place-items: center;
-  height: 30px;
-  border-radius: 9px;
+.biz-keyword-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  border-radius: 10px;
   font-size: 11px;
+  font-style: normal;
   font-weight: 500;
 }
-.biz-evidence.lvl-0 {
+.biz-keyword-cell em {
+  display: none;
+  font-style: normal;
+}
+.biz-keyword-cell.is-hit {
+  background: #e3f1e8;
+  color: #23834b;
+}
+.biz-keyword-cell.is-miss {
+  background: #fdecea;
+  color: #c2412d;
+}
+.biz-keyword-cell.is-empty {
   background: #ececee;
   color: #9a9aa0;
 }
-.biz-evidence.lvl-1 {
-  background: #e6f3ea;
-  color: #4f7a60;
+.biz-matrix-divider {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin-top: 6px;
+  padding: 16px 0 8px;
+  border-top: 2px dashed #dcdce0;
 }
-.biz-evidence.lvl-2 {
-  background: #c9e8d4;
-  color: #2f6b47;
+.biz-matrix-divider strong {
+  font-size: 12px;
+  font-weight: 600;
+  color: #c2412d;
 }
-.biz-evidence.lvl-3 {
-  background: #8fcda8;
-  color: #0f4428;
-}
-.biz-evidence.lvl-4 {
-  background: #23834b;
-  color: #fff;
+.biz-matrix-divider span {
+  font-size: 11px;
+  color: var(--biz-muted);
 }
 /* Skjemaet vises i et eget lag utenfor .business-app, så fargene står direkte her. */
 .biz-requirement-picker {
@@ -3233,7 +3302,8 @@ button.biz-focus-card:hover {
   color: #737478;
 }
 @media (max-width: 950px) {
-  .biz-screen-summary {
+
+  .biz-keyword-setup {
     grid-template-columns: 1fr;
   }
   .biz-matrix-head {
@@ -3242,13 +3312,351 @@ button.biz-focus-card:hover {
   .biz-matrix-row {
     grid-template-columns: 16px minmax(0, 1fr) auto;
     row-gap: 10px;
+    min-width: 0;
+  }
+  .biz-matrix-row > .biz-matrix-cells {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
   }
   .biz-matrix-row > .biz-matrix-cells,
   .biz-matrix-row > .biz-inbox-actions {
     grid-column: 2 / -1;
   }
-  .biz-evidence {
-    height: 26px;
+  .biz-keyword-cell {
+    height: 28px;
+    padding: 0 10px;
     font-size: 10px;
+  }
+  .biz-keyword-cell em {
+    display: inline;
+  }
+}
+
+/* Aktuell: søkere bedriften har plukket ut fra søkeordlisten. */
+.biz-card-next {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid #ffc9b5;
+  border-radius: 14px;
+  background: #fff4ef;
+  color: #c4532c;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.biz-card-next:hover {
+  background: #ffe9df;
+}
+.biz-card-next:focus-visible {
+  outline: 2px solid var(--biz-orange);
+  outline-offset: 2px;
+}
+.biz-lane-empty.is-shortlist {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.biz-lane-empty.is-shortlist button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px;
+  border: 0;
+  border-radius: 100px;
+  background: #fff;
+  color: #c4532c;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.biz-inbox-advance svg {
+  flex-shrink: 0;
+}
+
+
+/* Kompakte kort på søknadstavla, så bedriften ser mange kandidater samtidig. */
+.biz-application-board .biz-lane {
+  min-height: 300px;
+}
+.biz-student-card.is-compact {
+  gap: 10px;
+  padding: 12px 12px 12px 12px;
+  border-radius: 16px;
+}
+.biz-student-card.is-compact .biz-student-open {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: inherit;
+  overflow-wrap: normal;
+}
+.biz-student-card.is-compact .biz-avatar {
+  width: 36px;
+  height: 36px;
+  font-size: 11px;
+}
+.biz-student-id {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+.biz-student-id strong {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--biz-ink);
+}
+.biz-student-card.is-compact .biz-student-id small {
+  overflow: hidden;
+  font-size: 11px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.biz-student-grip {
+  flex-shrink: 0;
+  align-self: flex-start;
+  color: #b4b4ba;
+}
+.biz-student-fit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.biz-fit-bar {
+  flex: 1;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #efeff1;
+}
+.biz-fit-bar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #f0a285;
+}
+.biz-fit-bar.is-high i {
+  background: #3fa36a;
+}
+.biz-student-fit b {
+  font-size: 12px;
+  font-weight: 600;
+}
+.biz-student-fit .biz-card-next {
+  width: auto;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 100px;
+  font-size: 11px;
+}
+/* Statusvalget trengs bare på mobil, der kortene ikke kan dras. */
+.biz-student-card.is-compact .biz-status-control {
+  display: none;
+}
+@media (max-width: 700px) {
+  .biz-student-card.is-compact .biz-status-control {
+    display: block;
+  }
+  .biz-student-card.is-compact .biz-status-control .erfa-select-trigger {
+    min-height: 38px;
+  }
+}
+
+/* Søknader har to visninger: Søkere først, deretter Pipeline. */
+.biz-view-switch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0 26px;
+}
+.biz-view-switch > button {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--biz-border);
+  border-radius: 18px;
+  background: #fff;
+  color: var(--biz-ink);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+.biz-view-switch > button:hover {
+  border-color: #cfcfd4;
+}
+.biz-view-switch > button:focus-visible,
+.biz-back:focus-visible {
+  outline: 2px solid var(--biz-orange);
+  outline-offset: 2px;
+}
+.biz-view-switch > button > svg {
+  flex-shrink: 0;
+  color: var(--biz-muted);
+}
+.biz-view-switch span {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+.biz-view-switch b {
+  font-size: 14px;
+  font-weight: 600;
+}
+.biz-view-switch small {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--biz-muted);
+}
+.biz-view-switch em {
+  display: grid;
+  place-items: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 100px;
+  background: var(--biz-surface);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  animation: biz-pop 0.35s ease-out;
+}
+.biz-view-switch > button[aria-selected="true"] {
+  border-color: #242426;
+  box-shadow: 0 0 0 1px #242426;
+}
+.biz-view-switch > button[aria-selected="true"] > svg {
+  color: var(--biz-orange);
+}
+.biz-view-switch > button[aria-selected="true"] em {
+  background: #242426;
+  color: #fff;
+}
+.biz-view-arrow {
+  flex-shrink: 0;
+  color: #b4b4ba;
+}
+@keyframes biz-pop {
+  40% {
+    transform: scale(1.25);
+  }
+}
+.biz-pipeline-bar {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.biz-back {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  border: 1px solid var(--biz-border);
+  border-radius: 100px;
+  background: #fff;
+  color: var(--biz-ink);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.biz-back:hover {
+  border-color: #cfcfd4;
+}
+.biz-back span {
+  padding: 1px 7px;
+  border-radius: 100px;
+  background: var(--biz-surface);
+  font-size: 11px;
+}
+.biz-pipeline-bar h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+.biz-pipeline-bar p {
+  max-width: 640px;
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--biz-muted);
+}
+@media (max-width: 700px) {
+  .biz-view-switch {
+    gap: 6px;
+  }
+  .biz-view-switch > button {
+    gap: 8px;
+    padding: 12px;
+  }
+  .biz-view-switch small {
+    display: none;
+  }
+  .biz-pipeline-bar {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .biz-view-switch em {
+    animation: none;
+  }
+}
+.biz-inbox-cap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.biz-inbox-cap small {
+  font-size: 11px;
+  color: var(--biz-muted);
+  white-space: nowrap;
+}
+.biz-keyword-setup {
+  grid-template-columns: minmax(150px, 200px) minmax(0, 1fr);
+  padding: 16px 20px;
+}
+/* Oppdragsvalg og nøkkelinfo på samme linje. */
+.biz-applicant-head {
+  align-items: flex-end;
+  gap: 14px;
+}
+.biz-applicant-head .biz-pipeline-summary {
+  flex: 1;
+  margin: 0;
+}
+@media (max-width: 700px) {
+  .biz-applicant-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+@media (max-width: 950px) {
+  .biz-keyword-setup {
+    grid-template-columns: 1fr;
   }
 }

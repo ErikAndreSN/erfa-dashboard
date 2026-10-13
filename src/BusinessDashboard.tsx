@@ -10,6 +10,8 @@ import {
   Plus,
   ArrowUpRight,
   ArrowRight,
+  ArrowLeft,
+  SquareKanban,
   ChevronRight,
   Search,
   Clock,
@@ -28,7 +30,6 @@ import {
 } from "lucide-react";
 import { Button } from "./components/arc/button/button";
 import { BottomSheet } from "./components/arc/bottom-sheet/bottom-sheet";
-import { Avatar } from "./components/arc/avatar/avatar";
 import { BRAND_NAME, BrandMark } from "./brand";
 import "./business.css";
 import { Select } from "./components/arc/select/select";
@@ -38,10 +39,24 @@ import {
   SchoolLogo,
   VerifiedSkills,
 } from "./VerifiedSkills";
+import { CandidateExplorer, type CandidateProfile } from "./CandidateExplorer";
+import {
+  emilProfile,
+  espenProfile,
+  jonasProfile,
+  linaProfile,
+  poolAbout,
+  saraProfile,
+} from "./demo-profiles";
 
 type Stage = "Publisert" | "Avtale" | "Pågår" | "Fullført";
 type ApplicationStage =
-  "Søkt" | "Vurderes" | "Tilbudt jobb" | "Fått jobben" | "Ikke valgt";
+  | "Søkt"
+  | "Aktuell"
+  | "Vurderes"
+  | "Tilbudt jobb"
+  | "Fått jobben"
+  | "Ikke valgt";
 type Job = {
   id: number;
   title: string;
@@ -84,6 +99,7 @@ type Candidate = {
   match: number;
   bio: string;
   quote: string;
+  profile?: CandidateProfile;
 };
 type Task = {
   key: string;
@@ -194,6 +210,31 @@ const initialJobs: Job[] = [
     studentApproved: true,
     companyApproved: true,
   },
+  {
+    id: 6,
+    title: "Analyser data fra kundereisen",
+    category: "Analyse",
+    amount: 5500,
+    hours: "12–16 timer",
+    deadline: "2026-10-30",
+    description:
+      "Vi har data fra nettsiden, nyhetsbrevet og kundeservice. Finn ut hvor kundene faller fra, og presenter tre konkrete forbedringer.",
+    skills: ["Dataanalyse", "Databaser"],
+    tools: [
+      { name: "Excel", level: 3 },
+      { name: "Power BI", level: 2 },
+    ],
+    expectations:
+      "Du er trygg på Excel eller SQL og kan forklare funn enkelt. Vi gir deg tilgang til anonymiserte data og en kort innføring.",
+    day: "Et digitalt oppstartsmøte med Maya. Deretter jobber du fleksibelt, med en kort statusprat hver uke.",
+    start: "2026-10-26",
+    workplace: "Eksternt",
+    engagement: "Selvstendig oppdrag",
+    payType: "Totalpris",
+    stage: "Publisert",
+    studentApproved: false,
+    companyApproved: false,
+  },
 ];
 // Et større, fiktivt søkerutvalg på det første oppdraget, for å vise innboksen.
 const poolNames = [
@@ -275,7 +316,7 @@ const seeded = (n: number) => {
 const poolCandidates: Candidate[] = poolNames.map((name, i) => {
   const study = poolStudies[Math.floor(seeded(i + 3) * poolStudies.length)],
     first = Math.floor(seeded(i + 11) * poolSkills.length);
-  return {
+  const student = {
     id: 100 + i,
     name,
     initials: name
@@ -286,7 +327,7 @@ const poolCandidates: Candidate[] = poolNames.map((name, i) => {
     study,
     school: poolSchools[Math.floor(seeded(i + 5) * poolSchools.length)],
     semester: 2 + Math.floor(seeded(i + 7) * 5) + ". semester",
-    skills: [0, 3, 7].map(
+    skills: [0, 1, 2, 5].map(
       (step) => poolSkills[(first + step) % poolSkills.length],
     ),
     attests: Math.floor(seeded(i + 13) * 4),
@@ -296,6 +337,10 @@ const poolCandidates: Candidate[] = poolNames.map((name, i) => {
       study.toLowerCase() +
       " og liker å lage innhold som folk faktisk stopper opp for.",
     quote: "Leverte gjennomtenkt arbeid til avtalt tid.",
+  };
+  return {
+    ...student,
+    profile: { about: poolAbout(student, (n) => seeded(i * 7 + n)) },
   };
 });
 const poolApplications: Application[] = poolCandidates.map((c) => ({
@@ -319,6 +364,7 @@ const candidates: Candidate[] = [
     bio: "Jeg liker å gjøre gode ideer enkle å forstå. Har laget innhold for små bedrifter og vil bruke det jeg lærer i praksis.",
     quote:
       "Sara leverte gjennomarbeidet innhold til avtalt tid. Enkel å samarbeide med.",
+    profile: saraProfile,
   },
   {
     id: 2,
@@ -334,6 +380,7 @@ const candidates: Candidate[] = [
     bio: "Jeg trives med tall og gjør store datasett om til innsikt som kan brukes. Har erfaring med Excel og Power BI.",
     quote:
       "Jonas gjorde analysen lett å forstå og ga oss nyttige anbefalinger.",
+    profile: jonasProfile,
   },
   {
     id: 3,
@@ -349,6 +396,7 @@ const candidates: Candidate[] = [
     bio: "Jeg lager løsninger som er enkle å bruke. Har gjennomført brukertester i studiene og i to betalte oppdrag.",
     quote:
       "Lina stilte gode spørsmål og fant forbedringer vi ikke hadde sett selv.",
+    profile: linaProfile,
   },
   {
     id: 4,
@@ -363,6 +411,22 @@ const candidates: Candidate[] = [
     match: 92,
     bio: "Jeg klipper korte videoer med tydelig historiefortelling. Liker å finne de små detaljene som gjør innholdet bedre.",
     quote: "Emil var selvstendig, kreativ og fulgte briefen godt.",
+    profile: emilProfile,
+  },
+  {
+    id: 5,
+    name: "Espen Rønning",
+    initials: "ER",
+    photo: "",
+    study: "IT og e-business",
+    school: "Høyskolen Kristiania",
+    semester: "5. semester",
+    skills: ["Dataanalyse", "Databaser", "SQL", "Excel", "Systemdesign"],
+    attests: 0,
+    match: 88,
+    bio: "Studerer IT og e-business og er CTO i en studentoppstart. Liker å gjøre rotete data om til noe man kan ta beslutninger på.",
+    quote: "",
+    profile: espenProfile,
   },
   ...poolCandidates,
 ];
@@ -409,6 +473,7 @@ const initialApplications: Application[] = [
   { id: 5, jobId: 3, candidateId: 3, stage: "Fått jobben" },
   { id: 6, jobId: 4, candidateId: 2, stage: "Fått jobben" },
   { id: 7, jobId: 5, candidateId: 1, stage: "Fått jobben" },
+  { id: 8, jobId: 6, candidateId: 5, stage: "Søkt" },
   ...poolApplications,
 ];
 const stages: Stage[] = ["Publisert", "Avtale", "Pågår", "Fullført"];
@@ -432,53 +497,56 @@ const requirementsFor = (job: Job): Requirement[] => {
     must: !nice.includes(name.toLowerCase()),
   }));
 };
-const evidenceLabels = [
-  "Ingen bevis",
-  "Oppgitt selv",
-  "Studier eller prosjekt",
-  "Fullført oppdrag",
-  "Bekreftet i attest",
-];
-const evidenceShort = ["–", "Selv", "Studier", "Oppdrag", "Attest"];
-const evidenceOverrides: Record<number, Record<string, number>> = {
-  1: {
-    "sosiale medier": 4,
-    tekst: 4,
-    canva: 4,
-    "meta business suite": 2,
-    videoklipping: 2,
-    "premiere pro": 2,
-    seo: 3,
-  },
-  2: { excel: 4, dataanalyse: 3 },
-  3: {
-    "sosiale medier": 3,
-    tekst: 3,
-    canva: 3,
-    "meta business suite": 2,
-    brukertesting: 4,
-    figma: 3,
-  },
-  4: { videoklipping: 4, "premiere pro": 3 },
+// Generelle søkeord dekker også nærliggende ord studentene selv bruker.
+const relatedTerms: Record<string, string[]> = {
+  "sosiale medier": ["instagram", "tiktok", "some", "meta business suite"],
+  tekst: ["copywriting", "tekstforfatting"],
+  videoklipping: ["video", "premiere pro", "davinci resolve"],
+  dataanalyse: ["analyse", "statistikk", "power bi", "datavisualisering"],
+  databaser: ["sql", "datamodellering"],
+  design: ["figma", "grafisk design", "webdesign"],
+  brukertesting: ["brukerundersøkelser", "intervju"],
 };
-const hashText = (text: string) =>
-  [...text].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) % 9973, 7);
-const evidenceFor = (c: Candidate, requirement: string) => {
-  const key = requirement.toLowerCase(),
-    fixed = evidenceOverrides[c.id]?.[key];
-  if (fixed !== undefined) return fixed;
-  const r = seeded(c.id * 13 + hashText(key));
-  if (c.skills.some((s) => s.toLowerCase() === key))
-    return c.attests > 0 && r > 0.45 ? 4 : r > 0.15 ? 3 : 2;
-  return r < 0.45 ? 3 : r < 0.65 ? 2 : r < 0.8 ? 1 : 0;
+const termsFor = (keyword: string) => {
+  const key = keyword.toLowerCase();
+  return [key, ...(relatedTerms[key] || [])];
 };
-const scoreFor = (c: Candidate, job: Job) => {
+const escapeRegExp = (text: string) =>
+  text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+// Hvor i profilen studenten har søkeordet, eller tom tekst hvis det mangler.
+const keywordSource = (c: Candidate, keyword: string, jobs: Job[]) => {
+  const terms = termsFor(keyword),
+    hit = (list: string[] = []) =>
+      list.find((item) => terms.includes(item.toLowerCase())),
+    inText = (text: string) =>
+      terms.some((t) =>
+        new RegExp("(^|[^\\p{L}])" + escapeRegExp(t), "iu").test(text),
+      ),
+    attest = jobs.find((j) => j.selected === c.id && hit(j.attestSkills)),
+    work = c.profile?.experience?.find((e) => inText(e.role + " " + e.text)),
+    project = c.profile?.projects?.find((p) => hit(p.tags)),
+    course = c.profile?.courses?.find((x) => hit(x.tags));
+  if (attest) return "Bekreftet i attest for " + attest.title;
+  if (work) return "Erfaring: " + work.role + ", " + work.place;
+  if (project) return "Prosjekt: " + project.title;
+  if (course) return "Emne: " + course.name;
+  if (hit(c.skills)) return "Oppgitt som ferdighet";
+  return "";
+};
+const missingMusts = (c: Candidate, job: Job, jobs: Job[]) =>
+  requirementsFor(job).filter((r) => r.must && !keywordSource(c, r.name, jobs))
+    .length;
+// Andelen av søkeordene studenten har. Må-ha-ord teller dobbelt.
+const scoreFor = (c: Candidate, job: Job, jobs: Job[]) => {
   const requirements = requirementsFor(job);
   if (!requirements.length) return c.match;
   const weight = (r: Requirement) => (r.must ? 2 : 1);
   return Math.round(
-    (requirements.reduce((n, r) => n + evidenceFor(c, r.name) * weight(r), 0) /
-      requirements.reduce((n, r) => n + 4 * weight(r), 0)) *
+    (requirements.reduce(
+      (n, r) => n + (keywordSource(c, r.name, jobs) ? weight(r) : 0),
+      0,
+    ) /
+      requirements.reduce((n, r) => n + weight(r), 0)) *
       100,
   );
 };
@@ -522,12 +590,20 @@ function load() {
     )
       return {
         ...v,
+        // Oppdrag og søknader som er lagt til i demoen etter forrige besøk.
+        jobs: [
+          ...v.jobs,
+          ...initialJobs.filter((j) => !v.jobs.some((s: Job) => s.id === j.id)),
+        ],
         applications: [
           ...v.applications.map((a: Application) => ({
             ...a,
             stage: (a.stage as string) === "Valgt" ? "Fått jobben" : a.stage,
           })),
-          ...poolApplications.filter(
+          ...[
+            ...initialApplications.filter((a) => a.jobId === 6),
+            ...poolApplications,
+          ].filter(
             (p) => !v.applications.some((a: Application) => a.id === p.id),
           ),
         ],
@@ -549,7 +625,7 @@ export function BusinessDashboard() {
   const matchFor = (a: Application) => {
     const job = jobs.find((j) => j.id === a.jobId),
       c = candidates.find((x) => x.id === a.candidateId);
-    return job && c ? scoreFor(c, job) : 0;
+    return job && c ? scoreFor(c, job, jobs) : 0;
   };
   const [page, setPage] = useState("Oversikt"),
     [query, setQuery] = useState(""),
@@ -576,7 +652,11 @@ export function BusinessDashboard() {
     [applicationKeyboard, setApplicationKeyboard] = useState(false),
     [inboxFilter, setInboxFilter] = useState("Alle"),
     [inboxSelected, setInboxSelected] = useState<number[]>([]),
-    [inboxLimit, setInboxLimit] = useState(12);
+    [inboxLimit, setInboxLimit] = useState(12),
+    [keywordDraft, setKeywordDraft] = useState(""),
+    [applicantView, setApplicantView] = useState<"søkere" | "pipeline">(
+      "søkere",
+    );
   const [talentDrafts, setTalentDrafts] = useState<
     {
       id: number;
@@ -597,6 +677,10 @@ export function BusinessDashboard() {
     setTalentMessage("");
     setSheet("talent-request");
   };
+  // Arket beholder formen sin mens det lukkes, selv om innholdet forsvinner.
+  const lastSheet = useRef(sheet);
+  if (sheet) lastSheet.current = sheet;
+  const candidateSheet = lastSheet.current === "candidate";
   const appDragRef = useRef<number | null>(null),
     appClickUntil = useRef(0);
   const [company, setCompany] = useState({
@@ -655,6 +739,7 @@ export function BusinessDashboard() {
   );
   const navigate = (p: string) => {
     setPage(p);
+    if (p === "Søknader") setApplicantView("søkere");
     setMenu(false);
     setQuery("");
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -730,7 +815,14 @@ export function BusinessDashboard() {
     setJobs((list) =>
       list.map((j) => (j.id === id ? { ...j, ...changes } : j)),
     );
-  const review = () => moveApplication(activeApplicationId, "Vurderes");
+  // Fra Søkt går søkeren først til Aktuell, deretter til Vurderes.
+  const review = () => {
+    if (activeApplication)
+      moveApplication(
+        activeApplication.id,
+        activeApplication.stage === "Søkt" ? "Aktuell" : "Vurderes",
+      );
+  };
   const toggleTalent = (id: number) => {
     setTalent((list) =>
       list.includes(id) ? list.filter((x) => x !== id) : [...list, id],
@@ -773,6 +865,7 @@ export function BusinessDashboard() {
   };
   const applicationStages: ApplicationStage[] = [
     "Søkt",
+    "Aktuell",
     "Vurderes",
     "Tilbudt jobb",
     "Fått jobben",
@@ -827,13 +920,13 @@ export function BusinessDashboard() {
       return;
     }
     setApplications((list) =>
-      list.map((a) => (ids.includes(a.id) ? { ...a, stage: "Vurderes" } : a)),
+      list.map((a) => (ids.includes(a.id) ? { ...a, stage: "Aktuell" } : a)),
     );
     setInboxSelected([]);
     setToast(
       ids.length === 1
-        ? "Søkeren er flyttet til Vurderes"
-        : ids.length + " søkere er flyttet til Vurderes",
+        ? "Lagt til i pipelinen under Aktuell"
+        : ids.length + " søkere er lagt til i pipelinen under Aktuell",
     );
   };
   const declineApplications = (ids: number[]) => {
@@ -885,37 +978,72 @@ export function BusinessDashboard() {
       person = (a: Application) =>
         candidates.find((c) => c.id === a.candidateId)!,
       requirements = requirementsFor(current),
-      musts = requirements.filter((r) => r.must),
-      level = (a: Application, r: Requirement) =>
-        evidenceFor(person(a), r.name),
-      coversAll = (a: Application) => musts.every((r) => level(a, r) >= 3),
-      strongMost = (a: Application) =>
-        musts.filter((r) => level(a, r) >= 3).length > musts.length / 2,
-      hasAttest = (a: Application) =>
-        requirements.some((r) => level(a, r) === 4),
+      source = (a: Application, r: Requirement) =>
+        keywordSource(person(a), r.name, jobs),
+      missing = (a: Application) => missingMusts(person(a), current, jobs),
+      coversAll = (a: Application) => missing(a) === 0,
       list = applications.filter((a) => a.jobId === current.id),
+      // De som mangler må-ha-ord havner nederst, uansett hvor mye annet de har.
       incoming = list
         .filter((a) => a.stage === "Søkt")
-        .sort((a, b) => matchFor(b) - matchFor(a)),
+        .sort(
+          (a, b) =>
+            missing(a) - missing(b) ||
+            matchFor(b) - matchFor(a) ||
+            person(b).attests - person(a).attests,
+        ),
       declined = list.filter((a) => a.stage === "Ikke valgt"),
       covering = incoming.filter(coversAll),
-      strong = incoming.filter(strongMost),
-      topMatches = incoming.filter((a) => matchFor(a) >= 70),
+      lacking = incoming.length - covering.length,
       shown = incoming.filter(
         (a) =>
           inboxFilter === "Alle" ||
-          (inboxFilter === "Dekker alle må-krav" && coversAll(a)) ||
-          (inboxFilter === "Har attest" && hasAttest(a)),
+          (inboxFilter === "Har alle må-ha" && coversAll(a)) ||
+          (inboxFilter === "Mangler må-ha" && !coversAll(a)),
       ),
-      share = (n: number, total: number) =>
-        (total ? Math.round((n / total) * 100) : 0) + "%";
+      visible = shown.slice(0, inboxLimit),
+      // Pipelinen er alt etter Søkt.
+      pipelineStages = applicationStages.slice(1),
+      inPipeline = list.filter((a) => pipelineStages.includes(a.stage));
+    const niceNames = requirements
+        .filter((r) => !r.must)
+        .map((r) => r.name.toLowerCase()),
+      toggleKeyword = (r: Requirement) => {
+        const key = r.name.toLowerCase();
+        updateJob(current.id, {
+          niceToHave: r.must
+            ? [...niceNames, key]
+            : niceNames.filter((n) => n !== key),
+        });
+        setToast(
+          r.name + (r.must ? " er nå fint å ha" : " er nå et må-ha-søkeord"),
+        );
+      },
+      removeKeyword = (r: Requirement) => {
+        const key = r.name.toLowerCase();
+        updateJob(current.id, {
+          skills: current.skills.filter((s) => s.toLowerCase() !== key),
+          tools: (current.tools || []).filter(
+            (t) => t.name.toLowerCase() !== key,
+          ),
+          niceToHave: niceNames.filter((n) => n !== key),
+        });
+      },
+      addKeyword = (name: string) => {
+        const clean = name.trim();
+        if (
+          !clean ||
+          requirements.some((r) => r.name.toLowerCase() === clean.toLowerCase())
+        )
+          return;
+        updateJob(current.id, {
+          skills: [...current.skills, clean],
+          niceToHave: niceNames,
+        });
+      };
     return (
       <section className="biz-board-section">
-        <div className="biz-section-head">
-          <div>
-            <h2>Søknadsprosessen</h2>
-            <p>Se menneskene bak søknadene. Ta ett steg av gangen.</p>
-          </div>
+        <div className="biz-section-head biz-applicant-head">
           <label className="biz-pipeline-select">
             Oppdrag
             <Select
@@ -928,521 +1056,587 @@ export function BusinessDashboard() {
               }))}
             />
           </label>
+          <div className="biz-pipeline-summary">
+            <span>{current.category}</span>
+            <span>
+              {money(current.amount)}
+              {current.payType === "Timepris" ? " / time" : " totalt"}
+            </span>
+            <button onClick={() => openJob(current.id)}>
+              Se oppdragsbeskrivelse <ArrowUpRight size={14} />
+            </button>
+          </div>
         </div>
-        <div className="biz-pipeline-summary">
-          <span>
-            <Users size={16} />
-            <b>{list.length - declined.length}</b> søkere
-          </span>
-          <span>{current.category}</span>
-          <span>
-            {money(current.amount)}
-            {current.payType === "Timepris" ? " / time" : " totalt"}
-          </span>
-          <button onClick={() => openJob(current.id)}>
-            Se oppdragsbeskrivelse <ArrowUpRight size={14} />
+        {/* To visninger: først søkerne, så pipelinen for dem som er aktuelle. */}
+        <div className="biz-view-switch" role="tablist" aria-label="Visning">
+          <button
+            role="tab"
+            aria-selected={applicantView === "søkere"}
+            onClick={() => setApplicantView("søkere")}
+          >
+            <Users size={18} />
+            <span>
+              <b>Søkere</b>
+              <small>Rangert etter søkeord</small>
+            </span>
+            <em>{incoming.length}</em>
+          </button>
+          <ArrowRight className="biz-view-arrow" size={16} aria-hidden="true" />
+          <button
+            role="tab"
+            aria-selected={applicantView === "pipeline"}
+            onClick={() => setApplicantView("pipeline")}
+          >
+            <SquareKanban size={18} />
+            <span>
+              <b>Pipeline</b>
+              <small>Følg ansettelsen videre</small>
+            </span>
+            <em key={inPipeline.length}>{inPipeline.length}</em>
           </button>
         </div>
-        <p className="biz-drag-help" id="application-drag-help">
-          Dra studentkort til neste steg. Tastatur: mellomrom, piltaster og
-          Enter. På mobil kan du bruke statusvalget i kortet.
-        </p>
-        <div
-          className="biz-board biz-application-board"
-          aria-label="Søknadspipeline"
-        >
-          {applicationStages.map((stage, i) => (
-            <section
-              key={stage}
-              aria-label={stage}
-              className={
-                "biz-lane " + (applicationTarget === stage ? "drop-active" : "")
-              }
-              onDragOver={(e) => {
-                if (appDragRef.current !== null) {
-                  e.preventDefault();
-                  setApplicationTarget(stage);
-                }
-              }}
-              onDrop={(e) => {
-                e.preventDefault();
-                if (appDragRef.current !== null)
-                  moveApplication(appDragRef.current, stage);
-              }}
-            >
-              <div className="biz-lane-head">
-                <span>
-                  <i className={"biz-stage-dot stage-" + i} />
-                  {stage}
-                </span>
-                <span className="biz-count">
-                  {list.filter((a) => a.stage === stage).length}
-                </span>
-              </div>
-              <div className="biz-lane-cards">
-                {stage === "Søkt" && incoming.length > 0 && (
-                  <div className="biz-inbox-summary">
-                    <span className="biz-avatar-stack">
-                      {incoming.slice(0, 3).map((a) => (
-                        <CandidatePhoto key={a.id} candidate={person(a)} />
-                      ))}
-                    </span>
-                    <strong>
-                      {incoming.length}{" "}
-                      {incoming.length === 1 ? "ny søker" : "nye søkere"}
-                    </strong>
-                    <small>{covering.length} dekker alle må-krav</small>
-                    <button
-                      onClick={() =>
-                        document
-                          .getElementById("biz-inbox")
-                          ?.scrollIntoView({ behavior: "smooth" })
-                      }
-                    >
-                      Se og velg <ArrowRight size={14} />
-                    </button>
-                  </div>
-                )}
-                {list
-                  .filter((a) => a.stage === stage && stage !== "Søkt")
-                  .map((a) => {
-                    const c = candidates.find((c) => c.id === a.candidateId)!;
-                    return (
-                      <article
-                        key={a.id}
-                        data-application-id={a.id}
-                        tabIndex={0}
-                        role="group"
-                        aria-label={c.name + " · " + stage}
-                        aria-describedby="application-drag-help"
-                        draggable={
-                          !applicationKeyboard && stage !== "Fått jobben"
-                        }
-                        className={
-                          "biz-student-card " +
-                          (applicationDrag === a.id ? "is-dragging" : "")
-                        }
-                        onDragStart={(e) => {
-                          appDragRef.current = a.id;
-                          setApplicationDrag(a.id);
-                          e.dataTransfer.effectAllowed = "move";
-                          e.dataTransfer.setData("text/plain", String(a.id));
-                        }}
-                        onDragEnd={clearApplicationDrag}
-                        onKeyDown={(e) => {
-                          if (e.target !== e.currentTarget) return;
-                          if (e.key === " " && !applicationKeyboard) {
-                            e.preventDefault();
-                            appDragRef.current = a.id;
-                            setApplicationDrag(a.id);
-                            setApplicationTarget(stage);
-                            setApplicationKeyboard(true);
-                            return;
-                          }
-                          if (!applicationKeyboard || applicationDrag !== a.id)
-                            return;
-                          if (
-                            [
-                              "ArrowLeft",
-                              "ArrowRight",
-                              "Enter",
-                              "Escape",
-                              " ",
-                            ].includes(e.key)
-                          )
-                            e.preventDefault();
-                          if (e.key === "Escape") clearApplicationDrag();
-                          else if (
-                            e.key === "ArrowLeft" ||
-                            e.key === "ArrowRight"
-                          )
-                            setApplicationTarget(
-                              applicationStages[
-                                Math.max(
-                                  0,
-                                  Math.min(
-                                    3,
-                                    applicationStages.indexOf(
-                                      applicationTarget || stage,
-                                    ) + (e.key === "ArrowRight" ? 1 : -1),
-                                  ),
-                                )
-                              ],
-                            );
-                          else if (e.key === "Enter" || e.key === " ")
-                            moveApplication(a.id, applicationTarget || stage);
-                        }}
-                      >
-                        <div className="biz-student-card-top">
-                          <CandidatePhoto candidate={c} />
-                          <button
-                            aria-label={
-                              (talent.includes(c.id) ? "Fjern " : "Lagre ") +
-                              c.name +
-                              " i talentbase"
-                            }
-                            aria-pressed={talent.includes(c.id)}
-                            onClick={() => toggleTalent(c.id)}
-                          >
-                            <Heart
-                              size={17}
-                              fill={
-                                talent.includes(c.id) ? "currentColor" : "none"
-                              }
-                            />
-                          </button>
-                          <GripVertical size={15} />
-                        </div>
-                        <button
-                          className="biz-student-open"
-                          onClick={() => {
-                            if (Date.now() > appClickUntil.current)
-                              openApplicant(a.id);
-                          }}
-                        >
-                          <h3>{c.name}</h3>
-                          <p>{c.study}</p>
-                        </button>
-                        <div className="biz-student-school">
-                          <span className="biz-student-school-logo">
-                            <SchoolLogo school={c.school} />
-                          </span>
-                          <span>
-                            <strong>{c.school}</strong>
-                            <small>{c.semester}</small>
-                          </span>
-                        </div>
-                        <div className="biz-skills">
-                          {c.skills.slice(0, 2).map((skill) => (
-                            <span key={skill}>{skill}</span>
-                          ))}
-                        </div>
-                        <div className="biz-student-trust">
-                          <span>
-                            <FileCheck2 size={14} />
-                            {c.attests} attester
-                          </span>
-                          <b
-                            className={
-                              "biz-match" + (matchFor(a) >= 85 ? " high" : "")
-                            }
-                          >
-                            {matchFor(a)} % samsvar
-                          </b>
-                        </div>
-                        <label className="biz-status-control">
-                          <span className="sr-only">Status for {c.name}</span>
-                          <Select
-                            label={"Status for " + c.name}
-                            value={stage}
-                            disabled={stage === "Fått jobben"}
-                            onValueChange={(value) =>
-                              moveApplication(a.id, value as ApplicationStage)
-                            }
-                            options={applicationStages.map((value) => ({
-                              value,
-                              label: value,
-                            }))}
-                          />
-                        </label>
-                      </article>
-                    );
-                  })}
-                {!list.some((a) => a.stage === stage) && (
-                  <div className="biz-lane-empty">
-                    {stage === "Søkt"
-                      ? "Ingen nye søkere"
-                      : "Flytt en student hit"}
-                  </div>
-                )}
-              </div>
-            </section>
-          ))}
-        </div>
-        <p className="biz-drag-help biz-pipeline-note">
-          Tilbud og aksept er demosteg. Ingen tilbud sendes eller avtaler inngås
-          her.
-        </p>
-        <section className="biz-inbox" id="biz-inbox" aria-label="Nye søkere">
-          <div className="biz-section-head">
-            <div>
-              <h2>Nye søkere</h2>
-              <p>
-                {incoming.length} venter · {list.length - declined.length} av
-                maks 50 søknader
-                {current.paused ? " · søknader er satt på pause" : ""}
-              </p>
-            </div>
-            <button
-              className={
-                "biz-inbox-pause" + (current.paused ? " is-paused" : "")
-              }
-              onClick={() => updateJob(current.id, { paused: !current.paused })}
-            >
-              {current.paused ? "Åpne for søknader" : "Pause søknader"}
-            </button>
-          </div>
-          <div className="biz-screen-summary">
-            <div>
-              <strong>
-                {incoming.length}
-                <span> av {list.length}</span>
-              </strong>
-              <b>venter på beslutning</b>
-              <small>{list.length - incoming.length} allerede vurdert</small>
-            </div>
-            <div>
-              <strong>
-                {covering.length}
-                <span> av {incoming.length}</span>
-              </strong>
-              <b>dekker alle må-krav</b>
-              <i>
-                <em
-                  style={{ width: share(covering.length, incoming.length) }}
-                />
-              </i>
-              <small>Fullført oppdrag eller attest på alle</small>
-            </div>
-            <div>
-              <strong>
-                {strong.length}
-                <span> av {incoming.length}</span>
-              </strong>
-              <b>sterke på de fleste må-krav</b>
-              <i>
-                <em style={{ width: share(strong.length, incoming.length) }} />
-              </i>
-              <small>3 eller 4 på flertallet</small>
-            </div>
-          </div>
-          {topMatches.length > 0 && (
-            <div className="biz-inbox-picks">
-              <h3>
-                <span className="biz-todo-kind kind-new">Erfa anbefaler</span>
-                De {Math.min(5, topMatches.length)} som passer best
-              </h3>
-              <div className="biz-inbox-pick-row">
-                {topMatches.slice(0, 5).map((a) => {
-                  const c = person(a);
-                  return (
-                    <article className="biz-inbox-pick" key={a.id}>
-                      <button
-                        className="biz-inbox-pick-open"
-                        onClick={() => openApplicant(a.id)}
-                      >
-                        <CandidatePhoto candidate={c} />
-                        <strong>{c.name}</strong>
-                        <small>
-                          {c.study} · {c.school}
-                        </small>
-                        <span className="biz-status is-match">
-                          {matchFor(a)} % samsvar
-                        </span>
-                      </button>
-                      <button
-                        className="biz-inbox-advance"
-                        onClick={() => advanceApplications([a.id])}
-                      >
-                        Gå videre <ArrowRight size={14} />
-                      </button>
-                    </article>
-                  );
-                })}
+        {applicantView === "pipeline" && (
+          <>
+            <div className="biz-pipeline-bar">
+              <button
+                className="biz-back"
+                onClick={() => setApplicantView("søkere")}
+              >
+                <ArrowLeft size={15} /> Søkere <span>{incoming.length}</span>
+              </button>
+              <div>
+                <h3>Pipeline</h3>
+                <p>
+                  Dra kortene videre etter hvert som du vurderer, gir tilbud og
+                  får svar.
+                </p>
               </div>
             </div>
-          )}
-          <div className="biz-inbox-toolbar">
+            <p className="sr-only" id="application-drag-help">
+              Dra studentkort til neste steg. Tastatur: mellomrom, piltaster og
+              Enter. På mobil kan du bruke statusvalget i kortet.
+            </p>
             <div
-              className="biz-inbox-filters"
-              role="group"
-              aria-label="Filtrer søkere"
+              className="biz-board biz-application-board"
+              aria-label="Søknadspipeline"
             >
-              {["Alle", "Dekker alle må-krav", "Har attest"].map((f) => (
-                <button
-                  key={f}
-                  aria-pressed={inboxFilter === f}
-                  className={inboxFilter === f ? "active" : ""}
-                  onClick={() => {
-                    setInboxFilter(f);
-                    setInboxSelected([]);
+              {pipelineStages.map((stage, i) => (
+                <section
+                  key={stage}
+                  aria-label={stage}
+                  className={
+                    "biz-lane " +
+                    (applicationTarget === stage ? "drop-active" : "")
+                  }
+                  onDragOver={(e) => {
+                    if (appDragRef.current !== null) {
+                      e.preventDefault();
+                      setApplicationTarget(stage);
+                    }
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    if (appDragRef.current !== null)
+                      moveApplication(appDragRef.current, stage);
                   }}
                 >
-                  {f}
-                  <span>
-                    {f === "Alle"
-                      ? incoming.length
-                      : f === "Dekker alle må-krav"
-                        ? covering.length
-                        : incoming.filter(hasAttest).length}
-                  </span>
-                </button>
+                  <div className="biz-lane-head">
+                    <span>
+                      <i
+                        className={
+                          "biz-stage-dot " +
+                          (stage === "Aktuell"
+                            ? "stage-shortlist"
+                            : "stage-" + i)
+                        }
+                      />
+                      {stage}
+                    </span>
+                    <span className="biz-count">
+                      {list.filter((a) => a.stage === stage).length}
+                    </span>
+                  </div>
+                  <div className="biz-lane-cards">
+                    {list
+                      .filter((a) => a.stage === stage)
+                      .map((a) => {
+                        const c = candidates.find(
+                          (c) => c.id === a.candidateId,
+                        )!;
+                        return (
+                          <article
+                            key={a.id}
+                            data-application-id={a.id}
+                            tabIndex={0}
+                            role="group"
+                            aria-label={c.name + " · " + stage}
+                            aria-describedby="application-drag-help"
+                            draggable={
+                              !applicationKeyboard && stage !== "Fått jobben"
+                            }
+                            className={
+                              "biz-student-card is-compact " +
+                              (applicationDrag === a.id ? "is-dragging" : "")
+                            }
+                            onDragStart={(e) => {
+                              appDragRef.current = a.id;
+                              setApplicationDrag(a.id);
+                              e.dataTransfer.effectAllowed = "move";
+                              e.dataTransfer.setData(
+                                "text/plain",
+                                String(a.id),
+                              );
+                            }}
+                            onDragEnd={clearApplicationDrag}
+                            onKeyDown={(e) => {
+                              if (e.target !== e.currentTarget) return;
+                              if (e.key === " " && !applicationKeyboard) {
+                                e.preventDefault();
+                                appDragRef.current = a.id;
+                                setApplicationDrag(a.id);
+                                setApplicationTarget(stage);
+                                setApplicationKeyboard(true);
+                                return;
+                              }
+                              if (
+                                !applicationKeyboard ||
+                                applicationDrag !== a.id
+                              )
+                                return;
+                              if (
+                                [
+                                  "ArrowLeft",
+                                  "ArrowRight",
+                                  "Enter",
+                                  "Escape",
+                                  " ",
+                                ].includes(e.key)
+                              )
+                                e.preventDefault();
+                              if (e.key === "Escape") clearApplicationDrag();
+                              else if (
+                                e.key === "ArrowLeft" ||
+                                e.key === "ArrowRight"
+                              )
+                                setApplicationTarget(
+                                  pipelineStages[
+                                    Math.max(
+                                      0,
+                                      Math.min(
+                                        pipelineStages.length - 1,
+                                        pipelineStages.indexOf(
+                                          applicationTarget || stage,
+                                        ) + (e.key === "ArrowRight" ? 1 : -1),
+                                      ),
+                                    )
+                                  ],
+                                );
+                              else if (e.key === "Enter" || e.key === " ")
+                                moveApplication(
+                                  a.id,
+                                  applicationTarget || stage,
+                                );
+                            }}
+                          >
+                            {/* Kompakt kort: nok til å kjenne igjen studenten, resten ligger i profilen. */}
+                            <button
+                              className="biz-student-open"
+                              onClick={() => {
+                                if (Date.now() > appClickUntil.current)
+                                  openApplicant(a.id);
+                              }}
+                            >
+                              <CandidatePhoto candidate={c} small />
+                              <span className="biz-student-id">
+                                <strong>{c.name}</strong>
+                                <small>{c.study}</small>
+                                <small>{c.school}</small>
+                              </span>
+                              <GripVertical
+                                size={14}
+                                className="biz-student-grip"
+                                aria-hidden="true"
+                              />
+                            </button>
+                            <div className="biz-student-fit">
+                              <span
+                                className={
+                                  "biz-fit-bar" +
+                                  (matchFor(a) >= 85 ? " is-high" : "")
+                                }
+                                aria-hidden="true"
+                              >
+                                <i style={{ width: matchFor(a) + "%" }} />
+                              </span>
+                              <b>{matchFor(a)} %</b>
+                              {stage === "Aktuell" && (
+                                <button
+                                  className="biz-card-next"
+                                  aria-label={"Vurder " + c.name}
+                                  onClick={() =>
+                                    moveApplication(a.id, "Vurderes")
+                                  }
+                                >
+                                  Vurder <ArrowRight size={13} />
+                                </button>
+                              )}
+                            </div>
+                            <label className="biz-status-control">
+                              <span className="sr-only">
+                                Status for {c.name}
+                              </span>
+                              <Select
+                                label={"Status for " + c.name}
+                                value={stage}
+                                disabled={stage === "Fått jobben"}
+                                onValueChange={(value) =>
+                                  moveApplication(
+                                    a.id,
+                                    value as ApplicationStage,
+                                  )
+                                }
+                                options={[
+                                  {
+                                    value: "Søkt",
+                                    label: "Tilbake til søkere",
+                                  },
+                                  ...pipelineStages.map((value) => ({
+                                    value,
+                                    label: value,
+                                  })),
+                                ]}
+                              />
+                            </label>
+                          </article>
+                        );
+                      })}
+                    {!list.some((a) => a.stage === stage) &&
+                      (stage === "Aktuell" ? (
+                        <div className="biz-lane-empty is-shortlist">
+                          <span>
+                            Ingen kandidater ennå. Trykk «Aktuell» på søkere som
+                            ser lovende ut, så havner de her.
+                          </span>
+                          {incoming.length > 0 && (
+                            <button onClick={() => setApplicantView("søkere")}>
+                              <ArrowLeft size={14} /> Gå til søkere
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="biz-lane-empty">
+                          Flytt en student hit
+                        </div>
+                      ))}
+                  </div>
+                </section>
               ))}
             </div>
-            {inboxSelected.length > 0 ? (
-              <div className="biz-inbox-bulk">
-                <b>{inboxSelected.length} valgt</b>
-                <button
-                  className="biz-inbox-advance"
-                  onClick={() => advanceApplications(inboxSelected)}
-                >
-                  Gå videre <ArrowRight size={14} />
-                </button>
-                <button onClick={() => declineApplications(inboxSelected)}>
-                  Ikke nå
-                </button>
-                <button onClick={() => setInboxSelected([])}>Avbryt</button>
-              </div>
-            ) : (
-              <label className="biz-inbox-select-all">
-                <input
-                  type="checkbox"
-                  checked={false}
-                  disabled={!shown.length}
-                  onChange={() =>
-                    setInboxSelected(
-                      shown.slice(0, inboxLimit).map((a) => a.id),
-                    )
-                  }
-                />
-                Velg alle viste
-              </label>
-            )}
-          </div>
-          <div
-            className="biz-matrix"
-            style={{ "--reqs": requirements.length } as React.CSSProperties}
+          </>
+        )}
+        {applicantView === "søkere" && (
+          <section
+            className="biz-inbox"
+            id="biz-inbox"
+            aria-label="Søkeord blant studentene"
           >
-            <div className="biz-matrix-legend" aria-label="Forklaring">
-              {evidenceLabels.map((label, i) => (
-                <span key={label}>
-                  <i className={"biz-evidence lvl-" + i}>{i}</i>
-                  {label}
-                </span>
-              ))}
+            <div className="biz-section-head">
+              <div>
+                <h2>Søkeord blant studentene</h2>
+                <p>
+                  Trykk «Aktuell» på dem som ser lovende ut. De flyttes til
+                  pipelinen.
+                </p>
+              </div>
+              <span className="biz-inbox-cap">
+                <small>
+                  {list.length - declined.length}/50 søknader
+                  {current.paused ? " · pause" : ""}
+                </small>
+                <button
+                  className={
+                    "biz-inbox-pause" + (current.paused ? " is-paused" : "")
+                  }
+                  onClick={() =>
+                    updateJob(current.id, { paused: !current.paused })
+                  }
+                >
+                  {current.paused ? "Åpne for søknader" : "Pause søknader"}
+                </button>
+              </span>
             </div>
-            <div className="biz-matrix-head" aria-hidden="true">
-              <span />
-              <span>Søker</span>
-              <span>Samsvar</span>
-              <span className="biz-matrix-cells">
+            <div className="biz-keyword-setup">
+              <div className="biz-keyword-intro">
+                <strong>Søkeord</strong>
+                <small>
+                  Trykk på et ord for å bytte mellom må ha og fint å ha.
+                </small>
+              </div>
+              <div className="biz-keyword-list">
                 {requirements.map((r) => (
-                  <span key={r.name}>
-                    <small>{r.must ? "Må ha" : "Fint å ha"}</small>
-                    {r.name}
+                  <span
+                    key={r.name}
+                    className={"biz-keyword" + (r.must ? " is-must" : "")}
+                  >
+                    <button
+                      type="button"
+                      aria-pressed={r.must}
+                      title={r.must ? "Gjør til fint å ha" : "Gjør til må ha"}
+                      onClick={() => toggleKeyword(r)}
+                    >
+                      <small>{r.must ? "Må ha" : "Fint å ha"}</small>
+                      {r.name}
+                    </button>
+                    <button
+                      type="button"
+                      className="biz-keyword-remove"
+                      aria-label={"Fjern søkeordet " + r.name}
+                      onClick={() => removeKeyword(r)}
+                    >
+                      <X size={13} />
+                    </button>
                   </span>
                 ))}
-              </span>
-              <span />
-            </div>
-            {shown.slice(0, inboxLimit).map((a, i) => {
-              const c = person(a),
-                checked = inboxSelected.includes(a.id);
-              return (
-                <div
-                  className={"biz-matrix-row" + (checked ? " is-selected" : "")}
-                  key={a.id}
+                <form
+                  className="biz-keyword-add"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    addKeyword(keywordDraft);
+                    setKeywordDraft("");
+                  }}
                 >
                   <input
-                    type="checkbox"
-                    aria-label={"Velg " + c.name}
-                    checked={checked}
-                    onChange={() =>
-                      setInboxSelected((ids) =>
-                        checked
-                          ? ids.filter((id) => id !== a.id)
-                          : [...ids, a.id],
-                      )
-                    }
+                    aria-label="Nytt søkeord"
+                    placeholder="Legg til søkeord"
+                    value={keywordDraft}
+                    maxLength={40}
+                    onChange={(e) => setKeywordDraft(e.target.value)}
                   />
                   <button
-                    className="biz-inbox-person"
-                    onClick={() => openApplicant(a.id)}
+                    type="submit"
+                    aria-label="Legg til søkeord"
+                    disabled={!keywordDraft.trim()}
                   >
-                    <span className="biz-matrix-rank">{i + 1}</span>
-                    <CandidatePhoto candidate={c} />
+                    <Plus size={14} />
+                  </button>
+                </form>
+              </div>
+            </div>
+            <div className="biz-inbox-toolbar">
+              <div
+                className="biz-inbox-filters"
+                role="group"
+                aria-label="Filtrer søkere"
+              >
+                {["Alle", "Har alle må-ha", "Mangler må-ha"].map((f) => (
+                  <button
+                    key={f}
+                    aria-pressed={inboxFilter === f}
+                    className={inboxFilter === f ? "active" : ""}
+                    onClick={() => {
+                      setInboxFilter(f);
+                      setInboxSelected([]);
+                    }}
+                  >
+                    {f}
                     <span>
-                      <strong>{c.name}</strong>
-                      <small>
-                        {c.school} · {c.semester}
-                      </small>
+                      {f === "Alle"
+                        ? incoming.length
+                        : f === "Har alle må-ha"
+                          ? covering.length
+                          : lacking}
                     </span>
                   </button>
-                  <b className="biz-matrix-score">{matchFor(a)} %</b>
-                  <span className="biz-matrix-cells">
-                    {requirements.map((r) => {
-                      const n = level(a, r);
-                      return (
-                        <span
-                          key={r.name}
-                          className={"biz-evidence lvl-" + n}
-                          title={r.name + ": " + evidenceLabels[n]}
-                          aria-label={r.name + ": " + evidenceLabels[n]}
-                        >
-                          {evidenceShort[n]}
-                        </span>
-                      );
-                    })}
-                  </span>
-                  <span className="biz-inbox-actions">
-                    <button
-                      className="biz-inbox-advance"
-                      onClick={() => advanceApplications([a.id])}
-                    >
-                      Gå videre
-                    </button>
-                    <button onClick={() => declineApplications([a.id])}>
-                      Ikke nå
-                    </button>
-                    <button
-                      className="biz-inbox-save"
-                      aria-label={
-                        (talent.includes(c.id) ? "Fjern " : "Lagre ") +
-                        c.name +
-                        " i talentbase"
-                      }
-                      aria-pressed={talent.includes(c.id)}
-                      onClick={() => toggleTalent(c.id)}
-                    >
-                      <Heart
-                        size={15}
-                        fill={talent.includes(c.id) ? "currentColor" : "none"}
-                      />
-                    </button>
-                  </span>
-                </div>
-              );
-            })}
-            {!shown.length && (
-              <p className="biz-inbox-empty">
-                {incoming.length
-                  ? "Ingen søkere passer filteret."
-                  : "Ingen nye søkere akkurat nå."}
-              </p>
-            )}
-          </div>
-          {shown.length > inboxLimit && (
-            <button
-              className="biz-inbox-more"
-              onClick={() => setInboxLimit((n) => n + 12)}
-            >
-              Vis flere ({shown.length - inboxLimit} til)
-            </button>
-          )}
-          {declined.length > 0 && (
-            <details className="biz-inbox-declined">
-              <summary>Ikke valgt ({declined.length})</summary>
-              {declined.map((a) => (
-                <div key={a.id}>
-                  <span>{person(a).name}</span>
-                  <button onClick={() => restoreApplication(a.id)}>
-                    Angre
+                ))}
+              </div>
+              {inboxSelected.length > 0 ? (
+                <div className="biz-inbox-bulk">
+                  <b>{inboxSelected.length} valgt</b>
+                  <button
+                    className="biz-inbox-advance"
+                    onClick={() => advanceApplications(inboxSelected)}
+                  >
+                    <Plus size={14} /> Legg til som aktuelle
                   </button>
+                  <button onClick={() => declineApplications(inboxSelected)}>
+                    Ikke nå
+                  </button>
+                  <button onClick={() => setInboxSelected([])}>Avbryt</button>
                 </div>
-              ))}
-            </details>
-          )}
-        </section>
+              ) : (
+                <label className="biz-inbox-select-all">
+                  <input
+                    type="checkbox"
+                    checked={false}
+                    disabled={!shown.length}
+                    onChange={() => setInboxSelected(visible.map((a) => a.id))}
+                  />
+                  Velg alle viste
+                </label>
+              )}
+            </div>
+            <div
+              className="biz-matrix"
+              style={
+                {
+                  "--reqs": Math.max(1, requirements.length),
+                } as React.CSSProperties
+              }
+            >
+              <p className="biz-matrix-legend">
+                Hold over ✓ for å se hvor ordet er funnet.
+              </p>
+              <div className="biz-matrix-head" aria-hidden="true">
+                <span />
+                <span>Søker</span>
+                <span>Samsvar</span>
+                <span className="biz-matrix-cells">
+                  {requirements.length ? (
+                    requirements.map((r) => (
+                      <span
+                        key={r.name}
+                        className={
+                          "biz-matrix-key" + (r.must ? " is-must" : "")
+                        }
+                      >
+                        <small>{r.must ? "Må ha" : "Fint å ha"}</small>
+                        {r.name}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="biz-matrix-key">Ingen søkeord</span>
+                  )}
+                </span>
+                <span />
+              </div>
+              {visible.map((a, i) => {
+                const c = person(a),
+                  checked = inboxSelected.includes(a.id),
+                  lacks = !coversAll(a);
+                return (
+                  <React.Fragment key={a.id}>
+                    {inboxFilter === "Alle" &&
+                      lacks &&
+                      (i === 0 || coversAll(visible[i - 1])) && (
+                        <div className="biz-matrix-divider">
+                          <strong>Mangler må-ha-ord · {lacking}</strong>
+                        </div>
+                      )}
+                    <div
+                      className={
+                        "biz-matrix-row" +
+                        (checked ? " is-selected" : "") +
+                        (lacks ? " is-lacking" : "")
+                      }
+                    >
+                      <input
+                        type="checkbox"
+                        aria-label={"Velg " + c.name}
+                        checked={checked}
+                        onChange={() =>
+                          setInboxSelected((ids) =>
+                            checked
+                              ? ids.filter((id) => id !== a.id)
+                              : [...ids, a.id],
+                          )
+                        }
+                      />
+                      <button
+                        className="biz-inbox-person"
+                        onClick={() => openApplicant(a.id)}
+                      >
+                        <span className="biz-matrix-rank">{i + 1}</span>
+                        <CandidatePhoto candidate={c} />
+                        <span>
+                          <strong>{c.name}</strong>
+                          <small>
+                            {c.school} · {c.semester}
+                          </small>
+                        </span>
+                      </button>
+                      <span className="biz-matrix-score">
+                        <b>{matchFor(a)} %</b>
+                      </span>
+                      <span className="biz-matrix-cells">
+                        {requirements.map((r) => {
+                          const where = source(a, r);
+                          return (
+                            <span
+                              key={r.name}
+                              className={
+                                "biz-keyword-cell " +
+                                (where
+                                  ? "is-hit"
+                                  : r.must
+                                    ? "is-miss"
+                                    : "is-empty")
+                              }
+                              title={r.name + ": " + (where || "mangler")}
+                              aria-label={
+                                r.name +
+                                ": " +
+                                (where ? "har, " + where : "mangler")
+                              }
+                            >
+                              <em>{r.name}</em>
+                              {where ? (
+                                <Check size={14} strokeWidth={2.5} />
+                              ) : r.must ? (
+                                "Mangler"
+                              ) : (
+                                "–"
+                              )}
+                            </span>
+                          );
+                        })}
+                      </span>
+                      <span className="biz-inbox-actions">
+                        <button
+                          className="biz-inbox-advance"
+                          aria-label={"Legg til " + c.name + " som aktuell"}
+                          onClick={() => advanceApplications([a.id])}
+                        >
+                          <Plus size={14} /> Aktuell
+                        </button>
+                        <button onClick={() => declineApplications([a.id])}>
+                          Ikke nå
+                        </button>
+                      </span>
+                    </div>
+                  </React.Fragment>
+                );
+              })}
+              {!shown.length && (
+                <p className="biz-inbox-empty">
+                  {incoming.length
+                    ? "Ingen søkere passer filteret."
+                    : "Ingen nye søkere akkurat nå."}
+                </p>
+              )}
+            </div>
+            {shown.length > inboxLimit && (
+              <button
+                className="biz-inbox-more"
+                onClick={() => setInboxLimit((n) => n + 12)}
+              >
+                Vis flere ({shown.length - inboxLimit} til)
+              </button>
+            )}
+            {declined.length > 0 && (
+              <details className="biz-inbox-declined">
+                <summary>Ikke valgt ({declined.length})</summary>
+                {declined.map((a) => (
+                  <div key={a.id}>
+                    <span>{person(a).name}</span>
+                    <button onClick={() => restoreApplication(a.id)}>
+                      Angre
+                    </button>
+                  </div>
+                ))}
+              </details>
+            )}
+          </section>
+        )}
       </section>
     );
   };
@@ -1511,7 +1705,10 @@ export function BusinessDashboard() {
       views: j.views ?? ({ 1: 248, 2: 186, 3: 154, 4: 212, 5: 167 }[j.id] || 0),
       saves: j.saves ?? ({ 1: 23, 2: 18, 3: 12, 4: 20, 5: 14 }[j.id] || 0),
       count: list.length,
-      qualified: list.filter((a) => matchFor(a) >= 85).length,
+      qualified: list.filter((a) => {
+        const c = candidates.find((x) => x.id === a.candidateId);
+        return c && !missingMusts(c, j, jobs);
+      }).length,
     };
   });
   const statistics = () => (
@@ -1520,7 +1717,7 @@ export function BusinessDashboard() {
         <BarChart3 size={18} />
         <span>
           Eksempelstatistikk · Annonseklikk og lagringer er fiktive. Søkertall
-          følger demoen. Kvalifisert betyr minst 85 % samsvar i eksempeldataene.
+          følger demoen. Kvalifisert betyr at søkeren har alle må-ha-søkeordene.
         </span>
       </div>
       <div className="biz-metric-grid">
@@ -1709,26 +1906,31 @@ export function BusinessDashboard() {
     return (
       <>
         <div className="biz-segmented" aria-label="Søkerstatus">
-          {["Alle", "Søkt", "Vurderes", "Tilbudt jobb", "Fått jobben"].map(
-            (s) => (
-              <button
-                key={s}
-                aria-pressed={appFilter === s}
-                onClick={() => setAppFilter(s)}
-              >
-                {s}
-                <span>
-                  {
-                    applications.filter(
-                      (a) =>
-                        (!jobId || a.jobId === jobId) &&
-                        (s === "Alle" || a.stage === s),
-                    ).length
-                  }
-                </span>
-              </button>
-            ),
-          )}
+          {[
+            "Alle",
+            "Søkt",
+            "Aktuell",
+            "Vurderes",
+            "Tilbudt jobb",
+            "Fått jobben",
+          ].map((s) => (
+            <button
+              key={s}
+              aria-pressed={appFilter === s}
+              onClick={() => setAppFilter(s)}
+            >
+              {s}
+              <span>
+                {
+                  applications.filter(
+                    (a) =>
+                      (!jobId || a.jobId === jobId) &&
+                      (s === "Alle" || a.stage === s),
+                  ).length
+                }
+              </span>
+            </button>
+          ))}
         </div>
         <div className="biz-applicant-list">
           {list.map((a) => {
@@ -1763,7 +1965,9 @@ export function BusinessDashboard() {
                       ? "selected"
                       : a.stage === "Vurderes"
                         ? "review"
-                        : "")
+                        : a.stage === "Aktuell"
+                          ? "shortlist"
+                          : "")
                   }
                 >
                   {a.stage}
@@ -1912,7 +2116,7 @@ export function BusinessDashboard() {
                     ? `Du har ${todoCount} ting å gjøre.`
                     : "Alt er à jour."
                   : page === "Søknader"
-                    ? "Velg ut blant nye søkere, og følg dem du går videre med gjennom prosessen."
+                    ? "Velg ut søkere og følg dem gjennom ansettelsen."
                     : page === "Statistikk"
                       ? "Se hva som skaper interesse og gode søknader."
                       : page === "Talentbase"
@@ -2316,10 +2520,17 @@ export function BusinessDashboard() {
         }
         description={company.name + " · " + BRAND_NAME}
         closeLabel="Lukk"
-        detents={[0.9, 0.97]}
-        className="biz-sheet"
+        detents={candidateSheet ? [0.97] : [0.9, 0.97]}
+        className={"biz-sheet" + (candidateSheet ? " is-candidate" : "")}
+        overlayClassName={
+          candidateSheet ? "biz-sheet-overlay is-candidate" : undefined
+        }
       >
-        <div className="biz-sheet-content">
+        <div
+          className={
+            "biz-sheet-content" + (candidateSheet ? " is-candidate" : "")
+          }
+        >
           {sheet === "talent-request" && (
             <form
               className="biz-publish"
@@ -3037,53 +3248,41 @@ export function BusinessDashboard() {
             </>
           )}
           {sheet === "candidate" && student && activeApplication && (
-            <>
-              <div className="biz-student-profile">
-                <Avatar src={student.photo} name={student.name} size="lg" />
-                <div>
-                  <h2>{student.name}</h2>
-                </div>
-                <span className="biz-badge">
-                  {matchFor(activeApplication)} % samsvar
-                </span>
-              </div>
-              <SchoolIdentity
-                school={student.school}
-                study={student.study}
-                semester={student.semester}
-              />
-              <VerifiedSkills jobs={jobs} candidateId={student.id} />
-              <div className="biz-skills">
-                {student.skills.map((s) => (
-                  <span key={s}>{s}</span>
-                ))}
-              </div>
-              <p className="biz-student-bio">{student.bio}</p>
-              {student.attests > 0 && (
-                <div className="biz-testimonial">
-                  <span>
-                    <FileCheck2 size={18} />
-                    {student.attests} attester fra tidligere oppdrag
-                  </span>
-                  <blockquote>«{student.quote}»</blockquote>
-                  <small>Utdrag fra en fiktiv attest · eksempeldata</small>
-                </div>
+            <CandidateExplorer
+              key={student.id}
+              candidate={student}
+              jobTitle={selectedJob.title}
+              requirements={requirementsFor(selectedJob).flatMap((r) =>
+                termsFor(r.name),
               )}
+              match={matchFor(activeApplication)}
+              verified={<VerifiedSkills jobs={jobs} candidateId={student.id} />}
+            >
               <div className="biz-action-panel">
-                <p>Søkt på</p>
-                <h3>{selectedJob.title}</h3>
                 <div className="biz-candidate-stage">
                   <span className="biz-badge">{activeApplication.stage}</span>
-                  <span>Søkt → Vurderes → Tilbudt jobb → Fått jobben</span>
+                  <span>
+                    Søkt → Aktuell → Vurderes → Tilbudt jobb → Fått jobben
+                  </span>
                 </div>
                 {selectedJob.stage === "Publisert" ? (
                   <div className="biz-candidate-actions">
                     <Button
                       variant="secondary"
                       onClick={review}
-                      disabled={activeApplication.stage !== "Søkt"}
+                      disabled={
+                        !["Søkt", "Aktuell"].includes(activeApplication.stage)
+                      }
                     >
-                      Vurder søker <Users size={16} />
+                      {activeApplication.stage === "Søkt" ? (
+                        <>
+                          Legg til som aktuell <Plus size={16} />
+                        </>
+                      ) : (
+                        <>
+                          Vurder søker <Users size={16} />
+                        </>
+                      )}
                     </Button>
                     <Button
                       className="primary-cta"
@@ -3122,7 +3321,7 @@ export function BusinessDashboard() {
                 </Button>
                 <small>Tilbud og aksept registreres kun i demoen.</small>
               </div>
-            </>
+            </CandidateExplorer>
           )}
           {sheet === "attest" && selectedJob && (
             <form
